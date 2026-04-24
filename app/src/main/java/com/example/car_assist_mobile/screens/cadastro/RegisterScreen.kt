@@ -1,14 +1,12 @@
-package com.example.car_assist_mobile.screens
+package com.example.car_assist_mobile.screens.cadastro
 
 import android.app.DatePickerDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
@@ -24,7 +22,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.car_assist_mobile.navigation.Screen
 import java.util.Calendar
 
 @Composable
@@ -65,9 +62,10 @@ fun RegisterScreen(navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
+            .statusBarsPadding()
             .padding(horizontal = 32.dp)
     ) {
-        Spacer(modifier = Modifier.height(15.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         // Cabeçalho
 
@@ -79,7 +77,7 @@ fun RegisterScreen(navController: NavController) {
                 modifier = Modifier
                     .size(45.dp)
                     .border(0.5.dp, Color.LightGray, CircleShape)
-                    .clickable { navController.navigate(Screen.Login.route)},
+                    .clickable { navController.popBackStack()},
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -172,10 +170,11 @@ fun RegisterScreen(navController: NavController) {
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Button(
-                onClick = { },
+                onClick = {navController.popBackStack()},
                 modifier = Modifier.weight(1f).height(45.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEEEEEE)),
                 shape = RoundedCornerShape(10.dp)
+
             ) {
                 Text("Cancelar", color = Color.Black, fontSize = 14.sp, fontWeight = FontWeight.Bold)
             }

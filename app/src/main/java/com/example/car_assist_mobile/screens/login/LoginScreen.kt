@@ -1,4 +1,4 @@
-package com.example.car_assist_mobile.screens
+package com.example.car_assist_mobile.screens.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
