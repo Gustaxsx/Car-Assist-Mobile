@@ -26,12 +26,10 @@ import com.example.car_assist_mobile.navigation.Screen
 @Composable
 fun LoginScreen(navController: NavController) {
 
-    // Pegando as dimensões da tela
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
     val screenWidth = configuration.screenWidthDp.dp
 
-    // Estados para os campos de texto funcionarem
     var email by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
     val scrollState = rememberScrollState()
@@ -43,7 +41,7 @@ fun LoginScreen(navController: NavController) {
             .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Topo escuro com o carro
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -67,7 +65,6 @@ fun LoginScreen(navController: NavController) {
             )
         }
 
-        // Area do formulario
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -90,7 +87,6 @@ fun LoginScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Campo de E-mail
             CustomInputField(
                 label = "E-mail",
                 placeholder = "seu@email.com",
@@ -100,7 +96,6 @@ fun LoginScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Campo de Senha
             CustomInputField(
                 label = "Senha",
                 placeholder = "••••••••",
@@ -117,7 +112,6 @@ fun LoginScreen(navController: NavController) {
                 color = Color.Gray
             )
 
-            // Botão Entrar
             Button(
                 onClick = {},
                 modifier = Modifier
@@ -135,7 +129,6 @@ fun LoginScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Rodapé
             Row(modifier = Modifier.padding(bottom = 40.dp)) {
                 Text(text = "Não tem conta? ", color = Color.Gray)
                 Text(
@@ -148,7 +141,6 @@ fun LoginScreen(navController: NavController) {
     }
 }
 
-// Componente de Input Reutilizável
 @Composable
 fun CustomInputField(
     label: String,

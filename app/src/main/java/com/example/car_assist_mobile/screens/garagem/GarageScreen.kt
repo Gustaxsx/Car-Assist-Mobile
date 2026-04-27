@@ -4,10 +4,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.*
@@ -27,91 +26,98 @@ import com.example.car_assist_mobile.components.CustomBottomBar
 
 @Composable
 fun GarageScreen(navController: NavController) {
-    val scrollState = rememberScrollState()
-
     Box(modifier = Modifier.fillMaxSize().background(Color(0xFFF7F7F7))) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 24.dp)
-                .verticalScroll(scrollState)
-        ) {
-            Spacer(modifier = Modifier.height(50.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.user),
-                    contentDescription = null,
-                    modifier = Modifier.size(55.dp).clip(CircleShape),
-                    contentScale = ContentScale.Crop
-                )
+        Column(modifier = Modifier.fillMaxSize()) {
 
-                Column(modifier = Modifier.padding(start = 12.dp).weight(1f)) {
-                    Text(text = "Olá Beatriz!", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                    Text(text = "contatobeatriz@email.com", fontSize = 12.sp, color = Color.Gray)
-                }
-
-                HeaderIcon(iconRes = R.drawable.icone_chat)
-                Spacer(modifier = Modifier.width(8.dp))
-                HeaderIcon(iconRes = R.drawable.icone_email)
-            }
-
-            Spacer(modifier = Modifier.height(30.dp))
-
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(80.dp)
-                    .background(Color(0xFFD9D9D9), RoundedCornerShape(18.dp))
-                    .padding(horizontal = 24.dp),
-                contentAlignment = Alignment.CenterStart
+                    .padding(horizontal = 24.dp)
             ) {
+                Spacer(modifier = Modifier.height(50.dp))
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "91.6", fontSize = 42.sp, fontWeight = FontWeight.Black)
-                    Text(
-                        text = "SCORE DA GARAGEM",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 0.5.sp
+                    Image(
+                        painter = painterResource(id = R.drawable.user),
+                        contentDescription = null,
+                        modifier = Modifier.size(55.dp).clip(CircleShape),
+                        contentScale = ContentScale.Crop
                     )
+
+                    Column(modifier = Modifier.padding(start = 12.dp).weight(1f)) {
+                        Text(text = "Olá Beatriz!", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        Text(text = "contatobeatriz@email.com", fontSize = 12.sp, color = Color.Gray)
+                    }
+
+                    HeaderIcon(iconRes = R.drawable.icone_chat)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    HeaderIcon(iconRes = R.drawable.icone_email)
                 }
+
+                Spacer(modifier = Modifier.height(30.dp))
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(65.dp)
+                        .background(Color(0xFFD9D9D9), RoundedCornerShape(18.dp))
+                        .padding(horizontal = 24.dp),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = "91.6", fontSize = 30.sp, fontWeight = FontWeight.Black)
+                        Text(
+                            text = "SCORE DA GARAGEM",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 0.5.sp
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
-
-            CarCard(name = "Fastback Abarth", plate = "RFT5S34", score = "97", imageRes = R.drawable.car_1)
-            Spacer(modifier = Modifier.height(16.dp))
-            CarCard(name = "T-Cross", plate = "QXM7D19", score = "92", imageRes = R.drawable.car_1)
-            Spacer(modifier = Modifier.height(16.dp))
-            CarCard(name = "Onix", plate = "RZT5B67", score = "86", imageRes = R.drawable.car_1)
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-
-            Button(
-                onClick = {},
-                modifier = Modifier.align(Alignment.CenterHorizontally).height(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD9D9D9)),
-                shape = RoundedCornerShape(50.dp)
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                contentPadding = PaddingValues(start = 24.dp, end = 24.dp, bottom = 180.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Icon(Icons.Default.AddCircle, contentDescription = null, tint = Color.Black)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "ADICIONAR CARRO", color = Color.Black, fontWeight = FontWeight.Bold)
+                item { CarCard(name = "Fastback Abarth", plate = "RFT5S34", score = "97", imageRes = R.drawable.car_1) }
+                item { CarCard(name = "T-Cross", plate = "QXM7D19", score = "92", imageRes = R.drawable.car_1) }
+                item { CarCard(name = "Onix", plate = "RZT5B67", score = "86", imageRes = R.drawable.car_1) }
             }
+        }
 
-            Spacer(modifier = Modifier.height(120.dp))
+        Button(
+            onClick = {},
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 100.dp)
+                .width(220.dp)
+                .height(50.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD9D9D9)),
+            shape = RoundedCornerShape(50.dp)
+        ) {
+            Icon(Icons.Default.AddCircle, contentDescription = null, tint = Color.Black)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(text = "ADICIONAR CARRO", color = Color.Black, fontWeight = FontWeight.Bold)
         }
 
         CustomBottomBar(
             navController = navController,
-            modifier = Modifier.align(Alignment.BottomCenter)
+            modifier = Modifier.align(Alignment.BottomCenter),
+            selectedItem = "garagem"
         )
     }
 }
@@ -144,7 +150,6 @@ fun CarCard(name: String, plate: String, score: String, imageRes: Int) {
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                // Badge do Score
                 Box(
                     modifier = Modifier
                         .width(60.dp)
