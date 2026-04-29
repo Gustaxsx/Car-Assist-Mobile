@@ -1,3 +1,6 @@
+![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?style=flat&logo=kotlin&logoColor=white)
+![Android Studio](https://img.shields.io/badge/Android-Studio-green)
+![Status](https://img.shields.io/badge/Status-em%20desenvolvimento-orange)
 # Car-Assist-Mobile
 ![alt text](app/src/main/java/com/example/car_assist_mobile/assets/logo-mobilepng.png)
 
