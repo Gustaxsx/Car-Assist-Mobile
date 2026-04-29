@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -31,7 +32,6 @@ fun EditProfileScreen(navController: NavController) {
     var dataNasc by remember { mutableStateOf("01/01/2006") }
     var email by remember { mutableStateOf("gustavo@email.com") }
 
-    val scrollState = rememberScrollState()
 
     Box(modifier = Modifier.fillMaxSize().background(Color.White)) {
 
@@ -63,7 +63,8 @@ fun EditProfileScreen(navController: NavController) {
                         modifier = Modifier.weight(1f).padding(end = 45.dp),
                         textAlign = TextAlign.Center,
                         fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium
+                        fontWeight = FontWeight.Medium,
+                        color = Color.Black
                     )
                 }
                 Spacer(modifier = Modifier.height(32.dp))
@@ -73,8 +74,7 @@ fun EditProfileScreen(navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
-                    .padding(horizontal = 32.dp)
-                    .verticalScroll(scrollState),
+                    .padding(horizontal = 32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
@@ -93,22 +93,20 @@ fun EditProfileScreen(navController: NavController) {
                 }
 
                 Spacer(modifier = Modifier.height(32.dp))
-
                 EditField(label = "Nome", value = nome, onValueChange = { nome = it })
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // CAMPO CPF (ESTILIZADO)
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    Text("CPF", fontSize = 14.sp, modifier = Modifier.padding(start = 4.dp, bottom = 4.dp))
+                    Text("CPF", fontSize = 14.sp, modifier = Modifier.padding(start = 4.dp, bottom = 4.dp), color = Color.Black)
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(50.dp)
-                            .background(Color(0xFFE0E0E0), RoundedCornerShape(12.dp))
+                            .height(54.dp)
+                            .background(Color(0xFFE0E0E0), RoundedCornerShape(15.dp))
                             .padding(horizontal = 16.dp),
                         contentAlignment = Alignment.CenterStart
                     ) {
-                        Text(text = cpf, color = Color.Gray)
+                        Text(text = cpf, color = Color.DarkGray, fontSize = 14.sp)
                     }
                 }
 
@@ -116,8 +114,7 @@ fun EditProfileScreen(navController: NavController) {
                 EditField(label = "Data de Nascimento", value = dataNasc, onValueChange = { dataNasc = it })
                 Spacer(modifier = Modifier.height(16.dp))
                 EditField(label = "E-mail", value = email, onValueChange = { email = it })
-
-                Spacer(modifier = Modifier.height(180.dp))
+                Spacer(modifier = Modifier.height(200.dp))
             }
         }
 
@@ -131,18 +128,18 @@ fun EditProfileScreen(navController: NavController) {
         ) {
             Button(
                 onClick = { navController.popBackStack() },
-                modifier = Modifier.weight(1f).height(45.dp),
+                modifier = Modifier.weight(1f).height(48.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEEEEEE)),
-                shape = RoundedCornerShape(10.dp)
+                shape = RoundedCornerShape(12.dp)
             ) {
                 Text("Cancelar", color = Color.Black, fontWeight = FontWeight.Bold)
             }
 
             Button(
                 onClick = {},
-                modifier = Modifier.weight(1f).height(45.dp),
+                modifier = Modifier.weight(1f).height(48.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFC4C4C4)),
-                shape = RoundedCornerShape(10.dp)
+                shape = RoundedCornerShape(12.dp)
             ) {
                 Text("Salvar", color = Color.Black, fontWeight = FontWeight.Bold)
             }
@@ -162,17 +159,23 @@ fun EditField(label: String, value: String, onValueChange: (String) -> Unit) {
         Text(
             text = label,
             fontSize = 14.sp,
-            modifier = Modifier.padding(start = 4.dp, bottom = 4.dp)
+            modifier = Modifier.padding(start = 4.dp, bottom = 4.dp),
+            color = Color.Black
         )
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier.fillMaxWidth().height(50.dp),
-            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier.fillMaxWidth().height(54.dp),
+            shape = RoundedCornerShape(15.dp),
             singleLine = true,
+            textStyle = TextStyle(fontSize = 14.sp, color = Color.Black),
             colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
                 unfocusedBorderColor = Color(0xFFE0E0E0),
-                focusedBorderColor = Color.Gray
+                focusedBorderColor = Color.Gray,
+                unfocusedContainerColor = Color.White,
+                focusedContainerColor = Color.White
             )
         )
     }

@@ -28,26 +28,24 @@ fun CustomBottomBar(
     Box(
         modifier = modifier
             .padding(bottom = 24.dp)
-            .width(300.dp)
+            .width(320.dp)
             .height(64.dp)
             .background(Color(0xFF2D3239), RoundedCornerShape(50.dp)),
         contentAlignment = Alignment.Center
     ) {
         Row(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp),
+            modifier = Modifier.fillMaxSize().padding(horizontal = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
 
             BottomBarItem(
-                label = "Garage",
+                label = "Garagem",
                 iconRes = R.drawable.icone_carro,
-                isSelected = selectedItem == "garage",
+                isSelected = selectedItem == "garagem",
                 onClick = {
-                    if (selectedItem!= "garage"){
-                        navController.navigate(
-                            route = "garage"
-                        )
+                    if (selectedItem != "garagem") {
+                        navController.navigate("garage")
                     }
                 }
             )
@@ -56,18 +54,20 @@ fun CustomBottomBar(
                 label = "Postos",
                 iconRes = R.drawable.gas_station,
                 isSelected = selectedItem == "postos",
-                onClick = {}
+                onClick = {
+                    if (selectedItem != "postos") {
+                        navController.navigate("service")
+                    }
+                }
             )
 
             BottomBarItem(
-                label = "profile",
+                label = "Perfil",
                 iconRes = R.drawable.user,
-                isSelected = selectedItem == "profile",
+                isSelected = selectedItem == "perfil",
                 onClick = {
-                    if (selectedItem!= "profile"){
-                        navController.navigate(
-                            route = "profile"
-                        )
+                    if (selectedItem != "perfil") {
+                        navController.navigate("profile")
                     }
                 }
             )
@@ -83,11 +83,9 @@ fun BottomBarItem(
     onClick: () -> Unit
 ) {
     if (isSelected) {
-
         Box(
             modifier = Modifier
                 .height(48.dp)
-                .padding(start = 4.dp, end = 4.dp)
                 .background(Color(0xFFF3F3F3), RoundedCornerShape(50.dp))
                 .clickable { onClick() }
                 .padding(horizontal = 16.dp),
@@ -114,7 +112,6 @@ fun BottomBarItem(
         Box(
             modifier = Modifier
                 .size(48.dp)
-                .shadow(elevation = 4.dp, shape = CircleShape)
                 .background(Color(0xFF3A4048), CircleShape)
                 .clickable { onClick() },
             contentAlignment = Alignment.Center

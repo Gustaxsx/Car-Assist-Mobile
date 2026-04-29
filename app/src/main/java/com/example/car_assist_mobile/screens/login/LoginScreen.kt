@@ -60,6 +60,7 @@ fun LoginScreen(navController: NavController) {
                 contentDescription = "Carro Assist",
                 modifier = Modifier
                     .fillMaxHeight(0.8f)
+                    .aspectRatio(1.1f)
                     .padding(bottom = 16.dp),
                 contentScale = ContentScale.Fit
             )
