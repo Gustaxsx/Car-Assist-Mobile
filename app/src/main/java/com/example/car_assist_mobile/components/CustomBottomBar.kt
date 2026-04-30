@@ -25,52 +25,45 @@ fun CustomBottomBar(
     modifier: Modifier = Modifier,
     selectedItem: String = "perfil"
 ) {
-    Box(
-        modifier = modifier
-            .padding(bottom = 24.dp)
-            .width(320.dp)
-            .height(64.dp)
-            .background(Color(0xFF2D3239), RoundedCornerShape(50.dp)),
-        contentAlignment = Alignment.Center
+
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
     ) {
-        Row(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly
+        Box(
+            modifier = Modifier
+                .padding(bottom = 24.dp)
+                .width(280.dp)
+                .height(56.dp)
+                .background(Color(0xFF2D3239), RoundedCornerShape(50.dp)),
+            contentAlignment = Alignment.Center
         ) {
+            Row(
+                modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                BottomBarItem(
+                    label = "Garagem",
+                    iconRes = R.drawable.icone_carro,
+                    isSelected = selectedItem == "garagem",
+                    onClick = { if (selectedItem != "garagem") navController.navigate("garage") }
+                )
 
-            BottomBarItem(
-                label = "Garagem",
-                iconRes = R.drawable.icone_carro,
-                isSelected = selectedItem == "garagem",
-                onClick = {
-                    if (selectedItem != "garagem") {
-                        navController.navigate("garage")
-                    }
-                }
-            )
+                BottomBarItem(
+                    label = "Serviços",
+                    iconRes = R.drawable.gas_station,
+                    isSelected = selectedItem == "servicos",
+                    onClick = { if (selectedItem != "servicos") navController.navigate("service") }
+                )
 
-            BottomBarItem(
-                label = "Postos",
-                iconRes = R.drawable.gas_station,
-                isSelected = selectedItem == "postos",
-                onClick = {
-                    if (selectedItem != "postos") {
-                        navController.navigate("service")
-                    }
-                }
-            )
-
-            BottomBarItem(
-                label = "Perfil",
-                iconRes = R.drawable.user,
-                isSelected = selectedItem == "perfil",
-                onClick = {
-                    if (selectedItem != "perfil") {
-                        navController.navigate("profile")
-                    }
-                }
-            )
+                BottomBarItem(
+                    label = "Perfil",
+                    iconRes = R.drawable.user,
+                    isSelected = selectedItem == "perfil",
+                    onClick = { if (selectedItem != "perfil") navController.navigate("profile") }
+                )
+            }
         }
     }
 }
@@ -85,10 +78,10 @@ fun BottomBarItem(
     if (isSelected) {
         Box(
             modifier = Modifier
-                .height(48.dp)
+                .height(40.dp)
                 .background(Color(0xFFF3F3F3), RoundedCornerShape(50.dp))
                 .clickable { onClick() }
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 14.dp),
             contentAlignment = Alignment.Center
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -96,22 +89,21 @@ fun BottomBarItem(
                     painter = painterResource(id = iconRes),
                     contentDescription = null,
                     tint = Color.Black,
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(18.dp)
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(6.dp))
                 Text(
                     text = label,
                     color = Color.Black,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp
+                    fontSize = 12.sp
                 )
             }
         }
     } else {
-
         Box(
             modifier = Modifier
-                .size(48.dp)
+                .size(40.dp)
                 .background(Color(0xFF3A4048), CircleShape)
                 .clickable { onClick() },
             contentAlignment = Alignment.Center
@@ -120,7 +112,7 @@ fun BottomBarItem(
                 painter = painterResource(id = iconRes),
                 contentDescription = null,
                 tint = Color.White,
-                modifier = Modifier.size(22.dp)
+                modifier = Modifier.size(20.dp)
             )
         }
     }

@@ -11,7 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.car_assist_mobile.screens.adicionarcarro.AddCarScreen
 import com.example.car_assist_mobile.screens.cadastro.RegisterScreen
+import com.example.car_assist_mobile.screens.cadastrodecarro.RegisterCarScreen
 import com.example.car_assist_mobile.screens.garagem.GarageScreen
 import com.example.car_assist_mobile.screens.login.LoginScreen
 import com.example.car_assist_mobile.screens.perfil.EditProfileScreen
@@ -58,6 +60,16 @@ class MainActivity : ComponentActivity() {
                             route = "service"
                         ) {
                             ServicesScreen(navController)
+                        }
+                        composable(
+                            route = "AddCar"
+                        ) {
+                            AddCarScreen(navController)
+                        }
+                        composable(
+                            route = "RegisterCar"
+                        ) {
+                            RegisterCarScreen(navController)
                         }
                     }
                 }
