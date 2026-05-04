@@ -30,10 +30,10 @@ import com.example.car_assist_mobile.components.CustomBottomBar
 fun ServicesScreen(navController: NavController) {
 
     val services = listOf(
-        ServiceItem("Oficina", R.drawable.oficina),
-        ServiceItem("Lava-Rápido", R.drawable.lavarapido),
-        ServiceItem("Posto de Combustível", R.drawable.posto),
-        ServiceItem("Guincho", R.drawable.guincho)
+        ServiceItem("Oficina", R.drawable.icone_oficina),
+        ServiceItem("Lava-Rápido", R.drawable.icone_lavarapido),
+        ServiceItem("Posto de Combustível", R.drawable.icone_posto_service),
+        ServiceItem("Guincho", R.drawable.icone_guincho)
     )
 
     Box(modifier = Modifier.fillMaxSize().background(Color.White)) {

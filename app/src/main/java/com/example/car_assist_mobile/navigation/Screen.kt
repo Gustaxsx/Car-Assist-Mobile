@@ -13,4 +13,6 @@ sealed class Screen(val route: String) {
     object AddCar : Screen("AddCar")
 
     object RegisterCar : Screen("RegisterCar")
+
+    object DetailsCar : Screen("DetailsCar")
 }

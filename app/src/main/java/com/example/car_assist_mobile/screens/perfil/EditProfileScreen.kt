@@ -83,7 +83,7 @@ fun EditProfileScreen(navController: NavController) {
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.user),
+                        painter = painterResource(id = R.drawable.icone_user),
                         contentDescription = null,
                         modifier = Modifier.size(100.dp),
                         tint = Color.Unspecified

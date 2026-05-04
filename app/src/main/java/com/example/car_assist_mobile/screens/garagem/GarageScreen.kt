@@ -126,9 +126,9 @@ fun GarageScreen(navController: NavController) {
                     contentPadding = PaddingValues(bottom = 100.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    item { CarCard("Fastback Abarth", "RFT5S34", "97", R.drawable.car_1) }
-                    item { CarCard("T-Cross", "QXM7D19", "92", R.drawable.car_1) }
-                    item { CarCard("Onix", "RZT5B67", "86", R.drawable.car_1) }
+                    item { CarCard("Fastback Abarth", "RFT5S34", "97", R.drawable.icone_carro_moderno)}
+                    item { CarCard("T-Cross", "QXM7D19", "92", R.drawable.icone_carro_moderno) }
+                    item { CarCard("Onix", "RZT5B67", "86", R.drawable.icone_carro_moderno) }
                 }
             }
 

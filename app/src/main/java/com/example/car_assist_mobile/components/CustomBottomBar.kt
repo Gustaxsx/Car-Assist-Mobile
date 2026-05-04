@@ -10,7 +10,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -52,14 +51,14 @@ fun CustomBottomBar(
 
                 BottomBarItem(
                     label = "Serviços",
-                    iconRes = R.drawable.gas_station,
+                    iconRes = R.drawable.icone_posto_bar,
                     isSelected = selectedItem == "servicos",
                     onClick = { if (selectedItem != "servicos") navController.navigate("service") }
                 )
 
                 BottomBarItem(
                     label = "Perfil",
-                    iconRes = R.drawable.user,
+                    iconRes = R.drawable.icone_user,
                     isSelected = selectedItem == "perfil",
                     onClick = { if (selectedItem != "perfil") navController.navigate("profile") }
                 )

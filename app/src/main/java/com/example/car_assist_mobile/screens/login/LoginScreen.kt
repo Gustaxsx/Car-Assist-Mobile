@@ -56,7 +56,7 @@ fun LoginScreen(navController: NavController) {
             contentAlignment = Alignment.BottomCenter
         ) {
             Image(
-                painter = painterResource(id = R.drawable.carro_topo),
+                painter = painterResource(id = R.drawable.bg_carro_topo),
                 contentDescription = "Carro Assist",
                 modifier = Modifier
                     .fillMaxHeight(0.8f)

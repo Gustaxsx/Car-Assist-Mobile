@@ -14,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.car_assist_mobile.screens.adicionarcarro.AddCarScreen
 import com.example.car_assist_mobile.screens.cadastro.RegisterScreen
 import com.example.car_assist_mobile.screens.cadastrodecarro.RegisterCarScreen
+import com.example.car_assist_mobile.screens.cardetails.DetailsCarScreen
 import com.example.car_assist_mobile.screens.garagem.GarageScreen
 import com.example.car_assist_mobile.screens.login.LoginScreen
 import com.example.car_assist_mobile.screens.perfil.EditProfileScreen
@@ -33,7 +34,7 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(
                         navController = navController,
-                        startDestination = "service",
+                        startDestination = "DetailsCar",
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable(
@@ -70,6 +71,11 @@ class MainActivity : ComponentActivity() {
                             route = "RegisterCar"
                         ) {
                             RegisterCarScreen(navController)
+                        }
+                        composable(
+                            route = "DetailsCar"
+                        ) {
+                            DetailsCarScreen(navController)
                         }
                     }
                 }

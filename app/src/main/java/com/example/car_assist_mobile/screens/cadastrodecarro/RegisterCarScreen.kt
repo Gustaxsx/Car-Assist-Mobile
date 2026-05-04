@@ -25,15 +25,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.car_assist_mobile.R
 import com.example.car_assist_mobile.components.CustomBottomBar
-
 @Composable
 fun RegisterCarScreen(navController: NavController) {
-    val scrollState = rememberScrollState()
-
     Scaffold(
         bottomBar = {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 24.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
                 CustomBottomBar(navController = navController, selectedItem = "garagem")
@@ -45,11 +44,11 @@ fun RegisterCarScreen(navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 32.dp)
-                .verticalScroll(scrollState),
+                .padding(horizontal = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(10.dp))
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             Box(
                 modifier = Modifier.fillMaxWidth(),
@@ -79,23 +78,23 @@ fun RegisterCarScreen(navController: NavController) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             Box(
                 modifier = Modifier
-                    .size(120.dp)
-                    .clickable {},
+                    .size(100.dp)
+                    .clickable { },
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.icone_foto),
                     contentDescription = null,
-                    modifier = Modifier.size(100.dp),
+                    modifier = Modifier.size(90.dp),
                     tint = Color.Unspecified
                 )
             }
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             CarInput(label = "Modelo")
             CarInput(label = "Marca")
@@ -103,7 +102,7 @@ fun RegisterCarScreen(navController: NavController) {
             CarInput(label = "Ano", isDropdown = true)
             CarInput(label = "Cor", isDropdown = true)
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Button(
                 onClick = {},
@@ -120,8 +119,6 @@ fun RegisterCarScreen(navController: NavController) {
                     fontSize = 14.sp
                 )
             }
-
-            Spacer(modifier = Modifier.height(120.dp))
         }
     }
 }
@@ -130,37 +127,42 @@ fun RegisterCarScreen(navController: NavController) {
 fun CarInput(label: String, isDropdown: Boolean = false) {
     var textState by remember { mutableStateOf("") }
 
-    Column(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)) {
+    Column(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
         Text(
             text = label,
-            color = Color.LightGray,
-            fontSize = 14.sp,
-            modifier = Modifier.padding(start = 4.dp, bottom = 4.dp)
+            color = Color(0xFFBCBCBC),
+            fontSize = 13.sp,
+            modifier = Modifier.padding(start = 4.dp, bottom = 2.dp)
         )
         OutlinedTextField(
             value = textState,
             onValueChange = { textState = it },
-            modifier = Modifier.fillMaxWidth().height(54.dp),
-            shape = RoundedCornerShape(15.dp),
+            modifier = Modifier.fillMaxWidth().height(50.dp),
+            shape = RoundedCornerShape(14.dp),
             singleLine = true,
             textStyle = TextStyle(fontSize = 14.sp, color = Color.Black),
             colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = Color(0xFFE0E0E0),
+                unfocusedBorderColor = Color(0xFFE8E8E8),
                 focusedBorderColor = Color.Gray,
                 unfocusedContainerColor = Color.White,
                 focusedContainerColor = Color.White
             ),
             trailingIcon = {
                 if (isDropdown) {
-                    Icon(
-                        Icons.Default.KeyboardArrowDown,
-                        contentDescription = null,
-                        tint = Color.Gray,
+                    Box(
                         modifier = Modifier
-                            .padding(end = 8.dp)
-                            .background(Color(0xFFE0E0E0), RoundedCornerShape(8.dp))
-                            .size(24.dp)
-                    )
+                            .padding(end = 12.dp)
+                            .size(26.dp)
+                            .background(Color(0xFFE0E0E0), RoundedCornerShape(8.dp)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            Icons.Default.KeyboardArrowDown,
+                            contentDescription = null,
+                            tint = Color.Gray,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
                 }
             }
         )
