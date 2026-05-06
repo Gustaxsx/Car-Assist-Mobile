@@ -22,10 +22,10 @@ import androidx.navigation.NavController
 import com.example.car_assist_mobile.R
 import com.example.car_assist_mobile.components.CustomBottomBar
 
-
 @Composable
 fun GarageScreen(navController: NavController) {
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
             Row(
                 modifier = Modifier
@@ -41,6 +41,7 @@ fun GarageScreen(navController: NavController) {
         },
         containerColor = Color(0xFFF7F7F7)
     ) { innerPadding ->
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -49,9 +50,14 @@ fun GarageScreen(navController: NavController) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 24.dp)
+                    .padding(
+                        top = WindowInsets.statusBars
+                            .asPaddingValues()
+                            .calculateTopPadding() + 8.dp,
+                        start = 24.dp,
+                        end = 24.dp
+                    )
             ) {
-                Spacer(modifier = Modifier.height(40.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -89,7 +95,7 @@ fun GarageScreen(navController: NavController) {
                     HeaderIcon(iconRes = R.drawable.icone_email)
                 }
 
-                Spacer(modifier = Modifier.height(30.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 Box(
                     modifier = Modifier
@@ -133,8 +139,7 @@ fun GarageScreen(navController: NavController) {
             }
 
             Button(
-                onClick = {navController.navigate("AddCar")
-                },
+                onClick = { navController.navigate("AddCar") },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 20.dp)

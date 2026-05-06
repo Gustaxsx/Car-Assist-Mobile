@@ -57,7 +57,7 @@ fun RegisterScreen(navController: NavController) {
                 .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -83,13 +83,13 @@ fun RegisterScreen(navController: NavController) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(60.dp))
+            Spacer(modifier = Modifier.height(30.dp))
 
             RegisterField(label = "Nome", value = nome, onValueChange = { nome = it })
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             RegisterField(label = "CPF", value = cpf, onValueChange = { cpf = it })
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text("Data de Nascimento", fontSize = 14.sp, modifier = Modifier.padding(start = 4.dp, bottom = 4.dp), color = Color.Black)
@@ -112,19 +112,19 @@ fun RegisterScreen(navController: NavController) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             RegisterField(label = "E-mail", value = email, onValueChange = { email = it })
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             RegisterField(label = "Senha", value = senha, onValueChange = { senha = it }, isPassword = true)
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             RegisterField(label = "Confirmar Senha", value = confirmarSenha, onValueChange = { confirmarSenha = it }, isPassword = true)
 
-            Spacer(modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.height(30.dp))
 
             Row(
-                modifier = Modifier.fillMaxWidth().padding(bottom = 40.dp),
+                modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Button(
@@ -166,9 +166,7 @@ fun RegisterField(
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(54.dp),
+            modifier = Modifier.fillMaxWidth().height(54.dp),
             shape = RoundedCornerShape(15.dp),
             singleLine = true,
             textStyle = TextStyle(fontSize = 14.sp, color = Color.Black),

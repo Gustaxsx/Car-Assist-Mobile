@@ -114,7 +114,7 @@ fun LoginScreen(navController: NavController) {
             )
 
             Button(
-                onClick = {},
+                onClick = {navController.navigate("garage")},
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp),
