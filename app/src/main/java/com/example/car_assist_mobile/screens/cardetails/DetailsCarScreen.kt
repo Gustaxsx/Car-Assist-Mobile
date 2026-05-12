@@ -45,7 +45,8 @@ fun DetailsCarScreen(navController: NavController) {
                 .padding(horizontal = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(10.dp))
+
+            Spacer(modifier = Modifier.height(15.dp))
 
             Box(
                 modifier = Modifier.fillMaxWidth(),
@@ -53,9 +54,7 @@ fun DetailsCarScreen(navController: NavController) {
             ) {
                 IconButton(
                     onClick = { navController.popBackStack() },
-                    modifier = Modifier
-                        .border(0.5.dp, Color.LightGray, CircleShape)
-                        .size(45.dp)
+                    modifier = Modifier.border(0.5.dp, Color.LightGray, CircleShape).size(45.dp)
                 ) {
                     Icon(Icons.Default.ArrowBack, null, tint = Color.Gray, modifier = Modifier.size(20.dp))
                 }
@@ -65,7 +64,8 @@ fun DetailsCarScreen(navController: NavController) {
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
                 )
             }
 
@@ -106,19 +106,19 @@ fun DetailsCarScreen(navController: NavController) {
                 InfoItem(label = "Cor", value = "Vermelho", modifier = Modifier.weight(1f))
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                ActionButton(text = "EDITAR DADOS", modifier = Modifier.weight(1f)) {}
-                ActionButton(text = "MANUTENÇÕES", modifier = Modifier.weight(1f)) {}
+                ActionButton(text = "EDITAR DADOS", modifier = Modifier.weight(1f)) { navController.navigate("EditCar") }
+                ActionButton(text = "MANUTENÇÕES", modifier = Modifier.weight(1f)) { navController.navigate("Manutencao") }
             }
             Spacer(modifier = Modifier.height(12.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                ActionButton(text = "GASTOS", modifier = Modifier.weight(1f)) {}
+                ActionButton(text = "GASTOS", modifier = Modifier.weight(1f)) { navController.navigate("Gastos") }
                 ActionButton(text = "HISTÓRICO DE DONOS", modifier = Modifier.weight(1f)) {}
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.weight(1f))
 
             Button(
                 onClick = { },
@@ -128,6 +128,8 @@ fun DetailsCarScreen(navController: NavController) {
             ) {
                 Text("TRANSFERIR", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 16.sp)
             }
+
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }
@@ -135,7 +137,7 @@ fun DetailsCarScreen(navController: NavController) {
 @Composable
 fun InfoItem(label: String, value: String, modifier: Modifier = Modifier) {
     Surface(
-        modifier = modifier.height(50.dp),
+        modifier = modifier.height(55.dp),
         shape = RoundedCornerShape(12.dp),
         border = androidx.compose.foundation.BorderStroke(0.5.dp, Color.LightGray),
         color = Color.White

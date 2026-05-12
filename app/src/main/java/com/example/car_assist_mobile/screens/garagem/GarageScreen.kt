@@ -3,6 +3,7 @@ package com.example.car_assist_mobile.screens.garagem
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -90,9 +91,15 @@ fun GarageScreen(navController: NavController) {
                         )
                     }
 
-                    HeaderIcon(iconRes = R.drawable.icone_chat)
+                    HeaderIcon(
+                        iconRes = R.drawable.icone_chat,
+                        onClick = { navController.navigate("chatbot") }
+                    )
                     Spacer(modifier = Modifier.width(12.dp))
-                    HeaderIcon(iconRes = R.drawable.icone_email)
+                    HeaderIcon(
+                        iconRes = R.drawable.icone_email,
+                        onClick = {navController.navigate("Lembrete")}
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -132,9 +139,33 @@ fun GarageScreen(navController: NavController) {
                     contentPadding = PaddingValues(bottom = 100.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    item { CarCard("Fastback Abarth", "RFT5S34", "97", R.drawable.icone_carro_moderno)}
-                    item { CarCard("T-Cross", "QXM7D19", "92", R.drawable.icone_carro_moderno) }
-                    item { CarCard("Onix", "RZT5B67", "86", R.drawable.icone_carro_moderno) }
+                    item {
+                        CarCard(
+                            name = "Fastback Abarth",
+                            plate = "RFT5S34",
+                            score = "97",
+                            imageRes = R.drawable.icone_carro_moderno,
+                            onClick = { navController.navigate("DetailsCar") }
+                        )
+                    }
+                    item {
+                        CarCard(
+                            name = "T-Cross",
+                            plate = "QXM7D19",
+                            score = "92",
+                            imageRes = R.drawable.icone_carro_moderno,
+                            onClick = {}
+                        )
+                    }
+                    item {
+                        CarCard(
+                            name = "Onix",
+                            plate = "RZT5B67",
+                            score = "86",
+                            imageRes = R.drawable.icone_carro_moderno,
+                            onClick = {}
+                        )
+                    }
                 }
             }
 
@@ -168,9 +199,11 @@ fun GarageScreen(navController: NavController) {
 }
 
 @Composable
-fun HeaderIcon(iconRes: Int) {
+fun HeaderIcon(iconRes: Int, onClick: () -> Unit = {}) {
     Surface(
-        modifier = Modifier.size(42.dp),
+        modifier = Modifier
+            .size(42.dp)
+            .clickable { onClick() },
         shape = CircleShape,
         color = Color(0xFF1A1A1A)
     ) {
@@ -186,8 +219,15 @@ fun HeaderIcon(iconRes: Int) {
 }
 
 @Composable
-fun CarCard(name: String, plate: String, score: String, imageRes: Int) {
+fun CarCard(
+    name: String,
+    plate: String,
+    score: String,
+    imageRes: Int,
+    onClick: () -> Unit
+) {
     Card(
+        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
             .height(140.dp),

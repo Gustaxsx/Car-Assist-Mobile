@@ -11,15 +11,25 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.car_assist_mobile.navigation.Screen
 import com.example.car_assist_mobile.screens.adicionarcarro.AddCarScreen
+import com.example.car_assist_mobile.screens.adicionarlembrete.AddLembreteScreen
+import com.example.car_assist_mobile.screens.adicionarmanutencao.AddManutencaoScreen
 import com.example.car_assist_mobile.screens.cadastro.RegisterScreen
 import com.example.car_assist_mobile.screens.cadastrodecarro.RegisterCarScreen
 import com.example.car_assist_mobile.screens.cardetails.DetailsCarScreen
+import com.example.car_assist_mobile.screens.chatbot.ChatBotScreen
+import com.example.car_assist_mobile.screens.editarcarro.EditCarScreen
 import com.example.car_assist_mobile.screens.garagem.GarageScreen
+import com.example.car_assist_mobile.screens.gastos.GastosScreen
+import com.example.car_assist_mobile.screens.lembrete.LembreteScreen
 import com.example.car_assist_mobile.screens.login.LoginScreen
+import com.example.car_assist_mobile.screens.manutencao.ManutencaoScreen
 import com.example.car_assist_mobile.screens.perfil.EditProfileScreen
 import com.example.car_assist_mobile.screens.service.ServicesScreen
 import com.example.car_assist_mobile.ui.theme.Car_Assist_MobileTheme
+
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +44,7 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(
                         navController = navController,
-                        startDestination = "DetailsCar",
+                        startDestination = "garage",
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable(
@@ -76,6 +86,41 @@ class MainActivity : ComponentActivity() {
                             route = "DetailsCar"
                         ) {
                             DetailsCarScreen(navController)
+                        }
+                        composable(
+                            route = "ChatBot"
+                        ) {
+                            ChatBotScreen(navController)
+                        }
+                        composable(
+                            route = "Lembrete"
+                        ) {
+                            LembreteScreen(navController)
+                        }
+                        composable(
+                            route = "AddLembrete"
+                        ) {
+                            AddLembreteScreen(navController)
+                        }
+                        composable(
+                            route = "Gastos"
+                        ) {
+                            GastosScreen(navController)
+                        }
+                        composable(
+                            route = "Manutencao"
+                        ) {
+                            ManutencaoScreen(navController)
+                        }
+                        composable(
+                            route = "AddManutencao"
+                        ) {
+                            AddManutencaoScreen(navController)
+                        }
+                        composable(
+                            route = "EditCar"
+                        ) {
+                            EditCarScreen(navController)
                         }
                     }
                 }

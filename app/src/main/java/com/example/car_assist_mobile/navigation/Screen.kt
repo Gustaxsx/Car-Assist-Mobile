@@ -15,4 +15,8 @@ sealed class Screen(val route: String) {
     object RegisterCar : Screen("RegisterCar")
 
     object DetailsCar : Screen("DetailsCar")
+
+    object ChatBot : Screen("ChatBot")
+
+    object Lembrete : Screen("Lembrete")
 }
