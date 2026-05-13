@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.car_assist_mobile.R
-import com.example.car_assist_mobile.navigation.Screen
+
 
 @Composable
 fun LoginScreen(navController: NavController) {
@@ -135,7 +135,7 @@ fun LoginScreen(navController: NavController) {
                 Text(
                     text = "Criar conta",
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable { navController.navigate(Screen.Register.route) }
+                    modifier = Modifier.clickable { navController.navigate("register") }
                 )
             }
         }

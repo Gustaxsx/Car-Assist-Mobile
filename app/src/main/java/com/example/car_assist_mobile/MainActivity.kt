@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.car_assist_mobile.navigation.Screen
 import com.example.car_assist_mobile.screens.adicionarcarro.AddCarScreen
 import com.example.car_assist_mobile.screens.adicionarlembrete.AddLembreteScreen
 import com.example.car_assist_mobile.screens.adicionarmanutencao.AddManutencaoScreen
@@ -22,10 +21,14 @@ import com.example.car_assist_mobile.screens.chatbot.ChatBotScreen
 import com.example.car_assist_mobile.screens.editarcarro.EditCarScreen
 import com.example.car_assist_mobile.screens.garagem.GarageScreen
 import com.example.car_assist_mobile.screens.gastos.GastosScreen
+import com.example.car_assist_mobile.screens.guincho.GuinchoScreen
+import com.example.car_assist_mobile.screens.lavarapido.LavaRapidoScreen
 import com.example.car_assist_mobile.screens.lembrete.LembreteScreen
 import com.example.car_assist_mobile.screens.login.LoginScreen
 import com.example.car_assist_mobile.screens.manutencao.ManutencaoScreen
+import com.example.car_assist_mobile.screens.oficina.OficinaScreen
 import com.example.car_assist_mobile.screens.perfil.EditProfileScreen
+import com.example.car_assist_mobile.screens.posto.PostoScreen
 import com.example.car_assist_mobile.screens.service.ServicesScreen
 import com.example.car_assist_mobile.ui.theme.Car_Assist_MobileTheme
 
@@ -44,7 +47,7 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(
                         navController = navController,
-                        startDestination = "garage",
+                        startDestination = "login",
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable(
@@ -121,6 +124,26 @@ class MainActivity : ComponentActivity() {
                             route = "EditCar"
                         ) {
                             EditCarScreen(navController)
+                        }
+                        composable(
+                            route = "Posto"
+                        ) {
+                            PostoScreen(navController)
+                        }
+                        composable(
+                            route = "Oficina"
+                        ) {
+                            OficinaScreen(navController)
+                        }
+                        composable(
+                            route = "LavaRapido"
+                        ) {
+                            LavaRapidoScreen(navController)
+                        }
+                        composable(
+                            route = "Guincho"
+                        ) {
+                            GuinchoScreen(navController)
                         }
                     }
                 }

@@ -30,13 +30,13 @@ import com.example.car_assist_mobile.components.CustomBottomBar
 fun ServicesScreen(navController: NavController) {
 
     val services = listOf(
-        ServiceItem("Oficina", R.drawable.icone_oficina),
-        ServiceItem("Lava-Rápido", R.drawable.icone_lavarapido),
-        ServiceItem("Posto de Combustível", R.drawable.icone_posto_service),
-        ServiceItem("Guincho", R.drawable.icone_guincho)
+        ServiceItem("Oficina", R.drawable.icone_oficina, "Oficina"),
+        ServiceItem("Lava-Rápido", R.drawable.icone_lavarapido, "LavaRapido"),
+        ServiceItem("Posto de Combustível", R.drawable.icone_posto_service, "Posto"), // Nome da tela que você criou
+        ServiceItem("Guincho", R.drawable.icone_guincho, "Guincho")
     )
 
-    Box(modifier = Modifier.fillMaxSize().background(Color.White)) {
+    Box(modifier = Modifier.fillMaxSize().background(Color(0xFFFDF7F7))) {
         Column(modifier = Modifier.fillMaxSize()) {
 
             Column(
@@ -52,11 +52,12 @@ fun ServicesScreen(navController: NavController) {
                     Box(
                         modifier = Modifier
                             .size(45.dp)
+                            .background(Color.White, CircleShape)
                             .border(0.5.dp, Color.LightGray, CircleShape)
                             .clickable { navController.popBackStack() },
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = null, tint = Color.Gray)
+                        Icon(Icons.Default.ArrowBack, contentDescription = null, tint = Color.Black)
                     }
 
                     Text(
@@ -78,7 +79,10 @@ fun ServicesScreen(navController: NavController) {
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 items(services) { service ->
-                    ServiceCard(service)
+                    ServiceCard(
+                        service = service,
+                        onClick = { navController.navigate(service.route) }
+                    )
                 }
             }
         }
@@ -92,14 +96,15 @@ fun ServicesScreen(navController: NavController) {
 }
 
 @Composable
-fun ServiceCard(service: ServiceItem) {
+fun ServiceCard(service: ServiceItem, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(130.dp)
-            .clickable {},
+            .clickable { onClick() },
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         border = BorderStroke(1.dp, Color(0xFFEEEEEE))
     ) {
         Row(
@@ -123,4 +128,8 @@ fun ServiceCard(service: ServiceItem) {
     }
 }
 
-data class ServiceItem(val title: String, val imageRes: Int)
+data class ServiceItem(
+    val title: String,
+    val imageRes: Int,
+    val route: String
+)

@@ -1,6 +1,5 @@
 package com.example.car_assist_mobile.screens.garagem
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,7 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -23,42 +24,44 @@ import androidx.navigation.NavController
 import com.example.car_assist_mobile.R
 import com.example.car_assist_mobile.components.CustomBottomBar
 
+val CorPrimariaVermelha = Color(0xFF910D0D)
+val FundoGeral = Color(0xFFFFFFFF)
+val BadgeRosadaCard = Color(0xFFF5E9E9)
+
 @Composable
 fun GarageScreen(navController: NavController) {
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                CustomBottomBar(
-                    navController = navController,
-                    selectedItem = "garagem"
-                )
-            }
+            CustomBottomBar(
+                navController = navController,
+                selectedItem = "garagem"
+            )
         },
-        containerColor = Color(0xFFF7F7F7)
+        containerColor = FundoGeral
     ) { innerPadding ->
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
+        Box(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+
+            Box(
+                modifier = Modifier
+                    .size(350.dp)
+                    .align(Alignment.TopEnd)
+                    .offset(x = 100.dp, y = (-100).dp)
+                    .background(
+                        brush = Brush.radialGradient(
+                            colors = listOf(CorPrimariaVermelha.copy(alpha = 0.05f), Color.Transparent)
+                        ),
+                        shape = CircleShape
+                    )
+            )
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(
-                        top = WindowInsets.statusBars
-                            .asPaddingValues()
-                            .calculateTopPadding() + 8.dp,
-                        start = 24.dp,
-                        end = 24.dp
-                    )
+                    .padding(horizontal = 24.dp)
             ) {
+                Spacer(modifier = Modifier.height(20.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -67,68 +70,43 @@ fun GarageScreen(navController: NavController) {
                     Image(
                         painter = painterResource(id = R.drawable.perfil1),
                         contentDescription = null,
-                        modifier = Modifier
-                            .size(50.dp)
-                            .clip(CircleShape),
+                        modifier = Modifier.size(52.dp).clip(CircleShape),
                         contentScale = ContentScale.Crop
                     )
 
-                    Column(
-                        modifier = Modifier
-                            .padding(start = 12.dp)
-                            .weight(1f)
-                    ) {
-                        Text(
-                            text = "Olá Beatriz!",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            color = Color.Black
-                        )
-                        Text(
-                            text = "contatobeatriz@email.com",
-                            fontSize = 12.sp,
-                            color = Color.Gray
-                        )
+                    Column(modifier = Modifier.padding(start = 12.dp).weight(1f)) {
+                        Text("Olá Beatriz!", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+                        Text("contatobeatriz@email.com", fontSize = 12.sp, color = Color.Gray)
                     }
 
-                    HeaderIcon(
-                        iconRes = R.drawable.icone_chat,
-                        onClick = { navController.navigate("chatbot") }
-                    )
+                    IconeRedondoHeader(iconRes = R.drawable.icone_chat, onClick = { navController.navigate("chatbot") })
                     Spacer(modifier = Modifier.width(12.dp))
-                    HeaderIcon(
-                        iconRes = R.drawable.icone_email,
-                        onClick = {navController.navigate("Lembrete")}
-                    )
+                    IconeRedondoHeader(iconRes = R.drawable.icone_envelope, onClick = { navController.navigate("Lembrete") }, temNotificacao = true)
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(30.dp))
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(75.dp)
-                        .background(Color(0xFFD9D9D9), RoundedCornerShape(16.dp))
-                        .padding(horizontal = 20.dp),
-                    contentAlignment = Alignment.Center
+                Surface(
+                    modifier = Modifier.fillMaxWidth().height(85.dp),
+                    shape = RoundedCornerShape(20.dp),
+                    color = Color.White,
+                    shadowElevation = 1.dp
                 ) {
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.padding(horizontal = 24.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(
-                            text = "91.6",
-                            fontSize = 32.sp,
-                            fontWeight = FontWeight.Black,
-                            color = Color(0xFF1A1A1A)
-                        )
-                        Text(
-                            text = "SCORE DA GARAGEM",
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            color = Color(0xFF1A1A1A)
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("91.6", fontSize = 40.sp, fontWeight = FontWeight.Bold, color = Black)
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Box(modifier = Modifier.width(1.dp).height(30.dp).background(Color(0xFFE0E0E0)))
+                        }
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("SCORE DA GARAGEM", fontSize = 12.sp, fontWeight = FontWeight.ExtraBold)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Icon(painterResource(id = R.drawable.icone_grafico), null, tint = CorPrimariaVermelha, modifier = Modifier.size(22.dp))
+                        }
                     }
                 }
 
@@ -136,155 +114,75 @@ fun GarageScreen(navController: NavController) {
 
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth(),
-                    contentPadding = PaddingValues(bottom = 100.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(bottom = 120.dp)
                 ) {
-                    item {
-                        CarCard(
-                            name = "Fastback Abarth",
-                            plate = "RFT5S34",
-                            score = "97",
-                            imageRes = R.drawable.icone_carro_moderno,
-                            onClick = { navController.navigate("DetailsCar") }
-                        )
-                    }
-                    item {
-                        CarCard(
-                            name = "T-Cross",
-                            plate = "QXM7D19",
-                            score = "92",
-                            imageRes = R.drawable.icone_carro_moderno,
-                            onClick = {}
-                        )
-                    }
-                    item {
-                        CarCard(
-                            name = "Onix",
-                            plate = "RZT5B67",
-                            score = "86",
-                            imageRes = R.drawable.icone_carro_moderno,
-                            onClick = {}
-                        )
-                    }
+                    item { CardCarroDesign("Fastback Abarth", "RFT5S34", "97", R.drawable.icone_carro_moderno) { navController.navigate("DetailsCar") } }
+                    item { CardCarroDesign("T-Cross", "QXM7D19", "92", R.drawable.icone_carro_moderno) { } }
+                    item { CardCarroDesign("Onix", "RZT5B67", "86", R.drawable.icone_carro_moderno) { } }
                 }
             }
 
-            Button(
-                onClick = { navController.navigate("AddCar") },
+            Surface(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 20.dp)
-                    .height(48.dp)
-                    .width(180.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD9D9D9)),
-                shape = RoundedCornerShape(24.dp),
-                elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp)
+                    .padding(bottom = 24.dp)
+                    .clickable { navController.navigate("AddCar") },
+                color = BadgeRosadaCard,
+                shape = RoundedCornerShape(25.dp)
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.seta_cima),
-                    contentDescription = null,
-                    tint = Color.Black,
-                    modifier = Modifier.size(20.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "ADICIONAR CARRO",
-                    color = Color.Black,
-                    fontSize = 9.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                Row(
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(painterResource(id = R.drawable.icone_mais), null, modifier = Modifier.size(16.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("ADICIONAR CARRO", color = Color.Black, fontSize = 11.sp, fontWeight = FontWeight.ExtraBold)
+                }
             }
         }
     }
 }
 
 @Composable
-fun HeaderIcon(iconRes: Int, onClick: () -> Unit = {}) {
-    Surface(
-        modifier = Modifier
-            .size(42.dp)
-            .clickable { onClick() },
-        shape = CircleShape,
-        color = Color(0xFF1A1A1A)
-    ) {
-        Box(contentAlignment = Alignment.Center) {
-            Icon(
-                painter = painterResource(id = iconRes),
-                contentDescription = null,
-                modifier = Modifier.size(20.dp),
-                tint = Color.White
-            )
+fun IconeRedondoHeader(iconRes: Int, onClick: () -> Unit, temNotificacao: Boolean = false) {
+    Box {
+        Surface(
+            modifier = Modifier.size(46.dp).clickable { onClick() },
+            shape = RoundedCornerShape(14.dp),
+            color = Color(0xFFF9F9F9)
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(painterResource(id = iconRes), null, modifier = Modifier.size(20.dp), tint = Color.Black)
+            }
+        }
+        if (temNotificacao) {
+            Box(modifier = Modifier.size(8.dp).background(CorPrimariaVermelha, CircleShape).align(Alignment.TopEnd).offset(x = (-4).dp, y = 4.dp))
         }
     }
 }
 
 @Composable
-fun CarCard(
-    name: String,
-    plate: String,
-    score: String,
-    imageRes: Int,
-    onClick: () -> Unit
-) {
-    Card(
-        onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(140.dp),
-        shape = RoundedCornerShape(28.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        border = BorderStroke(1.dp, Color(0xFFEFEFEF))
+fun CardCarroDesign(nome: String, placa: String, score: String, imageRes: Int, onClick: () -> Unit) {
+    Surface(
+        modifier = Modifier.fillMaxWidth().height(145.dp).clickable { onClick() },
+        shape = RoundedCornerShape(24.dp),
+        color = Color.White,
+        shadowElevation = 1.dp
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 24.dp, end = 12.dp, top = 16.dp, bottom = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
-                modifier = Modifier.weight(1.2f),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column {
-                    Text(
-                        text = name,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = Color.Black
-                    )
-                    Text(
-                        text = plate,
-                        fontSize = 13.sp,
-                        color = Color.Gray,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Surface(
-                    color = Color(0xFFE0E0E0),
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.size(width = 55.dp, height = 32.dp)
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Text(
-                            text = score,
-                            fontWeight = FontWeight.Black,
-                            fontSize = 14.sp
-                        )
+        Row(modifier = Modifier.fillMaxSize()) {
+            Box(modifier = Modifier.fillMaxHeight().width(5.dp).background(CorPrimariaVermelha))
+            Row(modifier = Modifier.fillMaxSize().padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
+                Column(modifier = Modifier.weight(1.2f)) {
+                    Text(nome, fontSize = 19.sp, fontWeight = FontWeight.Bold)
+                    Text(placa, fontSize = 13.sp, color = Color.Gray)
+                    Spacer(modifier = Modifier.height(18.dp))
+                    Surface(color = BadgeRosadaCard, shape = RoundedCornerShape(12.dp)) {
+                        Text(score, modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp), fontWeight = FontWeight.Black, color = Color.Black)
                     }
                 }
+                Image(painterResource(id = imageRes), null, modifier = Modifier.weight(1f).fillMaxHeight(), contentScale = ContentScale.Fit)
             }
-
-            Image(
-                painter = painterResource(id = imageRes),
-                contentDescription = null,
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-                contentScale = ContentScale.Fit
-            )
         }
     }
 }
