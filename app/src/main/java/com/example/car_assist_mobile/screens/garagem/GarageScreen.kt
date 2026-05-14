@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.car_assist_mobile.R
 import com.example.car_assist_mobile.components.CustomBottomBar
+import com.example.car_assist_mobile.ui.theme.Poppins
 
 val CorPrimariaVermelha = Color(0xFF910D0D)
 val FundoGeral = Color(0xFFFFFFFF)
@@ -75,8 +76,19 @@ fun GarageScreen(navController: NavController) {
                     )
 
                     Column(modifier = Modifier.padding(start = 12.dp).weight(1f)) {
-                        Text("Olá Beatriz!", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.Black)
-                        Text("contatobeatriz@email.com", fontSize = 12.sp, color = Color.Gray)
+                        Text(
+                            "Olá Beatriz!",
+                            fontFamily = Poppins, // Alteração solicitada
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black
+                        )
+                        Text(
+                            "contatobeatriz@email.com",
+                            fontFamily = Poppins, // Alteração solicitada
+                            fontSize = 12.sp,
+                            color = Color.Gray
+                        )
                     }
 
                     IconeRedondoHeader(iconRes = R.drawable.icone_chat, onClick = { navController.navigate("chatbot") })
@@ -98,12 +110,23 @@ fun GarageScreen(navController: NavController) {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("91.6", fontSize = 40.sp, fontWeight = FontWeight.Bold, color = Black)
+                            Text(
+                                "91.6",
+                                fontFamily = Poppins,
+                                fontSize = 40.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Black
+                            )
                             Spacer(modifier = Modifier.width(16.dp))
                             Box(modifier = Modifier.width(1.dp).height(30.dp).background(Color(0xFFE0E0E0)))
                         }
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("SCORE DA GARAGEM", fontSize = 12.sp, fontWeight = FontWeight.ExtraBold)
+                            Text(
+                                "SCORE DA GARAGEM",
+                                fontFamily = Poppins,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.ExtraBold
+                            )
                             Spacer(modifier = Modifier.width(8.dp))
                             Icon(painterResource(id = R.drawable.icone_grafico), null, tint = CorPrimariaVermelha, modifier = Modifier.size(22.dp))
                         }
@@ -137,7 +160,13 @@ fun GarageScreen(navController: NavController) {
                 ) {
                     Icon(painterResource(id = R.drawable.icone_mais), null, modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("ADICIONAR CARRO", color = Color.Black, fontSize = 11.sp, fontWeight = FontWeight.ExtraBold)
+                    Text(
+                        "ADICIONAR CARRO",
+                        fontFamily = Poppins,
+                        color = Color.Black,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.ExtraBold
+                    )
                 }
             }
         }
@@ -174,11 +203,27 @@ fun CardCarroDesign(nome: String, placa: String, score: String, imageRes: Int, o
             Box(modifier = Modifier.fillMaxHeight().width(5.dp).background(CorPrimariaVermelha))
             Row(modifier = Modifier.fillMaxSize().padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
                 Column(modifier = Modifier.weight(1.2f)) {
-                    Text(nome, fontSize = 19.sp, fontWeight = FontWeight.Bold)
-                    Text(placa, fontSize = 13.sp, color = Color.Gray)
+                    Text(
+                        nome,
+                        fontFamily = Poppins,
+                        fontSize = 19.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        placa,
+                        fontFamily = Poppins,
+                        fontSize = 13.sp,
+                        color = Color.Gray
+                    )
                     Spacer(modifier = Modifier.height(18.dp))
                     Surface(color = BadgeRosadaCard, shape = RoundedCornerShape(12.dp)) {
-                        Text(score, modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp), fontWeight = FontWeight.Black, color = Color.Black)
+                        Text(
+                            score,
+                            fontFamily = Poppins,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
+                            fontWeight = FontWeight.Black,
+                            color = Color.Black
+                        )
                     }
                 }
                 Image(painterResource(id = imageRes), null, modifier = Modifier.weight(1f).fillMaxHeight(), contentScale = ContentScale.Fit)

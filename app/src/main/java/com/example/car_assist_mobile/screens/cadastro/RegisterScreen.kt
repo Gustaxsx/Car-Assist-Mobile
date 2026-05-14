@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.car_assist_mobile.ui.theme.Poppins
 import java.util.Calendar
 
 @Composable
@@ -77,6 +78,7 @@ fun RegisterScreen(navController: NavController) {
                     text = "CADASTRO",
                     modifier = Modifier.weight(1f).padding(end = 45.dp),
                     textAlign = TextAlign.Center,
+                    fontFamily = Poppins,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
                     color = Color.Black
@@ -92,7 +94,14 @@ fun RegisterScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(10.dp))
 
             Column(modifier = Modifier.fillMaxWidth()) {
-                Text("Data de Nascimento", fontSize = 14.sp, modifier = Modifier.padding(start = 4.dp, bottom = 4.dp), color = Color.Black)
+                Text(
+                    text = "Data de Nascimento",
+                    fontFamily = Poppins,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.padding(start = 4.dp, bottom = 4.dp),
+                    color = Color.Black
+                )
                 OutlinedTextField(
                     value = dataNasc,
                     onValueChange = {},
@@ -103,7 +112,11 @@ fun RegisterScreen(navController: NavController) {
                     shape = RoundedCornerShape(15.dp),
                     readOnly = true,
                     enabled = false,
-                    textStyle = TextStyle(fontSize = 14.sp),
+                    textStyle = TextStyle(
+                        fontFamily = Poppins,
+                        fontSize = 14.sp,
+                        color = Color.Black
+                    ),
                     colors = OutlinedTextFieldDefaults.colors(
                         disabledTextColor = Color.Black,
                         disabledBorderColor = Color(0xFFE0E0E0),
@@ -133,7 +146,12 @@ fun RegisterScreen(navController: NavController) {
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEEEEEE)),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("Cancelar", color = Color.Black, fontWeight = FontWeight.Bold)
+                    Text(
+                        text = "Cancelar",
+                        fontFamily = Poppins,
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
 
                 Button(
@@ -142,7 +160,12 @@ fun RegisterScreen(navController: NavController) {
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFC4C4C4)),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("Salvar", color = Color.Black, fontWeight = FontWeight.Bold)
+                    Text(
+                        text = "Salvar",
+                        fontFamily = Poppins,
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
         }
@@ -159,7 +182,9 @@ fun RegisterField(
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = label,
+            fontFamily = Poppins,
             fontSize = 14.sp,
+            fontWeight = FontWeight.Medium,
             modifier = Modifier.padding(start = 4.dp, bottom = 4.dp),
             color = Color.Black
         )
@@ -169,7 +194,11 @@ fun RegisterField(
             modifier = Modifier.fillMaxWidth().height(54.dp),
             shape = RoundedCornerShape(15.dp),
             singleLine = true,
-            textStyle = TextStyle(fontSize = 14.sp, color = Color.Black),
+            textStyle = TextStyle(
+                fontFamily = Poppins,
+                fontSize = 14.sp,
+                color = Color.Black
+            ),
             visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedTextColor = Color.Black,

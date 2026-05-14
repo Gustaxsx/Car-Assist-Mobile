@@ -16,12 +16,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.car_assist_mobile.R
-
+import com.example.car_assist_mobile.ui.theme.Poppins
 
 @Composable
 fun LoginScreen(navController: NavController) {
@@ -76,14 +77,17 @@ fun LoginScreen(navController: NavController) {
 
             Text(
                 text = "Bem-vindo",
+                fontFamily = Poppins,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
             )
             Text(
                 text = "Faça login para continuar",
-                fontSize = 14.sp,
-                color = Color.Gray
+                fontFamily = Poppins,
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.Black
             )
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -92,7 +96,7 @@ fun LoginScreen(navController: NavController) {
                 label = "E-mail",
                 placeholder = "seu@email.com",
                 value = email,
-                onValueChange = { email = it }
+                onValueChange = { email = it },
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -106,11 +110,13 @@ fun LoginScreen(navController: NavController) {
 
             Text(
                 text = "Esqueceu a senha?",
+                fontFamily = Poppins,
+                fontWeight = FontWeight.Medium,
                 modifier = Modifier
                     .padding(vertical = 16.dp)
                     .clickable {},
                 fontSize = 12.sp,
-                color = Color.Gray
+                color = Color.Black
             )
 
             Button(
@@ -119,21 +125,33 @@ fun LoginScreen(navController: NavController) {
                     .fillMaxWidth()
                     .height(55.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2D3239)),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(25.dp)
             ) {
                 Text(
                     text = "ENTRAR",
-                    fontWeight = FontWeight.Bold,
+                    fontFamily = Poppins,
+                    fontWeight = FontWeight.Medium,
                     color = Color.White
                 )
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
-            Row(modifier = Modifier.padding(bottom = 40.dp)) {
-                Text(text = "Não tem conta? ", color = Color.Gray)
+            Column(
+                modifier = Modifier.padding(bottom = 40.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Não tem conta?",
+                    fontFamily = Poppins,
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color.Black
+                )
                 Text(
                     text = "Criar conta",
+                    fontFamily = Poppins,
+                    fontSize = 15.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.clickable { navController.navigate("register") }
                 )
@@ -152,18 +170,29 @@ fun CustomInputField(
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = label,
+            fontFamily = Poppins,
             fontWeight = FontWeight.Medium,
-            modifier = Modifier.padding(bottom = 4.dp),
+            modifier = Modifier.padding(start = 8.dp, bottom = 4.dp),
             color = Color.Black
         )
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp),
-            placeholder = { Text(placeholder) },
+            shape = RoundedCornerShape(15.dp),
+            placeholder = {
+                Text(
+                    text = placeholder,
+                    fontFamily = Poppins,
+                    fontWeight = FontWeight.Light
+                )
+            },
             singleLine = true,
-
+            textStyle = TextStyle(
+                fontFamily = Poppins,
+                fontWeight = FontWeight.Medium,
+                fontSize = 14.sp
+            ),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color(0xFF2D3239),
                 unfocusedBorderColor = Color.LightGray
