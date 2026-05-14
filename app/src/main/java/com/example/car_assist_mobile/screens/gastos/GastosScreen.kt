@@ -1,12 +1,14 @@
 package com.example.car_assist_mobile.screens.gastos
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -19,10 +21,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.car_assist_mobile.components.CustomBottomBar
+import com.example.car_assist_mobile.ui.theme.Poppins
 
 @Composable
 fun GastosScreen(navController: NavController) {
-
     var isSemanalSelected by remember { mutableStateOf(true) }
 
     Scaffold(
@@ -51,7 +53,9 @@ fun GastosScreen(navController: NavController) {
             ) {
                 IconButton(
                     onClick = { navController.popBackStack() },
-                    modifier = Modifier.border(0.5.dp, Color.LightGray, CircleShape).size(45.dp)
+                    modifier = Modifier
+                        .border(0.5.dp, Color.LightGray, CircleShape)
+                        .size(45.dp)
                 ) {
                     Icon(Icons.Default.ArrowBack, null, tint = Color.Gray, modifier = Modifier.size(20.dp))
                 }
@@ -60,7 +64,9 @@ fun GastosScreen(navController: NavController) {
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = Poppins,
+                    color = Color.Black
                 )
             }
 
@@ -70,81 +76,98 @@ fun GastosScreen(navController: NavController) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                TabButton("Semanal", isSemanalSelected, Modifier.weight(1f)) { isSemanalSelected = true }
-                TabButton("Mensal", !isSemanalSelected, Modifier.weight(1f)) { isSemanalSelected = false }
+                TabButtonDesign("Semanal", isSemanalSelected, Modifier.weight(1f)) { isSemanalSelected = true }
+                TabButtonDesign("Mensal", !isSemanalSelected, Modifier.weight(1f)) { isSemanalSelected = false }
             }
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(30.dp))
 
-            Column(
+            Surface(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                shape = RoundedCornerShape(16.dp),
+                border = BorderStroke(1.dp, Color(0xFFE0E0E0)),
+                color = Color.White
             ) {
-                GastoItem("COMBUSTÍVEL", "R$ 230,00")
-                GastoItem("LIMPEZA", "R$ 230,00")
-                GastoItem("PEDÁGIO", "R$ 230,00")
-                GastoItem("ESTACIONAMENTO", "R$ 230,00")
-                GastoItem("MANUTENÇÃO", "R$ 230,00")
-                GastoItem("MULTAS", "R$ 230,00")
-
-                Divider(
-                    modifier = Modifier.padding(vertical = 8.dp).width(1.dp).height(20.dp),
-                    color = Color.LightGray
-                )
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                Column(
+                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 20.dp)
                 ) {
-                    Surface(
-                        modifier = Modifier.width(130.dp).height(35.dp),
-                        shape = RoundedCornerShape(8.dp),
-                        color = Color(0xFFD9D9D9)
+                    GastoItemDesign("Combustível", "R$ 230,00") {}
+                    HorizontalDivider(color = Color(0xFFF0F0F0))
+
+                    GastoItemDesign("Limpeza", "R$ 230,00") {}
+                    HorizontalDivider(color = Color(0xFFF0F0F0))
+
+                    GastoItemDesign("Pedágio", "R$ 230,00") {}
+                    HorizontalDivider(color = Color(0xFFF0F0F0))
+
+                    GastoItemDesign("Estacionamento", "R$ 230,00") {}
+                    HorizontalDivider(color = Color(0xFFF0F0F0))
+
+                    GastoItemDesign("Manutenção", "R$ 230,00") {}
+                    HorizontalDivider(color = Color(0xFFF0F0F0))
+
+                    GastoItemDesign("Multas", "R$ 230,00") {}
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Text("Total", fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                        }
+                        Text(
+                            text = "Total",
+                            color = Color(0xFF910D0D),
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = Poppins
+                        )
+                        Text(
+                            text = "R$ 1380,00",
+                            color = Color(0xFF910D0D),
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = Poppins
+                        )
                     }
-                    Text(
-                        text = "R$ 1380,00",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Black,
-                        color = Color.Black
-                    )
                 }
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(30.dp))
 
             Button(
                 onClick = {},
-                modifier = Modifier.width(220.dp).height(48.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF333333)),
-                shape = RoundedCornerShape(24.dp)
+                modifier = Modifier.width(240.dp).height(50.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2D3239)),
+                shape = RoundedCornerShape(16.dp)
             ) {
-                Text("Inserir Novo Valor", color = Color.White, fontWeight = FontWeight.Bold)
+                Text(
+                    text = "Inserir Novo Valor",
+                    color = Color.White,
+                    fontWeight = FontWeight.Medium,
+                    fontFamily = Poppins,
+                    fontSize = 16.sp
+                )
             }
-
-            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }
 
 @Composable
-fun TabButton(text: String, isSelected: Boolean, modifier: Modifier, onClick: () -> Unit) {
+fun TabButtonDesign(text: String, isSelected: Boolean, modifier: Modifier, onClick: () -> Unit) {
     Surface(
         modifier = modifier
-            .height(40.dp)
+            .height(45.dp)
             .clickable { onClick() },
-        shape = RoundedCornerShape(8.dp),
-        color = if (isSelected) Color(0xFF999999) else Color(0xFFD9D9D9)
+        shape = RoundedCornerShape(10.dp),
+        color = if (isSelected) Color(0xFF757575) else Color(0xFFD9D9D9)
     ) {
         Box(contentAlignment = Alignment.Center) {
             Text(
                 text = text,
-                color = Color.Black,
-                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                color = if (isSelected) Color.White else Color.Black,
+                fontWeight = FontWeight.Medium,
+                fontFamily = Poppins,
                 fontSize = 16.sp
             )
         }
@@ -152,26 +175,37 @@ fun TabButton(text: String, isSelected: Boolean, modifier: Modifier, onClick: ()
 }
 
 @Composable
-fun GastoItem(label: String, value: String) {
+fun GastoItemDesign(label: String, value: String, onClick: () -> Unit) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .padding(vertical = 14.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Surface(
-            modifier = Modifier.width(130.dp).height(35.dp),
-            shape = RoundedCornerShape(8.dp),
-            color = Color(0xFF666666)
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                Text(label, color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.Bold)
-            }
-        }
         Text(
-            text = value,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium,
-            color = Color.Black
+            text = label,
+            fontSize = 15.sp,
+            color = Color(0xFF424242),
+            fontFamily = Poppins,
+            fontWeight = FontWeight.Medium
         )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = value,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.Black,
+                fontFamily = Poppins
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = "Ver detalhes",
+                tint = Color.Black,
+                modifier = Modifier.size(20.dp)
+            )
+        }
     }
 }

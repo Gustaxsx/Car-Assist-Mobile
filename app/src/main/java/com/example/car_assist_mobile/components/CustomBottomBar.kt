@@ -2,7 +2,6 @@ package com.example.car_assist_mobile.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,8 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -33,11 +30,8 @@ fun CustomBottomBar(
     modifier: Modifier = Modifier,
     selectedItem: String = "garagem"
 ) {
-    val density = LocalDensity.current
-    val barWidth = 320.dp
-    val barWidthPx = with(density) { barWidth.toPx() }
 
-    val items = listOf("garagem", "servicos", "perfil")
+    val barWidth = 320.dp
 
     Row(
         modifier = modifier
@@ -48,35 +42,7 @@ fun CustomBottomBar(
         Surface(
             modifier = Modifier
                 .width(barWidth)
-                .height(64.dp)
-                .pointerInput(selectedItem) {
-                    detectDragGestures(
-                        onDrag = { change, _ ->
-                            val dragX = change.position.x
-                            val sectionIndex = (dragX / (barWidthPx / items.size))
-                                .toInt()
-                                .coerceIn(0, items.size - 1)
-
-                            val targetRouteKey = items[sectionIndex]
-
-                            if (targetRouteKey != selectedItem) {
-                                val destination = when(targetRouteKey) {
-                                    "garagem" -> "garage"
-                                    "servicos" -> "service"
-                                    else -> "profile"
-                                }
-
-                                navController.navigate(destination) {
-                                    popUpTo(navController.graph.startDestinationId) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            }
-                        }
-                    )
-                },
+                .height(64.dp),
             shape = RoundedCornerShape(32.dp),
             color = Color.White,
             shadowElevation = 6.dp
@@ -92,21 +58,45 @@ fun CustomBottomBar(
                     label = "Garagem",
                     iconRes = R.drawable.icone_carro,
                     isSelected = selectedItem == "garagem",
-                    onClick = { if (selectedItem != "garagem") navController.navigate("garage") }
+                    onClick = {
+                        if (selectedItem != "garagem") {
+                            navController.navigate("garage") {
+                                popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
+                    }
                 )
 
                 BottomBarItem(
                     label = "Serviços",
                     iconRes = R.drawable.icone_servicos,
                     isSelected = selectedItem == "servicos",
-                    onClick = { if (selectedItem != "servicos") navController.navigate("service") }
+                    onClick = {
+                        if (selectedItem != "servicos") {
+                            navController.navigate("service") {
+                                popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
+                    }
                 )
 
                 BottomBarItem(
                     label = "Perfil",
                     iconRes = R.drawable.icone_user,
                     isSelected = selectedItem == "perfil",
-                    onClick = { if (selectedItem != "perfil") navController.navigate("profile") }
+                    onClick = {
+                        if (selectedItem != "perfil") {
+                            navController.navigate("profile") {
+                                popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
+                    }
                 )
             }
         }

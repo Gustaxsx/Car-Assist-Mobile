@@ -1,5 +1,6 @@
 package com.example.car_assist_mobile.screens.cardetails
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,7 +14,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.car_assist_mobile.R
 import com.example.car_assist_mobile.components.CustomBottomBar
+import com.example.car_assist_mobile.ui.theme.Poppins
 
 @Composable
 fun DetailsCarScreen(navController: NavController) {
@@ -38,135 +39,142 @@ fun DetailsCarScreen(navController: NavController) {
         },
         containerColor = Color.White
     ) { innerPadding ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            Spacer(modifier = Modifier.height(15.dp))
-
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                IconButton(
-                    onClick = { navController.popBackStack() },
-                    modifier = Modifier.border(0.5.dp, Color.LightGray, CircleShape).size(45.dp)
-                ) {
-                    Icon(Icons.Default.ArrowBack, null, tint = Color.Gray, modifier = Modifier.size(20.dp))
-                }
-
-                Text(
-                    text = "DADOS DO CARRO",
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Surface(
-                modifier = Modifier.fillMaxWidth().height(45.dp),
-                shape = RoundedCornerShape(12.dp),
-                border = androidx.compose.foundation.BorderStroke(0.5.dp, Color.LightGray),
-                color = Color.White
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Text("Fastback Abarth", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
+            // Imagem do carro posicionada à direita e cortada, como no design
             Image(
-                painter = painterResource(id = R.drawable.icone_detalhe_carro),
+                painter = painterResource(id = R.drawable.carro_branco),
                 contentDescription = null,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp)
-                    .clip(RoundedCornerShape(20.dp)),
-                contentScale = ContentScale.Crop
+                    .align(Alignment.CenterEnd)
+                    .offset(x = 80.dp) // Ajuste para cortar o carro
+                    .fillMaxHeight(0.7f)
+                    .fillMaxWidth(0.7f),
+                contentScale = ContentScale.Fit
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                InfoItem(label = "Marca", value = "Fiat", modifier = Modifier.weight(1f))
-                InfoItem(label = "Placa", value = "RFT5S34", modifier = Modifier.weight(1f))
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                InfoItem(label = "Ano", value = "2023", modifier = Modifier.weight(1f))
-                InfoItem(label = "Cor", value = "Vermelho", modifier = Modifier.weight(1f))
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                ActionButton(text = "EDITAR DADOS", modifier = Modifier.weight(1f)) { navController.navigate("EditCar") }
-                ActionButton(text = "MANUTENÇÕES", modifier = Modifier.weight(1f)) { navController.navigate("Manutencao") }
-            }
-            Spacer(modifier = Modifier.height(12.dp))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                ActionButton(text = "GASTOS", modifier = Modifier.weight(1f)) { navController.navigate("Gastos") }
-                ActionButton(text = "HISTÓRICO DE DONOS", modifier = Modifier.weight(1f)) {}
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            Button(
-                onClick = { },
-                modifier = Modifier.fillMaxWidth().height(56.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD9D9D9)),
-                shape = RoundedCornerShape(28.dp)
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 32.dp)
             ) {
-                Text("TRANSFERIR", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Spacer(modifier = Modifier.height(15.dp))
+
+                // Header
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    IconButton(
+                        onClick = { navController.popBackStack() },
+                        modifier = Modifier.border(0.5.dp, Color.LightGray, CircleShape).size(45.dp)
+                    ) {
+                        Icon(Icons.Default.ArrowBack, null, tint = Color.Gray, modifier = Modifier.size(20.dp))
+                    }
+
+                    Text(
+                        text = "DADOS DO CARRO",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = Poppins,
+                        color = Color.Black
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(40.dp))
+
+                // Marca e Nome do Carro (Alinhados à esquerda)
+                Column(horizontalAlignment = Alignment.Start) {
+                    Text(
+                        text = "Fiat",
+                        fontSize = 14.sp,
+                        color = Color.Gray,
+                        fontFamily = Poppins,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "Fastback\nAbarth",
+                        fontSize = 36.sp,
+                        lineHeight = 42.sp,
+                        fontWeight = FontWeight.Black,
+                        fontFamily = Poppins,
+                        color = Color.Black
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(40.dp))
+
+                // Lista de Ações (Botões Verticais com ícones)
+                Column(
+                    modifier = Modifier.fillMaxWidth(0.6f), // Limita a largura para não bater no carro
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    ActionRow(
+                        text = "Editar Dados",
+                        iconRes = R.drawable.pincel // Substitua pelos seus IDs de ícone
+                    ) { navController.navigate("EditCar") }
+
+                    ActionRow(
+                        text = "Manutenções",
+                        iconRes = R.drawable.engrenagem
+                    ) { navController.navigate("Manutencao") }
+
+                    ActionRow(
+                        text = "Gastos",
+                        iconRes = R.drawable.gasto
+                    ) { navController.navigate("Gastos") }
+
+                    ActionRow(
+                        text = "Histórico de Donos",
+                        iconRes = R.drawable.pessoas
+                    ) { /* Ação */ }
+
+                    Spacer(modifier = Modifier.height(30.dp))
+
+                    ActionRow(
+                        text = "Transferir Veículo",
+                        iconRes = R.drawable.transfer
+                    ) { /* Ação de transferir */ }
+                }
             }
-
-            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }
 
 @Composable
-fun InfoItem(label: String, value: String, modifier: Modifier = Modifier) {
-    Surface(
-        modifier = modifier.height(55.dp),
-        shape = RoundedCornerShape(12.dp),
-        border = androidx.compose.foundation.BorderStroke(0.5.dp, Color.LightGray),
-        color = Color.White
+fun ActionRow(text: String, iconRes: Int, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+        Surface(
+            modifier = Modifier.size(48.dp),
+            shape = CircleShape,
+            color = Color(0xFFF5E9E9) // Tom rosado/cinza claro do design
         ) {
-            Text(label, fontSize = 11.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
-            Text(value, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    painter = painterResource(id = iconRes),
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp),
+                    tint = Color.Black
+                )
+            }
         }
-    }
-}
-
-@Composable
-fun ActionButton(text: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        modifier = modifier.height(42.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD9D9D9)),
-        shape = RoundedCornerShape(12.dp),
-        contentPadding = PaddingValues(0.dp)
-    ) {
+        Spacer(modifier = Modifier.width(16.dp))
         Text(
             text = text,
-            color = Color.Black,
-            fontSize = 10.sp,
+            fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
+            fontFamily = Poppins,
+            color = Color.Black
         )
     }
 }

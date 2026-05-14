@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.car_assist_mobile.R
 import com.example.car_assist_mobile.components.CustomBottomBar
+import com.example.car_assist_mobile.ui.theme.Poppins
 
 @Composable
 fun ServicesScreen(navController: NavController) {
@@ -32,7 +33,7 @@ fun ServicesScreen(navController: NavController) {
     val services = listOf(
         ServiceItem("Oficina", R.drawable.icone_oficina, "Oficina"),
         ServiceItem("Lava-Rápido", R.drawable.icone_lavarapido, "LavaRapido"),
-        ServiceItem("Posto de Combustível", R.drawable.icone_posto_service, "Posto"), // Nome da tela que você criou
+        ServiceItem("Posto de Combustível", R.drawable.icone_posto_service, "Posto"),
         ServiceItem("Guincho", R.drawable.icone_guincho, "Guincho")
     )
 
@@ -64,6 +65,7 @@ fun ServicesScreen(navController: NavController) {
                         text = "SERVIÇOS",
                         modifier = Modifier.weight(1f).padding(end = 45.dp),
                         textAlign = TextAlign.Center,
+                        fontFamily = Poppins,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         letterSpacing = 1.sp,
@@ -114,7 +116,8 @@ fun ServiceCard(service: ServiceItem, onClick: () -> Unit) {
         ) {
             Text(
                 text = service.title,
-                fontSize = 18.sp,
+                fontFamily = Poppins,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
             )
