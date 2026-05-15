@@ -2,18 +2,16 @@ package com.example.car_assist_mobile.screens.cardetails
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -21,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.example.car_assist_mobile.R
 import com.example.car_assist_mobile.components.CustomBottomBar
@@ -28,51 +27,68 @@ import com.example.car_assist_mobile.ui.theme.Poppins
 
 @Composable
 fun DetailsCarScreen(navController: NavController) {
+
     Scaffold(
+        containerColor = Color.White,
         bottomBar = {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp),
-                horizontalArrangement = Arrangement.Center
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 26.dp),
+                contentAlignment = Alignment.Center
             ) {
-                CustomBottomBar(navController = navController, selectedItem = "garagem")
+                CustomBottomBar(
+                    navController = navController,
+                    selectedItem = "garagem"
+                )
             }
-        },
-        containerColor = Color.White
+        }
     ) { innerPadding ->
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            // Imagem do carro posicionada à direita e cortada, como no design
             Image(
-                painter = painterResource(id = R.drawable.carro_branco),
+                painter = painterResource(id = R.drawable.icone_carro_branco),
                 contentDescription = null,
+                contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
-                    .offset(x = 80.dp) // Ajuste para cortar o carro
-                    .fillMaxHeight(0.7f)
-                    .fillMaxWidth(0.7f),
-                contentScale = ContentScale.Fit
+                    .offset(x = 150.dp, y = 20.dp)
+                    .fillMaxHeight(0.85f)
+                    .width(400.dp)
+                    .rotate(90f)
             )
 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 32.dp)
+                    .padding(horizontal = 30.dp)
+                    .zIndex(1f)
             ) {
-                Spacer(modifier = Modifier.height(15.dp))
 
-                // Header
+                Spacer(modifier = Modifier.height(24.dp))
+
                 Box(
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.CenterStart
                 ) {
-                    IconButton(
-                        onClick = { navController.popBackStack() },
-                        modifier = Modifier.border(0.5.dp, Color.LightGray, CircleShape).size(45.dp)
+                    Surface(
+                        modifier = Modifier.size(52.dp),
+                        shape = CircleShape,
+                        color = Color.Transparent,
+                        border = BorderStroke(1.dp, Color(0xFFEFEFEF))
                     ) {
-                        Icon(Icons.Default.ArrowBack, null, tint = Color.Gray, modifier = Modifier.size(20.dp))
+                        IconButton(onClick = { navController.popBackStack() }) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = null,
+                                tint = Color.Black,
+                                modifier = Modifier.size(22.dp)
+                            )
+                        }
                     }
 
                     Text(
@@ -86,60 +102,65 @@ fun DetailsCarScreen(navController: NavController) {
                     )
                 }
 
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(50.dp))
 
-                // Marca e Nome do Carro (Alinhados à esquerda)
                 Column(horizontalAlignment = Alignment.Start) {
                     Text(
                         text = "Fiat",
                         fontSize = 14.sp,
                         color = Color.Gray,
-                        fontFamily = Poppins,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = Poppins
                     )
+
                     Text(
                         text = "Fastback\nAbarth",
-                        fontSize = 36.sp,
-                        lineHeight = 42.sp,
+                        fontSize = 38.sp,
+                        lineHeight = 44.sp,
                         fontWeight = FontWeight.Black,
                         fontFamily = Poppins,
                         color = Color.Black
                     )
                 }
 
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(45.dp))
 
-                // Lista de Ações (Botões Verticais com ícones)
                 Column(
-                    modifier = Modifier.fillMaxWidth(0.6f), // Limita a largura para não bater no carro
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    verticalArrangement = Arrangement.spacedBy(20.dp),
+                    modifier = Modifier.fillMaxWidth(0.60f)
                 ) {
                     ActionRow(
                         text = "Editar Dados",
-                        iconRes = R.drawable.pincel // Substitua pelos seus IDs de ícone
-                    ) { navController.navigate("EditCar") }
+                        iconRes = R.drawable.icone_pincel
+                    ) {
+                        navController.navigate("EditCar")
+                    }
 
                     ActionRow(
                         text = "Manutenções",
-                        iconRes = R.drawable.engrenagem
-                    ) { navController.navigate("Manutencao") }
+                        iconRes = R.drawable.icone_engrenagem
+                    ) {
+                        navController.navigate("Manutencao")
+                    }
 
                     ActionRow(
                         text = "Gastos",
-                        iconRes = R.drawable.gasto
-                    ) { navController.navigate("Gastos") }
+                        iconRes = R.drawable.icone_gasto
+                    ) {
+                        navController.navigate("Gastos")
+                    }
 
                     ActionRow(
                         text = "Histórico de Donos",
-                        iconRes = R.drawable.pessoas
-                    ) { /* Ação */ }
+                        iconRes = R.drawable.icone_pessoas
+                    ) {}
 
-                    Spacer(modifier = Modifier.height(30.dp))
+                    Spacer(modifier = Modifier.height(40.dp))
 
                     ActionRow(
                         text = "Transferir Veículo",
-                        iconRes = R.drawable.transfer
-                    ) { /* Ação de transferir */ }
+                        iconRes = R.drawable.icone_transfer
+                    ) {}
                 }
             }
         }
@@ -147,7 +168,11 @@ fun DetailsCarScreen(navController: NavController) {
 }
 
 @Composable
-fun ActionRow(text: String, iconRes: Int, onClick: () -> Unit) {
+fun ActionRow(
+    text: String,
+    iconRes: Int,
+    onClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -155,20 +180,25 @@ fun ActionRow(text: String, iconRes: Int, onClick: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Surface(
-            modifier = Modifier.size(48.dp),
+            modifier = Modifier.size(50.dp),
             shape = CircleShape,
-            color = Color(0xFFF5E9E9) // Tom rosado/cinza claro do design
+            color = Color(0xFFF5E9E9)
         ) {
-            Box(contentAlignment = Alignment.Center) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
                 Icon(
                     painter = painterResource(id = iconRes),
                     contentDescription = null,
-                    modifier = Modifier.size(20.dp),
-                    tint = Color.Black
+                    tint = Color.Black,
+                    modifier = Modifier.size(20.dp)
                 )
             }
         }
+
         Spacer(modifier = Modifier.width(16.dp))
+
         Text(
             text = text,
             fontSize = 14.sp,

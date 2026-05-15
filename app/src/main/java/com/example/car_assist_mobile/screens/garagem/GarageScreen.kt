@@ -69,7 +69,7 @@ fun GarageScreen(navController: NavController) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.perfil1),
+                        painter = painterResource(id = R.drawable.icone_perfil1),
                         contentDescription = null,
                         modifier = Modifier.size(52.dp).clip(CircleShape),
                         contentScale = ContentScale.Crop
