@@ -78,14 +78,14 @@ fun GarageScreen(navController: NavController) {
                     Column(modifier = Modifier.padding(start = 12.dp).weight(1f)) {
                         Text(
                             "Olá Beatriz!",
-                            fontFamily = Poppins, // Alteração solicitada
+                            fontFamily = Poppins,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.Black
                         )
                         Text(
                             "contatobeatriz@email.com",
-                            fontFamily = Poppins, // Alteração solicitada
+                            fontFamily = Poppins,
                             fontSize = 12.sp,
                             color = Color.Gray
                         )

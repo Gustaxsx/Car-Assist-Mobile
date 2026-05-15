@@ -4,17 +4,16 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -24,136 +23,148 @@ import androidx.navigation.NavController
 import com.example.car_assist_mobile.R
 import com.example.car_assist_mobile.ui.theme.Poppins
 
+val MarromDesign = Color(0xFF73261D)
+
 @Composable
 fun LoginScreen(navController: NavController) {
 
-    val configuration = LocalConfiguration.current
-    val screenHeight = configuration.screenHeightDp.dp
-    val screenWidth = configuration.screenWidthDp.dp
-
     var email by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
-    val scrollState = rememberScrollState()
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF7F7F7))
-            .verticalScroll(scrollState),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .background(Color.White)
     ) {
 
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(screenHeight * 0.35f)
-                .clip(
-                    RoundedCornerShape(
-                        bottomStart = screenWidth * 0.4f,
-                        bottomEnd = screenWidth * 0.4f
-                    )
-                )
-                .background(Color(0xFF2D3239)),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.bg_carro_topo),
-                contentDescription = "Carro Assist",
-                modifier = Modifier
-                    .fillMaxHeight(0.8f)
-                    .aspectRatio(1.1f)
-                    .padding(bottom = 16.dp),
-                contentScale = ContentScale.Fit
-            )
-        }
+                .size(850.dp)
+                .align(Alignment.TopCenter)
+                .offset(y = (-620).dp)
+                .clip(CircleShape)
+                .background(MarromDesign)
+        )
 
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 40.dp),
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(24.dp))
 
-            Text(
-                text = "Bem-vindo",
-                fontFamily = Poppins,
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-            Text(
-                text = "Faça login para continuar",
-                fontFamily = Poppins,
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Medium,
-                color = Color.Black
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            CustomInputField(
-                label = "E-mail",
-                placeholder = "seu@email.com",
-                value = email,
-                onValueChange = { email = it },
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            CustomInputField(
-                label = "Senha",
-                placeholder = "••••••••",
-                value = senha,
-                onValueChange = { senha = it }
-            )
-
-            Text(
-                text = "Esqueceu a senha?",
-                fontFamily = Poppins,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier
-                    .padding(vertical = 16.dp)
-                    .clickable {},
-                fontSize = 12.sp,
-                color = Color.Black
-            )
-
-            Button(
-                onClick = {navController.navigate("garage")},
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(55.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2D3239)),
-                shape = RoundedCornerShape(25.dp)
+                    .height(280.dp),
+                contentAlignment = Alignment.TopCenter
             ) {
-                Text(
-                    text = "ENTRAR",
-                    fontFamily = Poppins,
-                    fontWeight = FontWeight.Medium,
-                    color = Color.White
+
+                Image(
+                    painter = painterResource(id = R.drawable.icone_carro_branco),
+                    contentDescription = "Carro Assist",
+                    modifier = Modifier
+                        .size(330.dp)
+                        .offset(y = (-40).dp)
+                        .rotate(-90f),
+                    contentScale = ContentScale.Fit
                 )
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
-
             Column(
-                modifier = Modifier.padding(bottom = 40.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 40.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
                 Text(
-                    text = "Não tem conta?",
+                    text = "Bem-vindo",
                     fontFamily = Poppins,
-                    fontSize = 11.sp,
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
+
+                Text(
+                    text = "Faça login para continuar",
+                    fontFamily = Poppins,
+                    fontSize = 12.sp,
                     fontWeight = FontWeight.Medium,
                     color = Color.Black
                 )
+
+                Spacer(modifier = Modifier.height(36.dp))
+
+                CustomInputField(
+                    label = "E-mail",
+                    value = email,
+                    onValueChange = { email = it }
+                )
+
+                Spacer(modifier = Modifier.height(18.dp))
+
+                CustomInputField(
+                    label = "Senha",
+                    value = senha,
+                    onValueChange = { senha = it }
+                )
+
+                Text(
+                    text = "Esqueceu a senha?",
+                    fontFamily = Poppins,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 12.sp,
+                    color = Color.Black,
+                    modifier = Modifier
+                        .padding(top = 14.dp, bottom = 20.dp)
+                        .clickable {}
+                )
+
+                Button(
+                    onClick = { navController.navigate("garage") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(58.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MarromDesign
+                    ),
+                    shape = RoundedCornerShape(20.dp)
+                ) {
+
+                    Text(
+                        text = "ENTRAR",
+                        fontFamily = Poppins,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        letterSpacing = 1.sp
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(bottom = 32.dp)
+            ) {
+
+                Text(
+                    text = "Não tem conta?",
+                    fontFamily = Poppins,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color.Black
+                )
+
                 Text(
                     text = "Criar conta",
                     fontFamily = Poppins,
-                    fontSize = 15.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable { navController.navigate("register") }
+                    color = Color.Black,
+                    modifier = Modifier.clickable {
+                        navController.navigate("register")
+                    }
                 )
             }
         }
@@ -163,30 +174,30 @@ fun LoginScreen(navController: NavController) {
 @Composable
 fun CustomInputField(
     label: String,
-    placeholder: String,
     value: String,
     onValueChange: (String) -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
+
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+
         Text(
             text = label,
             fontFamily = Poppins,
             fontWeight = FontWeight.Medium,
-            modifier = Modifier.padding(start = 8.dp, bottom = 4.dp),
+            fontSize = 14.sp,
+            modifier = Modifier.padding(start = 4.dp, bottom = 6.dp),
             color = Color.Black
         )
+
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(15.dp),
-            placeholder = {
-                Text(
-                    text = placeholder,
-                    fontFamily = Poppins,
-                    fontWeight = FontWeight.Light
-                )
-            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp),
+            shape = RoundedCornerShape(18.dp),
             singleLine = true,
             textStyle = TextStyle(
                 fontFamily = Poppins,
@@ -194,8 +205,10 @@ fun CustomInputField(
                 fontSize = 14.sp
             ),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF2D3239),
-                unfocusedBorderColor = Color.LightGray
+                focusedBorderColor = Color.LightGray,
+                unfocusedBorderColor = Color.LightGray,
+                unfocusedContainerColor = Color.Transparent,
+                focusedContainerColor = Color.Transparent
             )
         )
     }

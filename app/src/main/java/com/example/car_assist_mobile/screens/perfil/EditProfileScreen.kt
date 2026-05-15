@@ -1,5 +1,6 @@
 package com.example.car_assist_mobile.screens.perfil
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -22,132 +23,161 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.car_assist_mobile.R
 import com.example.car_assist_mobile.components.CustomBottomBar
+import com.example.car_assist_mobile.ui.theme.Poppins
+
+val MarromDesign = Color(0xFF73261D)
 
 @Composable
 fun EditProfileScreen(navController: NavController) {
-    var nome by remember { mutableStateOf("Gustavo Mathias") }
+    var nome by remember { mutableStateOf("Beatriz Fernanda") }
     var cpf by remember { mutableStateOf("444.444.444-44") }
-    var dataNasc by remember { mutableStateOf("01/01/2006") }
-    var email by remember { mutableStateOf("gustavo@email.com") }
+    var dataNasc by remember { mutableStateOf("10/05/2006") }
+    var email by remember { mutableStateOf("contatobeatriz@email.com") }
 
-
-    Box(modifier = Modifier.fillMaxSize().background(Color.White)) {
-
-        Column(modifier = Modifier.fillMaxSize()) {
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.White)
-                    .padding(horizontal = 32.dp)
-            ) {
-                Spacer(modifier = Modifier.height(60.dp))
+    Scaffold(
+        topBar = {
+            Column(modifier = Modifier.fillMaxWidth().background(Color.White)) {
+                Spacer(modifier = Modifier.height(15.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Box(
+                    Spacer(modifier = Modifier.width(24.dp))
+                    Surface(
                         modifier = Modifier
                             .size(45.dp)
-                            .border(0.5.dp, Color.LightGray, CircleShape)
                             .clickable { navController.popBackStack() },
-                        contentAlignment = Alignment.Center
+                        shape = CircleShape,
+                        color = Color.White,
+                        border = BorderStroke(1.dp, Color(0xFFF0F0F0))
                     ) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = null, tint = Color.Gray)
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(Icons.Default.ArrowBack, contentDescription = null, modifier = Modifier.size(18.dp), tint = Color.Black)
+                        }
                     }
-
                     Text(
                         text = "EDITAR PERFIL",
-                        modifier = Modifier.weight(1f).padding(end = 45.dp),
+                        modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center,
+                        fontFamily = Poppins,
                         fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium,
+                        fontWeight = FontWeight.Bold,
                         color = Color.Black
                     )
+                    Spacer(modifier = Modifier.width(69.dp))
                 }
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(15.dp))
             }
-
+        },
+        bottomBar = {
+            CustomBottomBar(navController = navController, selectedItem = "perfil")
+        },
+        containerColor = Color.White
+    ) { innerPadding ->
+        Box(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .padding(horizontal = 32.dp),
+                modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Spacer(modifier = Modifier.height(20.dp))
 
-                Box(
-                    modifier = Modifier
-                        .size(120.dp)
-                        .clickable {},
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.icone_user),
-                        contentDescription = null,
-                        modifier = Modifier.size(100.dp),
-                        tint = Color.Unspecified
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(32.dp))
-                EditField(label = "Nome", value = nome, onValueChange = { nome = it })
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    Text("CPF", fontSize = 14.sp, modifier = Modifier.padding(start = 4.dp, bottom = 4.dp), color = Color.Black)
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(54.dp)
-                            .background(Color(0xFFE0E0E0), RoundedCornerShape(15.dp))
-                            .padding(horizontal = 16.dp),
-                        contentAlignment = Alignment.CenterStart
+                Box(contentAlignment = Alignment.BottomEnd) {
+                    Surface(
+                        modifier = Modifier.size(110.dp),
+                        shape = CircleShape,
+                        color = Color(0xFFF9F9F9),
+                        border = BorderStroke(2.dp, MarromDesign.copy(alpha = 0.1f))
                     ) {
-                        Text(text = cpf, color = Color.DarkGray, fontSize = 14.sp)
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.icone_user),
+                                contentDescription = null,
+                                modifier = Modifier.size(70.dp),
+                                tint = Color.Unspecified
+                            )
+                        }
+                    }
+
+                    Surface(
+                        modifier = Modifier.size(32.dp).offset(x = (-5).dp, y = (-5).dp),
+                        shape = CircleShape,
+                        color = MarromDesign
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.icone_pincel),
+                                contentDescription = null,
+                                modifier = Modifier.size(14.dp),
+                                tint = Color.White
+                            )
+                        }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
-                EditField(label = "Data de Nascimento", value = dataNasc, onValueChange = { dataNasc = it })
-                Spacer(modifier = Modifier.height(16.dp))
-                EditField(label = "E-mail", value = email, onValueChange = { email = it })
-                Spacer(modifier = Modifier.height(200.dp))
+                Spacer(modifier = Modifier.height(30.dp))
+
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.width(32.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+
+                        EditField(label = "Nome", value = nome, onValueChange = { nome = it })
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Text("CPF", fontFamily = Poppins, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+                            Spacer(modifier = Modifier.height(6.dp))
+                            Surface(
+                                modifier = Modifier.fillMaxWidth().height(52.dp),
+                                shape = RoundedCornerShape(14.dp),
+                                color = Color(0xFFF5F5F5),
+                                border = BorderStroke(1.dp, Color(0xFFEFEFEF))
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxSize(),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Spacer(modifier = Modifier.width(16.dp))
+                                    Text(text = cpf, color = Color.Gray, fontSize = 14.sp, fontFamily = Poppins)
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                        EditField(label = "Data de Nascimento", value = dataNasc, onValueChange = { dataNasc = it })
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                        EditField(label = "E-mail", value = email, onValueChange = { email = it })
+
+                        Spacer(modifier = Modifier.height(40.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            Button(
+                                onClick = { navController.popBackStack() },
+                                modifier = Modifier.weight(1f).height(52.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF5F5F5)),
+                                shape = RoundedCornerShape(14.dp)
+                            ) {
+                                Text("Cancelar", color = Color.Gray, fontFamily = Poppins, fontWeight = FontWeight.Bold)
+                            }
+
+                            Button(
+                                onClick = {},
+                                modifier = Modifier.weight(1f).height(52.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = MarromDesign),
+                                shape = RoundedCornerShape(14.dp)
+                            ) {
+                                Text("Salvar", color = Color.White, fontFamily = Poppins, fontWeight = FontWeight.Bold)
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.width(32.dp))
+                }
             }
         }
-
-        Row(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 110.dp)
-                .padding(horizontal = 32.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Button(
-                onClick = { navController.popBackStack() },
-                modifier = Modifier.weight(1f).height(48.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEEEEEE)),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text("Cancelar", color = Color.Black, fontWeight = FontWeight.Bold)
-            }
-
-            Button(
-                onClick = {},
-                modifier = Modifier.weight(1f).height(48.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFC4C4C4)),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text("Salvar", color = Color.Black, fontWeight = FontWeight.Bold)
-            }
-        }
-
-        CustomBottomBar(
-            navController = navController,
-            modifier = Modifier.align(Alignment.BottomCenter),
-            selectedItem = "perfil"
-        )
     }
 }
 
@@ -156,23 +186,23 @@ fun EditField(label: String, value: String, onValueChange: (String) -> Unit) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = label,
-            fontSize = 14.sp,
-            modifier = Modifier.padding(start = 4.dp, bottom = 4.dp),
+            fontFamily = Poppins,
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Bold,
             color = Color.Black
         )
+        Spacer(modifier = Modifier.height(6.dp))
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier.fillMaxWidth().height(54.dp),
-            shape = RoundedCornerShape(15.dp),
+            modifier = Modifier.fillMaxWidth().height(52.dp),
+            shape = RoundedCornerShape(14.dp),
             singleLine = true,
-            textStyle = TextStyle(fontSize = 14.sp, color = Color.Black),
+            textStyle = TextStyle(fontFamily = Poppins, fontSize = 14.sp, color = Color.Black),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedTextColor = Color.Black,
-                unfocusedTextColor = Color.Black,
-                unfocusedBorderColor = Color(0xFFE0E0E0),
-                focusedBorderColor = Color.Gray,
-                unfocusedContainerColor = Color.White,
+                focusedBorderColor = MarromDesign,
+                unfocusedBorderColor = Color(0xFFEFEFEF),
+                unfocusedContainerColor = Color(0xFFF9F9F9),
                 focusedContainerColor = Color.White
             )
         )

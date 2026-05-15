@@ -1,4 +1,4 @@
-package com.example.car_assist_mobile.screens.cardetails
+package com.example.car_assist_mobile.screens.carrodetalhes
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -33,8 +33,7 @@ fun DetailsCarScreen(navController: NavController) {
         bottomBar = {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 26.dp),
+                    .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
                 CustomBottomBar(

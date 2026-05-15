@@ -38,7 +38,7 @@ fun EditCarScreen(navController: NavController) {
     Scaffold(
         bottomBar = {
             Box(
-                modifier = Modifier.fillMaxWidth().padding(bottom = 26.dp),
+                modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
                 CustomBottomBar(navController = navController, selectedItem = "garagem")
@@ -52,7 +52,7 @@ fun EditCarScreen(navController: NavController) {
                 .padding(innerPadding)
                 .padding(horizontal = 30.dp)
         ) {
-            // 1. Cabeçalho (Posição idêntica à primeira tela)
+
             Spacer(modifier = Modifier.height(24.dp))
 
             Box(
@@ -82,7 +82,6 @@ fun EditCarScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(50.dp))
 
-            // 2. Título do Carro
             Column {
                 Text("Fiat", fontSize = 14.sp, color = Color.Gray, fontWeight = FontWeight.Bold, fontFamily = Poppins)
                 Text("Fastback\nAbarth", fontSize = 38.sp, lineHeight = 44.sp, fontWeight = FontWeight.Black, fontFamily = Poppins, color = Color.Black)
@@ -90,8 +89,6 @@ fun EditCarScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            // 3. OS BOXES DE EDIÇÃO (O que estava faltando)
-            // Usamos Rows e Columns para criar o grid 2x2
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     EditInfoItem(label = "Marca", value = marca, onValueChange = { marca = it }, modifier = Modifier.weight(1f))
@@ -105,9 +102,8 @@ fun EditCarScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(30.dp))
 
-            // Botão de Salvar (Opcional, mas recomendado)
             Button(
-                onClick = { /* Salvar */ },
+                onClick = {},
                 modifier = Modifier.align(Alignment.CenterHorizontally).width(150.dp).height(50.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD9D9D9)),
                 shape = RoundedCornerShape(12.dp)

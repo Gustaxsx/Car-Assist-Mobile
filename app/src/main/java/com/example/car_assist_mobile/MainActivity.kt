@@ -16,7 +16,7 @@ import com.example.car_assist_mobile.screens.adicionarlembrete.AddLembreteScreen
 import com.example.car_assist_mobile.screens.adicionarmanutencao.AddManutencaoScreen
 import com.example.car_assist_mobile.screens.cadastro.RegisterScreen
 import com.example.car_assist_mobile.screens.cadastrodecarro.RegisterCarScreen
-import com.example.car_assist_mobile.screens.cardetails.DetailsCarScreen
+import com.example.car_assist_mobile.screens.carrodetalhes.DetailsCarScreen
 import com.example.car_assist_mobile.screens.chatbot.ChatBotScreen
 import com.example.car_assist_mobile.screens.editarcarro.EditCarScreen
 import com.example.car_assist_mobile.screens.garagem.GarageScreen
