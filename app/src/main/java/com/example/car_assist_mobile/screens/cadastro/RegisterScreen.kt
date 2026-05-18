@@ -20,8 +20,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.car_assist_mobile.ui.theme.Poppins
 import java.util.Calendar
@@ -29,23 +31,19 @@ import java.util.Calendar
 val MarromDesign = Color(0xFF73261D)
 
 @Composable
-fun RegisterScreen(navController: NavController) {
-
+fun RegisterScreen(
+    navController: NavController,
+    viewModel: RegisterScreenViewModel = viewModel()
+) {
     val context = LocalContext.current
-
-    var nome by remember { mutableStateOf("") }
-    var cpf by remember { mutableStateOf("") }
-    var dataNasc by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var senha by remember { mutableStateOf("") }
-    var confirmarSenha by remember { mutableStateOf("") }
-
     val calendar = Calendar.getInstance()
 
     val datePickerDialog = DatePickerDialog(
         context,
         { _, y, m, d ->
-            dataNasc = "$d/${m + 1}/$y"
+            val diaFormatado = String.format("%02d", d)
+            val mesFormatado = String.format("%02d", m + 1)
+            viewModel.dataNasc = "$diaFormatado/$mesFormatado/$y"
         },
         calendar.get(Calendar.YEAR),
         calendar.get(Calendar.MONTH),
@@ -57,7 +55,6 @@ fun RegisterScreen(navController: NavController) {
             .fillMaxSize()
             .background(Color.White)
     ) {
-
         Box(
             modifier = Modifier
                 .size(700.dp)
@@ -74,28 +71,23 @@ fun RegisterScreen(navController: NavController) {
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Spacer(modifier = Modifier.height(8.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
                 Surface(
                     modifier = Modifier
                         .size(42.dp)
                         .clickable {
-                            navController.popBackStack()
+                            if (!viewModel.isLoading) navController.popBackStack()
                         },
                     shape = CircleShape,
                     color = Color.White,
                     border = BorderStroke(1.dp, Color(0xFFEAEAEA))
                 ) {
-
-                    Box(
-                        contentAlignment = Alignment.Center
-                    ) {
+                    Box(contentAlignment = Alignment.Center) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = null,
@@ -109,7 +101,6 @@ fun RegisterScreen(navController: NavController) {
                     modifier = Modifier.weight(1f),
                     contentAlignment = Alignment.Center
                 ) {
-
                     Text(
                         text = "Crie sua conta",
                         fontFamily = Poppins,
@@ -124,10 +115,7 @@ fun RegisterScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(34.dp))
 
-            Column(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-
+            Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     text = "Preencha seus dados",
                     fontFamily = Poppins,
@@ -148,39 +136,42 @@ fun RegisterScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(18.dp))
 
+            if (viewModel.errorMessage.isNotEmpty()) {
+                Text(
+                    text = viewModel.errorMessage,
+                    color = Color.Red,
+                    fontFamily = Poppins,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            }
+
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-
                 RegisterField(
                     label = "Nome Completo",
-                    value = nome,
-                    onValueChange = { nome = it }
+                    value = viewModel.nome,
+                    onValueChange = { viewModel.nome = it }
                 )
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-
-                    Box(
-                        modifier = Modifier.weight(1f)
-                    ) {
-
+                    Box(modifier = Modifier.weight(1f)) {
                         RegisterField(
                             label = "CPF",
-                            value = cpf,
-                            onValueChange = { cpf = it }
+                            value = viewModel.cpf,
+                            onValueChange = { viewModel.cpf = it }
                         )
                     }
 
-                    Box(
-                        modifier = Modifier.weight(1f)
-                    ) {
-
+                    Box(modifier = Modifier.weight(1f)) {
                         Column {
-
                             Text(
                                 text = "Nascimento",
                                 fontFamily = Poppins,
@@ -192,13 +183,13 @@ fun RegisterScreen(navController: NavController) {
                             Spacer(modifier = Modifier.height(4.dp))
 
                             OutlinedTextField(
-                                value = dataNasc,
+                                value = viewModel.dataNasc,
                                 onValueChange = {},
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(52.dp)
                                     .clickable {
-                                        datePickerDialog.show()
+                                        if (!viewModel.isLoading) datePickerDialog.show()
                                     },
                                 shape = RoundedCornerShape(14.dp),
                                 readOnly = true,
@@ -226,21 +217,21 @@ fun RegisterScreen(navController: NavController) {
 
                 RegisterField(
                     label = "E-mail",
-                    value = email,
-                    onValueChange = { email = it }
+                    value = viewModel.email,
+                    onValueChange = { viewModel.email = it }
                 )
 
                 RegisterField(
                     label = "Senha",
-                    value = senha,
-                    onValueChange = { senha = it },
+                    value = viewModel.senha,
+                    onValueChange = { viewModel.senha = it },
                     isPassword = true
                 )
 
                 RegisterField(
                     label = "Confirmar Senha",
-                    value = confirmarSenha,
-                    onValueChange = { confirmarSenha = it },
+                    value = viewModel.confirmarSenha,
+                    onValueChange = { viewModel.confirmarSenha = it },
                     isPassword = true
                 )
             }
@@ -251,36 +242,42 @@ fun RegisterScreen(navController: NavController) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 Button(
-                    onClick = { },
+                    onClick = {
+                        viewModel.realizarCadastro {
+                            navController.popBackStack()
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(54.dp),
                     shape = RoundedCornerShape(18.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MarromDesign
-                    )
+                    ),
+                    enabled = !viewModel.isLoading
                 ) {
-
-                    Text(
-                        text = "CONCLUIR CADASTRO",
-                        fontFamily = Poppins,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        fontSize = 13.sp,
-                        letterSpacing = 1.sp
-                    )
+                    if (viewModel.isLoading) {
+                        CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
+                    } else {
+                        Text(
+                            text = "CONCLUIR CADASTRO",
+                            fontFamily = Poppins,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            fontSize = 13.sp,
+                            letterSpacing = 1.sp
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(6.dp))
 
                 TextButton(
                     onClick = {
-                        navController.popBackStack()
+                        if (!viewModel.isLoading) navController.popBackStack()
                     }
                 ) {
-
                     Text(
                         text = "Já tenho uma conta. Voltar",
                         fontFamily = Poppins,
@@ -302,11 +299,7 @@ fun RegisterField(
     onValueChange: (String) -> Unit,
     isPassword: Boolean = false
 ) {
-
-    Column(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-
+    Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = label,
             fontFamily = Poppins,

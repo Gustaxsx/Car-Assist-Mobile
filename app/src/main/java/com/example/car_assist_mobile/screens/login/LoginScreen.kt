@@ -19,6 +19,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.car_assist_mobile.R
 import com.example.car_assist_mobile.ui.theme.Poppins
@@ -26,11 +27,10 @@ import com.example.car_assist_mobile.ui.theme.Poppins
 val MarromDesign = Color(0xFF73261D)
 
 @Composable
-fun LoginScreen(navController: NavController) {
-
-    var email by remember { mutableStateOf("") }
-    var senha by remember { mutableStateOf("") }
-
+fun LoginScreen(
+    navController: NavController,
+    viewModel: LoginScreenViewModel = viewModel()
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -58,7 +58,6 @@ fun LoginScreen(navController: NavController) {
                     .height(280.dp),
                 contentAlignment = Alignment.TopCenter
             ) {
-
                 Image(
                     painter = painterResource(id = R.drawable.icone_carro_branco),
                     contentDescription = "Carro Assist",
@@ -95,18 +94,30 @@ fun LoginScreen(navController: NavController) {
 
                 Spacer(modifier = Modifier.height(36.dp))
 
+                if (viewModel.errorMessage.isNotEmpty()) {
+                    Text(
+                        text = viewModel.errorMessage,
+                        color = Color.Red,
+                        fontFamily = Poppins,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Medium,
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                        modifier = Modifier.padding(bottom = 12.dp)
+                    )
+                }
+
                 CustomInputField(
                     label = "E-mail",
-                    value = email,
-                    onValueChange = { email = it }
+                    value = viewModel.email,
+                    onValueChange = { viewModel.email = it }
                 )
 
                 Spacer(modifier = Modifier.height(18.dp))
 
                 CustomInputField(
                     label = "Senha",
-                    value = senha,
-                    onValueChange = { senha = it }
+                    value = viewModel.senha,
+                    onValueChange = { viewModel.senha = it }
                 )
 
                 Text(
@@ -121,23 +132,37 @@ fun LoginScreen(navController: NavController) {
                 )
 
                 Button(
-                    onClick = { navController.navigate("garage") },
+                    onClick = {
+                        viewModel.realizarLogin {
+                            navController.navigate("garage") {
+                                popUpTo("login") { inclusive = true }
+                            }
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(58.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MarromDesign
                     ),
-                    shape = RoundedCornerShape(20.dp)
+                    shape = RoundedCornerShape(20.dp),
+                    enabled = !viewModel.isLoading
                 ) {
-
-                    Text(
-                        text = "ENTRAR",
-                        fontFamily = Poppins,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        letterSpacing = 1.sp
-                    )
+                    if (viewModel.isLoading) {
+                        CircularProgressIndicator(
+                            color = Color.White,
+                            modifier = Modifier.size(24.dp),
+                            strokeWidth = 2.5.dp
+                        )
+                    } else {
+                        Text(
+                            text = "ENTRAR",
+                            fontFamily = Poppins,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            letterSpacing = 1.sp
+                        )
+                    }
                 }
             }
 
@@ -147,7 +172,6 @@ fun LoginScreen(navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(bottom = 32.dp)
             ) {
-
                 Text(
                     text = "Não tem conta?",
                     fontFamily = Poppins,
@@ -163,7 +187,7 @@ fun LoginScreen(navController: NavController) {
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
                     modifier = Modifier.clickable {
-                        navController.navigate("register")
+                        if (!viewModel.isLoading) navController.navigate("register")
                     }
                 )
             }
@@ -177,11 +201,9 @@ fun CustomInputField(
     value: String,
     onValueChange: (String) -> Unit
 ) {
-
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-
         Text(
             text = label,
             fontFamily = Poppins,
