@@ -15,7 +15,7 @@ data class RegisterRequest(
 )
 
 data class ApiResponse(
-    val status: Int?,
+    val status: Boolean?,
     val message: String?,
     val token: String? = null
 )
