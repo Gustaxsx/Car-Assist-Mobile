@@ -2,7 +2,7 @@ package com.example.car_assist_mobile.data.model
 
 data class LoginRequest(
     val email: String,
-    val senha: String
+    val password: String
 )
 
 data class RegisterRequest(

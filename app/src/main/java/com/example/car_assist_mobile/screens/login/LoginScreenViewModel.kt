@@ -29,7 +29,10 @@ class LoginScreenViewModel: ViewModel() {
         viewModelScope.launch {
             try {
                 val response = RetrofitClient.apiService.login(
-                    LoginRequest(email = email, senha = senha)
+                    LoginRequest(
+                        email = email,
+                        password = senha
+                    )
                 )
                 isLoading = false
 

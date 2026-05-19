@@ -38,6 +38,8 @@ fun RegisterScreen(
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
 
+    var showSuccessDialog by remember { mutableStateOf(false) }
+
     val datePickerDialog = DatePickerDialog(
         context,
         { _, y, m, d ->
@@ -49,6 +51,43 @@ fun RegisterScreen(
         calendar.get(Calendar.MONTH),
         calendar.get(Calendar.DAY_OF_MONTH)
     )
+
+    if (showSuccessDialog) {
+        AlertDialog(
+            onDismissRequest = {},
+            title = {
+                Text(
+                    text = "Sucesso!",
+                    fontFamily = Poppins,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = MarromDesign
+                )
+            },
+            text = {
+                Text(
+                    text = "Sua conta foi criada com sucesso! Agora você faz parte do time.",
+                    fontFamily = Poppins,
+                    fontSize = 14.sp,
+                    color = Color.Black
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showSuccessDialog = false
+                        navController.popBackStack()
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = MarromDesign),
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Text(text = "Ir para o Login", fontFamily = Poppins, fontWeight = FontWeight.Bold)
+                }
+            },
+            shape = RoundedCornerShape(16.dp),
+            containerColor = Color.White
+        )
+    }
 
     Box(
         modifier = Modifier
@@ -245,7 +284,7 @@ fun RegisterScreen(
                 Button(
                     onClick = {
                         viewModel.realizarCadastro {
-                            navController.popBackStack()
+                            showSuccessDialog = true
                         }
                     },
                     modifier = Modifier
