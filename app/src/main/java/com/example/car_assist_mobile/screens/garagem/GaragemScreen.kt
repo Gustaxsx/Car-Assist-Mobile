@@ -5,10 +5,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -18,9 +21,12 @@ import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.car_assist_mobile.R
 import com.example.car_assist_mobile.components.CustomBottomBar
 import com.example.car_assist_mobile.ui.theme.Poppins
@@ -30,18 +36,40 @@ val FundoGeral = Color(0xFFFFFFFF)
 val BadgeRosadaCard = Color(0xFFF5E9E9)
 
 @Composable
-fun GarageScreen(navController: NavController) {
+fun GaragemScreen(
+    navController: NavController,
+    idUsuarioLogado: Int = 0,
+    viewModel: GaragemScreenViewModel = viewModel()
+) {
+    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+
+    LaunchedEffect(idUsuarioLogado) {
+        if (idUsuarioLogado == 0) {
+            navController.navigate("login") {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+    }
+
+    LaunchedEffect(currentRoute) {
+        if (currentRoute?.startsWith("garagem") == true && idUsuarioLogado != 0) {
+            if (viewModel.listaVeiculos.isEmpty()) {
+                viewModel.buscarVeiculosDaGaragem(idUsuarioLogado)
+            }
+        }
+    }
+
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
             CustomBottomBar(
                 navController = navController,
-                selectedItem = "garagem"
+                selectedItem = "garagem",
+                idUsuarioLogado = idUsuarioLogado
             )
         },
         containerColor = FundoGeral
     ) { innerPadding ->
-
         Box(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
 
             Box(
@@ -77,14 +105,14 @@ fun GarageScreen(navController: NavController) {
 
                     Column(modifier = Modifier.padding(start = 12.dp).weight(1f)) {
                         Text(
-                            "Olá Beatriz!",
+                            "Olá Nikolas!",
                             fontFamily = Poppins,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.Black
                         )
                         Text(
-                            "contatobeatriz@email.com",
+                            "id_usuario: $idUsuarioLogado",
                             fontFamily = Poppins,
                             fontSize = 12.sp,
                             color = Color.Gray
@@ -111,7 +139,7 @@ fun GarageScreen(navController: NavController) {
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
-                                "91.6",
+                                if (viewModel.listaVeiculos.isEmpty()) "--" else "91.6",
                                 fontFamily = Poppins,
                                 fontSize = 40.sp,
                                 fontWeight = FontWeight.Bold,
@@ -135,14 +163,49 @@ fun GarageScreen(navController: NavController) {
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(bottom = 120.dp)
-                ) {
-                    item { CardCarroDesign("Fastback Abarth", "RFT5S34", "97", R.drawable.icone_carro_moderno) { navController.navigate("DetailsCar") } }
-                    item { CardCarroDesign("T-Cross", "QXM7D19", "92", R.drawable.icone_carro_moderno) { } }
-                    item { CardCarroDesign("Onix", "RZT5B67", "86", R.drawable.icone_carro_moderno) { } }
+                if (viewModel.isLoading) {
+                    Box(modifier = Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = CorPrimariaVermelha)
+                    }
+                } else if (viewModel.listaVeiculos.isEmpty()) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().weight(1f),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.icone_carro_moderno),
+                            contentDescription = null,
+                            tint = Color.LightGray,
+                            modifier = Modifier.size(80.dp)
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = "Sua garagem está vazia.\nCadastre um veículo para começar!",
+                            fontFamily = Poppins,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = Color.Gray,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        contentPadding = PaddingValues(bottom = 120.dp)
+                    ) {
+                        items(viewModel.listaVeiculos) { veiculo ->
+                            CardCarroDesign(
+                                nome = veiculo.modelo,
+                                placa = veiculo.placa,
+                                score = veiculo.score ?: "100.0",
+                                imageRes = R.drawable.icone_carro_moderno
+                            ) {
+                                navController.navigate("DetailsCar")
+                            }
+                        }
+                    }
                 }
             }
 
@@ -150,7 +213,7 @@ fun GarageScreen(navController: NavController) {
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 24.dp)
-                    .clickable { navController.navigate("AddCar") },
+                    .clickable { navController.navigate("AddCar/$idUsuarioLogado") },
                 color = BadgeRosadaCard,
                 shape = RoundedCornerShape(25.dp)
             ) {
@@ -203,27 +266,11 @@ fun CardCarroDesign(nome: String, placa: String, score: String, imageRes: Int, o
             Box(modifier = Modifier.fillMaxHeight().width(5.dp).background(CorPrimariaVermelha))
             Row(modifier = Modifier.fillMaxSize().padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
                 Column(modifier = Modifier.weight(1.2f)) {
-                    Text(
-                        nome,
-                        fontFamily = Poppins,
-                        fontSize = 19.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        placa,
-                        fontFamily = Poppins,
-                        fontSize = 13.sp,
-                        color = Color.Gray
-                    )
+                    Text(nome, fontFamily = Poppins, fontSize = 19.sp, fontWeight = FontWeight.Bold)
+                    Text(placa, fontFamily = Poppins, fontSize = 13.sp, color = Color.Gray)
                     Spacer(modifier = Modifier.height(18.dp))
                     Surface(color = BadgeRosadaCard, shape = RoundedCornerShape(12.dp)) {
-                        Text(
-                            score,
-                            fontFamily = Poppins,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
-                            fontWeight = FontWeight.Black,
-                            color = Color.Black
-                        )
+                        Text(score, fontFamily = Poppins, modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp), fontWeight = FontWeight.Black, color = Color.Black)
                     }
                 }
                 Image(painterResource(id = imageRes), null, modifier = Modifier.weight(1f).fillMaxHeight(), contentScale = ContentScale.Fit)

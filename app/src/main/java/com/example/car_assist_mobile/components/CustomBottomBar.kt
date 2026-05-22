@@ -28,9 +28,9 @@ val UnselectedGray = Color(0xFF757575)
 fun CustomBottomBar(
     navController: NavController,
     modifier: Modifier = Modifier,
-    selectedItem: String = "garagem"
+    selectedItem: String = "garagem",
+    idUsuarioLogado: Int = 0
 ) {
-
     val barWidth = 320.dp
 
     Row(
@@ -60,7 +60,7 @@ fun CustomBottomBar(
                     isSelected = selectedItem == "garagem",
                     onClick = {
                         if (selectedItem != "garagem") {
-                            navController.navigate("garage") {
+                            navController.navigate("garagem/$idUsuarioLogado") {
                                 popUpTo(navController.graph.startDestinationId) { saveState = true }
                                 launchSingleTop = true
                                 restoreState = true

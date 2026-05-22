@@ -133,8 +133,8 @@ fun LoginScreen(
 
                 Button(
                     onClick = {
-                        viewModel.realizarLogin {
-                            navController.navigate("garage") {
+                        viewModel.realizarLogin { idLogado ->
+                            navController.navigate("garagem/$idLogado") {
                                 popUpTo("login") { inclusive = true }
                             }
                         }

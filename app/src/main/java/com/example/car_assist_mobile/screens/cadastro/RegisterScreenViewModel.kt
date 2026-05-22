@@ -62,9 +62,6 @@ class RegisterScreenViewModel : ViewModel() {
             null
         }
 
-        Log.d("CAR_ASSIST_DEBUG", "Data digitada na tela: $dataNasc")
-        Log.d("CAR_ASSIST_DEBUG", "Data convertida para o Banco: $dataFormatadaParaOBanco")
-
         if (dataFormatadaParaOBanco == null) {
             errorMessage = "Formato de data de nascimento inválido."
             return
@@ -83,27 +80,17 @@ class RegisterScreenViewModel : ViewModel() {
                     senha = senha
                 )
 
-                Log.i("CAR_ASSIST_DEBUG", "=== ENVIANDO PARA API ===")
-                Log.i("CAR_ASSIST_DEBUG", "Nome: ${requisicao.nome}")
-                Log.i("CAR_ASSIST_DEBUG", "Email: ${requisicao.email}")
-                Log.i("CAR_ASSIST_DEBUG", "CPF: ${requisicao.cpf}")
-                Log.i("CAR_ASSIST_DEBUG", "Data Nascimento: ${requisicao.data_nascimento}")
-                Log.i("CAR_ASSIST_DEBUG", "=========================")
-
                 val response = RetrofitClient.apiService.cadastrarUsuario(requisicao)
                 isLoading = false
 
                 if (response.isSuccessful) {
-                    Log.d("CAR_ASSIST_DEBUG", "Cadastro realizado com Sucesso no Servidor!")
                     onSuccess()
                 } else {
                     val erroServidor = response.errorBody()?.string()
-                    Log.e("CAR_ASSIST_DEBUG", "Erro do Servidor: $erroServidor")
                     errorMessage = erroServidor ?: "Erro ao realizar cadastro."
                 }
             } catch (e: Exception) {
                 isLoading = false
-                Log.e("CAR_ASSIST_DEBUG", "Erro de Conexão na requisição", e)
                 errorMessage = "Erro de conexão. Verifique se o servidor local está online."
             }
         }

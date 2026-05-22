@@ -17,7 +17,7 @@ class LoginScreenViewModel: ViewModel() {
     var isLoading by mutableStateOf(false)
     var errorMessage by mutableStateOf("")
 
-    fun realizarLogin(onSuccess: () -> Unit) {
+    fun realizarLogin(onSuccess: (Int) -> Unit) {
         if (email.isBlank() || senha.isBlank()) {
             errorMessage = "Por favor, preencha todos os campos."
             return
@@ -30,20 +30,28 @@ class LoginScreenViewModel: ViewModel() {
             try {
                 val response = RetrofitClient.apiService.login(
                     LoginRequest(
-                        email = email,
-                        password = senha
+                        email = email.trim(),
+                        password = senha.trim()
                     )
                 )
                 isLoading = false
 
-                if (response.isSuccessful && response.body() != null) {
-                    onSuccess()
+                if (response.isSuccessful && response.body()?.status == true) {
+
+                    val idLogado = response.body()?.data?.usuario?.id
+
+                    if (idLogado != null && idLogado > 0) {
+                        onSuccess(idLogado)
+                    } else {
+                        errorMessage = "Login aprovado, mas não foi possível identificar o utilizador."
+                    }
                 } else {
-                    errorMessage = "E-mail ou senha incorretos."
+                    errorMessage = response.body()?.message ?: "E-mail ou senha incorretos."
                 }
             } catch (e: Exception) {
                 isLoading = false
                 errorMessage = "Erro ao conectar ao servidor. Verifique sua API."
+                e.printStackTrace()
             }
         }
     }

@@ -4,10 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -22,11 +20,41 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.car_assist_mobile.R
 import com.example.car_assist_mobile.components.CustomBottomBar
+
 @Composable
-fun RegisterCarScreen(navController: NavController) {
+fun RegisterCarScreen(
+    navController: NavController,
+    idUsuarioLogado: Int,
+    viewModel: RegisterCarScreenViewModel = viewModel()
+) {
+    var showSuccessDialog by remember { mutableStateOf(false) }
+
+    if (showSuccessDialog) {
+        AlertDialog(
+            onDismissRequest = { },
+            title = { Text("Sucesso!", fontWeight = FontWeight.Bold) },
+            text = { Text("Veículo cadastrado perfeitamente!") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showSuccessDialog = false
+                        navController.navigate("garagem/$idUsuarioLogado") {
+                            popUpTo("garagem/{idUsuario}") { inclusive = true }
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
+                ) {
+                    Text("OK", color = Color.White)
+                }
+            },
+            containerColor = Color.White
+        )
+    }
+
     Scaffold(
         bottomBar = {
             Row(
@@ -35,7 +63,11 @@ fun RegisterCarScreen(navController: NavController) {
                     .padding(bottom = 24.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                CustomBottomBar(navController = navController, selectedItem = "garagem")
+                CustomBottomBar(
+                    navController = navController,
+                    selectedItem = "garagem",
+                    idUsuarioLogado = idUsuarioLogado
+                )
             }
         },
         containerColor = Color.White
@@ -55,7 +87,7 @@ fun RegisterCarScreen(navController: NavController) {
                 contentAlignment = Alignment.CenterStart
             ) {
                 IconButton(
-                    onClick = { navController.popBackStack() },
+                    onClick = { if (!viewModel.isLoading) navController.popBackStack() },
                     modifier = Modifier
                         .border(0.5.dp, Color.LightGray, CircleShape)
                         .size(45.dp)
@@ -96,37 +128,58 @@ fun RegisterCarScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            CarInput(label = "Modelo")
-            CarInput(label = "Marca")
-            CarInput(label = "Placa")
-            CarInput(label = "Ano", isDropdown = true)
-            CarInput(label = "Cor", isDropdown = true)
+            if (viewModel.errorMessage.isNotEmpty()) {
+                Text(
+                    text = viewModel.errorMessage,
+                    color = Color.Red,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            }
+
+            CarInput(label = "Modelo", value = viewModel.modelo, onValueChange = { viewModel.modelo = it })
+            CarInput(label = "Marca", value = viewModel.marca, onValueChange = { viewModel.marca = it })
+            CarInput(label = "Placa", value = viewModel.placa, onValueChange = { viewModel.placa = it.uppercase() })
+            CarInput(label = "Ano", value = viewModel.ano, onValueChange = { viewModel.ano = it }, isDropdown = true)
+            CarInput(label = "Cor", value = viewModel.cor, onValueChange = { viewModel.cor = it }, isDropdown = true)
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = {},
+                onClick = {
+                    viewModel.cadastrarVeiculo(idUsuario = idUsuarioLogado) {
+                        showSuccessDialog = true
+                    }
+                },
                 modifier = Modifier
                     .width(180.dp)
                     .height(48.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD9D9D9)),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(12.dp),
+                enabled = !viewModel.isLoading
             ) {
-                Text(
-                    "CADASTRAR",
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp
-                )
+                if (viewModel.isLoading) {
+                    CircularProgressIndicator(color = Color.Black, modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+                } else {
+                    Text(
+                        "CADASTRAR",
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-fun CarInput(label: String, isDropdown: Boolean = false) {
-    var textState by remember { mutableStateOf("") }
-
+fun CarInput(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    isDropdown: Boolean = false
+) {
     Column(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
         Text(
             text = label,
@@ -135,8 +188,8 @@ fun CarInput(label: String, isDropdown: Boolean = false) {
             modifier = Modifier.padding(start = 4.dp, bottom = 2.dp)
         )
         OutlinedTextField(
-            value = textState,
-            onValueChange = { textState = it },
+            value = value,
+            onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth().height(50.dp),
             shape = RoundedCornerShape(14.dp),
             singleLine = true,

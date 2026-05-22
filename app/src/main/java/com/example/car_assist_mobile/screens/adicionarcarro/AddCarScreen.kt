@@ -11,11 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -35,14 +33,21 @@ import androidx.navigation.NavController
 import com.example.car_assist_mobile.components.CustomBottomBar
 
 @Composable
-fun AddCarScreen(navController: NavController) {
+fun AddCarScreen(
+    navController: NavController,
+    idUsuarioLogado: Int
+) {
     Scaffold(
         bottomBar = {
             Row(
                 modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                CustomBottomBar(navController = navController, selectedItem = "garagem")
+                CustomBottomBar(
+                    navController = navController,
+                    selectedItem = "garagem",
+                    idUsuarioLogado = idUsuarioLogado
+                )
             }
         },
         containerColor = Color.White
@@ -90,7 +95,7 @@ fun AddCarScreen(navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 SelectionButton("CADASTRAR") {
-                    navController.navigate("RegisterCar")
+                    navController.navigate("RegisterCar/$idUsuarioLogado")
                 }
                 Spacer(modifier = Modifier.height(20.dp))
                 SelectionButton("ADQUIRIR") {}
