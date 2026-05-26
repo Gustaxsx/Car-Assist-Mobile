@@ -32,6 +32,7 @@ import com.example.car_assist_mobile.screens.oficina.OficinaScreen
 import com.example.car_assist_mobile.screens.perfil.EditProfileScreen
 import com.example.car_assist_mobile.screens.posto.PostoScreen
 import com.example.car_assist_mobile.screens.service.ServicesScreen
+import com.example.car_assist_mobile.screens.transferencia.TransferenciaScreen
 import com.example.car_assist_mobile.ui.theme.Car_Assist_MobileTheme
 
 class MainActivity : ComponentActivity() {
@@ -47,13 +48,16 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(
                         navController = navController,
-                        startDestination = "login",
+                        startDestination = "Transferencia",
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable(route = "login") {
                             LoginScreen(navController)
                         }
                         composable(route = "register") {
+                            RegisterScreen(navController)
+                        }
+                        composable(route = "cadastro") {
                             RegisterScreen(navController)
                         }
                         composable(route = "profile") {
@@ -76,7 +80,6 @@ class MainActivity : ComponentActivity() {
                             route = "AddCar/{idUsuario}",
                             arguments = listOf(navArgument("idUsuario") { type = NavType.IntType })
                         ) { backStackEntry ->
-
                             val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: 0
                             AddCarScreen(navController = navController, idUsuarioLogado = idUsuario)
                         }
@@ -124,6 +127,19 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(route = "Guincho") {
                             GuinchoScreen(navController)
+                        }
+
+                        composable(
+                            route = "Transferencia",
+                            arguments = listOf(navArgument("idVeiculo") { type = NavType.IntType })
+                        ) { backStackEntry ->
+                            val idVeiculo = backStackEntry.arguments?.getInt("idVeiculo") ?: 0
+                            TransferenciaScreen(
+                                onNavigateBack = { navController.popBackStack() },
+                                onTransferirClick = { email, senha, permissao ->
+                                    // Chame a sua ViewModel ou lógica de API aqui passando o idVeiculo
+                                }
+                            )
                         }
                     }
                 }
