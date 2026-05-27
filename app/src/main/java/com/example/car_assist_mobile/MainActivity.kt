@@ -48,9 +48,13 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(
                         navController = navController,
-                        startDestination = "Transferencia",
+                        startDestination = "transferencia", // Abre direto na transferência para testes
                         modifier = Modifier.padding(innerPadding)
                     ) {
+                        composable(route = "transferencia") {
+                            TransferenciaScreen(navController = navController)
+                        }
+
                         composable(route = "login") {
                             LoginScreen(navController)
                         }
@@ -127,19 +131,6 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(route = "Guincho") {
                             GuinchoScreen(navController)
-                        }
-
-                        composable(
-                            route = "Transferencia",
-                            arguments = listOf(navArgument("idVeiculo") { type = NavType.IntType })
-                        ) { backStackEntry ->
-                            val idVeiculo = backStackEntry.arguments?.getInt("idVeiculo") ?: 0
-                            TransferenciaScreen(
-                                onNavigateBack = { navController.popBackStack() },
-                                onTransferirClick = { email, senha, permissao ->
-                                    // Chame a sua ViewModel ou lógica de API aqui passando o idVeiculo
-                                }
-                            )
                         }
                     }
                 }

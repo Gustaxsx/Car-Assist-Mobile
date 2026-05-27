@@ -1,12 +1,15 @@
 package com.example.car_assist_mobile.screens.transferencia
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,56 +23,74 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.car_assist_mobile.components.CustomBottomBar
 import com.example.car_assist_mobile.ui.theme.Poppins
 
 val MarromDesign = Color(0xFF73261D)
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TransferenciaScreen(
-    onNavigateBack: () -> Unit,
-    onTransferirClick: (String, String, PermissaoTransferencia) -> Unit
-) {
+fun TransferenciaScreen(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
     var permissaoSelecionada by remember { mutableStateOf(PermissaoTransferencia.TRANSFERIR_PROPRIEDADE) }
 
+    val scrollState = rememberScrollState()
+
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "TRANSFERÊNCIA",
-                        fontFamily = Poppins,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Voltar",
-                            tint = Color.Black
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
-            )
+        bottomBar = {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                CustomBottomBar(navController = navController, selectedItem = "garagem")
+            }
         },
         containerColor = Color.White
-    ) { paddingValues ->
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 32.dp),
+                .padding(innerPadding)
+                .padding(horizontal = 30.dp)
+                .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             Spacer(modifier = Modifier.height(24.dp))
+
+            // Cabeçalho customizado idêntico ao padrão adotado no app
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Surface(
+                    modifier = Modifier.size(52.dp),
+                    shape = CircleShape,
+                    color = Color.Transparent,
+                    border = BorderStroke(1.dp, Color(0xFFEFEFEF))
+                ) {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = null,
+                            tint = Color.Black,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
+                }
+                Text(
+                    text = "TRANSFERÊNCIA",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = Poppins,
+                    color = Color.Black
+                )
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
 
             TransferenciaStepper(passoAtual = 1)
 
@@ -131,10 +152,12 @@ fun TransferenciaScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(40.dp))
 
             Button(
-                onClick = { onTransferirClick(email, senha, permissaoSelecionada) },
+                onClick = {
+                    // Próxima rota de confirmação será chamada aqui
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
@@ -149,6 +172,7 @@ fun TransferenciaScreen(
                     color = Color.White
                 )
             }
+
             Spacer(modifier = Modifier.height(24.dp))
         }
     }
@@ -172,7 +196,7 @@ fun TransferField(label: String, value: String, onValueChange: (String) -> Unit,
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier.fillMaxWidth().height(52.dp),
+            modifier = Modifier.fillMaxWidth(), // Altura fixa removida para evitar quebra de texto interno
             shape = RoundedCornerShape(14.dp),
             singleLine = true,
             visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
@@ -193,13 +217,13 @@ fun PermissaoOption(texto: String, selecionado: Boolean, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(vertical = 6.dp),
+            .padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Checkbox(
-            checked = selecionado,
-            onCheckedChange = { onClick() },
-            colors = CheckboxDefaults.colors(checkedColor = MarromDesign)
+        RadioButton(
+            selected = selecionado,
+            onClick = onClick,
+            colors = RadioButtonDefaults.colors(selectedColor = MarromDesign)
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
