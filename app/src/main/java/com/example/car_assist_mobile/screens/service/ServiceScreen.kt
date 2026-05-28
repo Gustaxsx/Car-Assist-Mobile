@@ -28,7 +28,10 @@ import com.example.car_assist_mobile.components.CustomBottomBar
 import com.example.car_assist_mobile.ui.theme.Poppins
 
 @Composable
-fun ServicesScreen(navController: NavController) {
+fun ServicesScreen(
+    navController: NavController,
+    idUsuarioLogado: Int
+) {
 
     val services = listOf(
         ServiceItem("Oficina", R.drawable.icone_oficina, "Oficina"),
@@ -92,7 +95,8 @@ fun ServicesScreen(navController: NavController) {
         CustomBottomBar(
             navController = navController,
             modifier = Modifier.align(Alignment.BottomCenter),
-            selectedItem = "servicos"
+            selectedItem = "servicos",
+            idUsuarioLogado = idUsuarioLogado
         )
     }
 }

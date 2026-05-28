@@ -56,8 +56,13 @@ class MainActivity : ComponentActivity() {
                         composable(route = "register") {
                             RegisterScreen(navController)
                         }
-                        composable(route = "profile") {
-                            EditProfileScreen(navController)
+
+                        composable(
+                            route = "profile/{idUsuario}",
+                            arguments = listOf(navArgument("idUsuario") { type = NavType.IntType })
+                        ) { backStackEntry ->
+                            val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: 0
+                            EditProfileScreen(navController = navController, idUsuarioLogado = idUsuario)
                         }
 
                         composable(
@@ -68,8 +73,12 @@ class MainActivity : ComponentActivity() {
                             GaragemScreen(navController = navController, idUsuarioLogado = idUsuario)
                         }
 
-                        composable(route = "service") {
-                            ServicesScreen(navController)
+                        composable(
+                            route = "service/{idUsuario}",
+                            arguments = listOf(navArgument("idUsuario") { type = NavType.IntType })
+                        ) { backStackEntry ->
+                            val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: 0
+                            ServicesScreen(navController = navController, idUsuarioLogado = idUsuario)
                         }
 
                         composable(

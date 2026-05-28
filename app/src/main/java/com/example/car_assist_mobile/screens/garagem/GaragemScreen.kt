@@ -48,6 +48,8 @@ fun GaragemScreen(
             navController.navigate("login") {
                 popUpTo(0) { inclusive = true }
             }
+        } else {
+            viewModel.carregarDadosDoUsuario(idUsuarioLogado)
         }
     }
 
@@ -96,23 +98,27 @@ fun GaragemScreen(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+
                     Image(
-                        painter = painterResource(id = R.drawable.icone_perfil1),
+                        painter = painterResource(id = R.drawable.icone_user),
                         contentDescription = null,
-                        modifier = Modifier.size(52.dp).clip(CircleShape),
+                        modifier = Modifier
+                            .size(52.dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFFF9F9F9)),
                         contentScale = ContentScale.Crop
                     )
 
                     Column(modifier = Modifier.padding(start = 12.dp).weight(1f)) {
                         Text(
-                            "Olá Nikolas!",
+                            text = viewModel.nomeUsuario,
                             fontFamily = Poppins,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.Black
                         )
                         Text(
-                            "id_usuario: $idUsuarioLogado",
+                            text = viewModel.emailUsuario.ifBlank { "Carregando..." },
                             fontFamily = Poppins,
                             fontSize = 12.sp,
                             color = Color.Gray

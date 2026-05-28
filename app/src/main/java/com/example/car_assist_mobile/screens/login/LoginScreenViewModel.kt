@@ -1,15 +1,19 @@
 package com.example.car_assist_mobile.screens.login
 
+import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.car_assist_mobile.data.SessionManager
 import com.example.car_assist_mobile.data.model.LoginRequest
 import com.example.car_assist_mobile.data.network.RetrofitClient
 import kotlinx.coroutines.launch
 
-class LoginScreenViewModel: ViewModel() {
+class LoginScreenViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val sessionManager = SessionManager(application.applicationContext)
 
     var email by mutableStateOf("")
     var senha by mutableStateOf("")
@@ -37,10 +41,20 @@ class LoginScreenViewModel: ViewModel() {
                 isLoading = false
 
                 if (response.isSuccessful && response.body()?.status == true) {
-
-                    val idLogado = response.body()?.data?.usuario?.id
+                    val user = response.body()?.data?.usuario
+                    val idLogado = user?.id
 
                     if (idLogado != null && idLogado > 0) {
+
+                        sessionManager.salvarSessao(
+                            id = idLogado,
+                            nome = "",
+                            email = email.trim(),
+                            cpf = "",
+                            dataNasc = "",
+                            senhaAtrevia = senha.trim()
+                        )
+
                         onSuccess(idLogado)
                     } else {
                         errorMessage = "Login aprovado, mas não foi possível identificar o utilizador."

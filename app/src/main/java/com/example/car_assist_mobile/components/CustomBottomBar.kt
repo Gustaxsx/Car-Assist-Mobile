@@ -54,6 +54,7 @@ fun CustomBottomBar(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
+                // Garagem
                 BottomBarItem(
                     label = "Garagem",
                     iconRes = R.drawable.icone_carro,
@@ -69,13 +70,15 @@ fun CustomBottomBar(
                     }
                 )
 
+                // Serviços
                 BottomBarItem(
                     label = "Serviços",
                     iconRes = R.drawable.icone_servicos,
                     isSelected = selectedItem == "servicos",
                     onClick = {
                         if (selectedItem != "servicos") {
-                            navController.navigate("service") {
+                            // Ajustado para passar o ID
+                            navController.navigate("service/$idUsuarioLogado") {
                                 popUpTo(navController.graph.startDestinationId) { saveState = true }
                                 launchSingleTop = true
                                 restoreState = true
@@ -84,13 +87,15 @@ fun CustomBottomBar(
                     }
                 )
 
+                // Perfil
                 BottomBarItem(
                     label = "Perfil",
                     iconRes = R.drawable.icone_user,
                     isSelected = selectedItem == "perfil",
                     onClick = {
                         if (selectedItem != "perfil") {
-                            navController.navigate("profile") {
+                            // Ajustado para passar o ID
+                            navController.navigate("profile/$idUsuarioLogado") {
                                 popUpTo(navController.graph.startDestinationId) { saveState = true }
                                 launchSingleTop = true
                                 restoreState = true
