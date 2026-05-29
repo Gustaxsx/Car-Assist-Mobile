@@ -1,5 +1,8 @@
 package com.example.car_assist_mobile.screens.perfil
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,7 +15,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -22,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.car_assist_mobile.R
 import com.example.car_assist_mobile.components.CustomBottomBar
 import com.example.car_assist_mobile.ui.theme.Poppins
@@ -34,6 +41,13 @@ fun EditProfileScreen(
     idUsuarioLogado: Int,
     viewModel: EditProfileScreenViewModel = viewModel()
 ) {
+    val context = LocalContext.current
+
+    val galeriaLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let { viewModel.selecionarNovaFoto(it) }
+    }
 
     LaunchedEffect(idUsuarioLogado) {
         viewModel.carregarPerfil(idUsuarioLogado)
@@ -105,7 +119,10 @@ fun EditProfileScreen(
                         Spacer(modifier = Modifier.height(10.dp))
                     }
 
-                    Box(contentAlignment = Alignment.BottomEnd) {
+                    Box(
+                        contentAlignment = Alignment.BottomEnd,
+                        modifier = Modifier.clickable { galeriaLauncher.launch("image/*") }
+                    ) {
                         Surface(
                             modifier = Modifier.size(110.dp),
                             shape = CircleShape,
@@ -113,12 +130,29 @@ fun EditProfileScreen(
                             border = BorderStroke(2.dp, MarromDesign.copy(alpha = 0.1f))
                         ) {
                             Box(contentAlignment = Alignment.Center) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.icone_user),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(70.dp),
-                                    tint = Color.Unspecified
-                                )
+                                if (viewModel.fotoSelecionadaUri != null) {
+                                    AsyncImage(
+                                        model = viewModel.fotoSelecionadaUri,
+                                        contentDescription = null,
+                                        modifier = Modifier.fillMaxSize().clip(CircleShape),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                } else if (viewModel.urlFotoBanco.isNotBlank()) {
+                                    AsyncImage(
+                                        model = viewModel.urlFotoBanco,
+                                        contentDescription = null,
+                                        modifier = Modifier.fillMaxSize().clip(CircleShape),
+                                        contentScale = ContentScale.Crop,
+                                        error = painterResource(id = R.drawable.icone_user)
+                                    )
+                                } else {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.icone_user),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(70.dp),
+                                        tint = Color.Unspecified
+                                    )
+                                }
                             }
                         }
 
@@ -148,7 +182,6 @@ fun EditProfileScreen(
 
                             Spacer(modifier = Modifier.height(16.dp))
 
-                            // 🔒 Campo CPF Bloqueado (Apenas Leitura)
                             Column(modifier = Modifier.fillMaxWidth()) {
                                 Text("CPF", fontFamily = Poppins, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color.Black)
                                 Spacer(modifier = Modifier.height(6.dp))
@@ -170,7 +203,6 @@ fun EditProfileScreen(
 
                             Spacer(modifier = Modifier.height(16.dp))
 
-                            // 🔒 CORRIGIDO: Campo Data de Nascimento Bloqueado (Apenas Leitura)
                             Column(modifier = Modifier.fillMaxWidth()) {
                                 Text("Data de Nascimento", fontFamily = Poppins, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color.Black)
                                 Spacer(modifier = Modifier.height(6.dp))
@@ -223,7 +255,6 @@ fun EditProfileScreen(
                 }
             }
 
-            // Pop-up nativo de confirmação
             if (viewModel.mostrarDialogSenha) {
                 AlertDialog(
                     onDismissRequest = { viewModel.mostrarDialogSenha = false },
@@ -274,7 +305,7 @@ fun EditProfileScreen(
                     },
                     confirmButton = {
                         Button(
-                            onClick = { viewModel.confirmarSenhaEAtualizar(idUsuarioLogado) },
+                            onClick = { viewModel.confirmarSenhaEAtualizar(idUsuarioLogado, context) },
                             colors = ButtonDefaults.buttonColors(containerColor = MarromDesign),
                             shape = RoundedCornerShape(10.dp)
                         ) {

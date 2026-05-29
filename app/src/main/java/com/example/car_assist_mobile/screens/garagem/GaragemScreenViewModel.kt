@@ -29,9 +29,9 @@ class GaragemScreenViewModel(application: Application) : AndroidViewModel(applic
 
         if (nomeSalvo.isNotBlank()) {
             nomeUsuario = "Olá $nomeSalvo!"
-        } else {
-            buscarDadosUsuarioNoServidor(idUsuarioLogado)
         }
+
+        buscarDadosUsuarioNoServidor(idUsuarioLogado)
     }
 
     private fun buscarDadosUsuarioNoServidor(idUsuarioLogado: Int) {
@@ -77,7 +77,8 @@ class GaragemScreenViewModel(application: Application) : AndroidViewModel(applic
 
                 if (response.isSuccessful && response.body() != null) {
                     val corpoResposta = response.body()!!
-                    val vinculos = corpoResposta.dados.listaVinculos ?: emptyList()
+
+                    val vinculos = corpoResposta.data?.usuario_veiculo ?: emptyList()
 
                     listaVeiculos = vinculos
                         .filter { it.id_usuario == idUsuario }

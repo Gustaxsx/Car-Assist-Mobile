@@ -11,7 +11,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import coil.compose.AsyncImage
 import com.example.car_assist_mobile.R
 import com.example.car_assist_mobile.components.CustomBottomBar
 import com.example.car_assist_mobile.ui.theme.Poppins
@@ -55,9 +55,7 @@ fun GaragemScreen(
 
     LaunchedEffect(currentRoute) {
         if (currentRoute?.startsWith("garagem") == true && idUsuarioLogado != 0) {
-            if (viewModel.listaVeiculos.isEmpty()) {
-                viewModel.buscarVeiculosDaGaragem(idUsuarioLogado)
-            }
+            viewModel.buscarVeiculosDaGaragem(idUsuarioLogado)
         }
     }
 
@@ -99,15 +97,29 @@ fun GaragemScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    Image(
-                        painter = painterResource(id = R.drawable.icone_user),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(52.dp)
-                            .clip(CircleShape)
-                            .background(Color(0xFFF9F9F9)),
-                        contentScale = ContentScale.Crop
-                    )
+                    if (viewModel.urlFotoUsuario.isNotBlank()) {
+                        AsyncImage(
+                            model = viewModel.urlFotoUsuario,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(52.dp)
+                                .clip(CircleShape)
+                                .background(Color(0xFFF9F9F9)),
+                            contentScale = ContentScale.Crop,
+                            error = painterResource(id = R.drawable.icone_user),
+                            placeholder = painterResource(id = R.drawable.icone_user)
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(id = R.drawable.icone_user),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(52.dp)
+                                .clip(CircleShape)
+                                .background(Color(0xFFF9F9F9)),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
 
                     Column(modifier = Modifier.padding(start = 12.dp).weight(1f)) {
                         Text(
@@ -206,7 +218,7 @@ fun GaragemScreen(
                                 nome = veiculo.modelo,
                                 placa = veiculo.placa,
                                 score = veiculo.score ?: "100.0",
-                                imageRes = R.drawable.icone_carro_moderno
+                                fotoUrl = veiculo.foto
                             ) {
                                 navController.navigate("DetailsCar")
                             }
@@ -261,25 +273,77 @@ fun IconeRedondoHeader(iconRes: Int, onClick: () -> Unit, temNotificacao: Boolea
 }
 
 @Composable
-fun CardCarroDesign(nome: String, placa: String, score: String, imageRes: Int, onClick: () -> Unit) {
+fun CardCarroDesign(nome: String, placa: String, score: String, fotoUrl: String?, onClick: () -> Unit) {
     Surface(
-        modifier = Modifier.fillMaxWidth().height(145.dp).clickable { onClick() },
+        modifier = Modifier.fillMaxWidth().height(140.dp).clickable { onClick() },
         shape = RoundedCornerShape(24.dp),
         color = Color.White,
         shadowElevation = 1.dp
     ) {
         Row(modifier = Modifier.fillMaxSize()) {
             Box(modifier = Modifier.fillMaxHeight().width(5.dp).background(CorPrimariaVermelha))
-            Row(modifier = Modifier.fillMaxSize().padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
-                Column(modifier = Modifier.weight(1.2f)) {
-                    Text(nome, fontFamily = Poppins, fontSize = 19.sp, fontWeight = FontWeight.Bold)
-                    Text(placa, fontFamily = Poppins, fontSize = 13.sp, color = Color.Gray)
-                    Spacer(modifier = Modifier.height(18.dp))
+
+            Row(
+                modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp, vertical = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = nome,
+                        fontFamily = Poppins,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                    )
+                    Text(text = placa, fontFamily = Poppins, fontSize = 13.sp, color = Color.Gray)
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    val displayScore = score.ifBlank { "100.00" }
+
                     Surface(color = BadgeRosadaCard, shape = RoundedCornerShape(12.dp)) {
-                        Text(score, fontFamily = Poppins, modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp), fontWeight = FontWeight.Black, color = Color.Black)
+                        Text(
+                            text = displayScore,
+                            fontFamily = Poppins,
+                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
+                            fontWeight = FontWeight.Black,
+                            color = Color.Black,
+                            fontSize = 12.sp
+                        )
                     }
                 }
-                Image(painterResource(id = imageRes), null, modifier = Modifier.weight(1f).fillMaxHeight(), contentScale = ContentScale.Fit)
+
+                Spacer(modifier = Modifier.width(12.dp))
+
+                Surface(
+                    modifier = Modifier
+                        .width(105.dp)
+                        .height(75.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    color = Color(0xFFF9F9F9)
+                ) {
+                    if (!fotoUrl.isNullOrBlank()) {
+                        AsyncImage(
+                            model = fotoUrl,
+                            contentDescription = "Foto do $nome",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop,
+                            error = painterResource(id = R.drawable.icone_carro_moderno),
+                            placeholder = painterResource(id = R.drawable.icone_carro_moderno)
+                        )
+                    } else {
+                        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.icone_carro_moderno),
+                                contentDescription = null,
+                                tint = Color.LightGray,
+                                modifier = Modifier.size(36.dp)
+                            )
+                        }
+                    }
+                }
             }
         }
     }

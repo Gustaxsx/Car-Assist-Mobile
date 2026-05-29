@@ -1,8 +1,7 @@
 package com.example.car_assist_mobile.data.network
 
+import com.example.car_assist_mobile.data.model.ApiResponseVeiculos
 import com.example.car_assist_mobile.data.model.ApiResponse
-import com.example.car_assist_mobile.data.model.CarListResponse
-import com.example.car_assist_mobile.data.model.CarRequest
 import com.example.car_assist_mobile.data.model.LoginRequest
 import com.example.car_assist_mobile.data.model.LoginResponse
 import com.example.car_assist_mobile.data.model.ProfileDataResponse
@@ -35,17 +34,22 @@ interface ApiService {
         @Body request: RegisterRequest
     ): Response<ApiResponse>
 
-    @Headers("Content-Type: application/json", "Accept: application/json")
+    @Multipart
     @POST("v1/car-assist/veiculo-usuario")
     suspend fun cadastrarVeiculo(
-        @Body carRequest: CarRequest
+        @Part("id_usuario") idUsuario: RequestBody,
+        @Part("modelo") modelo: RequestBody,
+        @Part("marca") marca: RequestBody,
+        @Part("placa") placa: RequestBody,
+        @Part("ano") ano: RequestBody,
+        @Part("cor") cor: RequestBody,
+        @Part foto_veiculo: MultipartBody.Part? = null
     ): Response<ApiResponse>
 
-    @Headers("Content-Type: application/json", "Accept: application/json")
-    @GET("v1/car-assist/usuario-veiculo/{id_usuario}")
+    @GET("v1/car-assist/usuario-veiculo/{id}")
     suspend fun buscarVeiculosPorUsuario(
-        @Path("id_usuario") idUsuario: Int
-    ): Response<CarListResponse>
+        @Path("id") idUsuario: Int
+    ): Response<ApiResponseVeiculos>
 
     @Headers("Content-Type: application/json", "Accept: application/json")
     @GET("v1/car-assist/usuario/{id}")
@@ -61,7 +65,7 @@ interface ApiService {
         @Part("nome") nome: RequestBody,
         @Part("email") email: RequestBody,
         @Part("cpf") cpf: RequestBody,
-        @Part("foto_usuario") fotoUsuarioAntiga: RequestBody,
+        @Part("foto_usuario") fotoUsuarioAntiga: RequestBody?,
         @Part("senha") senha: RequestBody,
         @Part foto: MultipartBody.Part? = null
     ): Response<ProfileDataResponse>

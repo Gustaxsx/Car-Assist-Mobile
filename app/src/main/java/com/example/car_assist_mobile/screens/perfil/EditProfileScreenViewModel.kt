@@ -1,6 +1,8 @@
 package com.example.car_assist_mobile.screens.perfil
 
 import android.app.Application
+import android.content.Context
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,7 +12,12 @@ import com.example.car_assist_mobile.data.SessionManager
 import com.example.car_assist_mobile.data.network.RetrofitClient
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
+import java.io.FileOutputStream
 
 class EditProfileScreenViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -22,6 +29,9 @@ class EditProfileScreenViewModel(application: Application) : AndroidViewModel(ap
     var email by mutableStateOf("")
 
     var urlFotoBanco by mutableStateOf("")
+
+    var fotoSelecionadaUri by mutableStateOf<Uri?>(null)
+        private set
 
     private var senhaBanco = ""
 
@@ -45,6 +55,10 @@ class EditProfileScreenViewModel(application: Application) : AndroidViewModel(ap
         if (nome.isBlank() || cpf.isBlank() || urlFotoBanco.isBlank()) {
             buscarDadosFaltantesNoServidor(idUsuarioLogado)
         }
+    }
+
+    fun selecionarNovaFoto(uri: Uri) {
+        fotoSelecionadaUri = uri
     }
 
     private fun buscarDadosFaltantesNoServidor(idUsuarioLogado: Int) {
@@ -116,7 +130,33 @@ class EditProfileScreenViewModel(application: Application) : AndroidViewModel(ap
         mostrarDialogSenha = true
     }
 
-    fun confirmarSenhaEAtualizar(idUsuarioLogado: Int) {
+    private fun prepararArquivoFoto(context: Context, uri: Uri): MultipartBody.Part? {
+        try {
+            val inputStream = context.contentResolver.openInputStream(uri) ?: return null
+            val arquivoTemporario = File(context.cacheDir, "perfil_upload.jpg")
+            val outputStream = FileOutputStream(arquivoTemporario)
+
+            inputStream.use { input ->
+                outputStream.use { output ->
+                    input.copyTo(output)
+                }
+            }
+
+            val requestFile = arquivoTemporario.asRequestBody("image/jpeg".toMediaTypeOrNull())
+
+            return MultipartBody.Part.createFormData(
+                "foto_usuario",
+                arquivoTemporario.name,
+                requestFile
+            )
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
+        }
+    }
+
+    fun confirmarSenhaEAtualizar(idUsuarioLogado: Int, context: Context) {
         if (senhaConfirmacao.trim() != senhaBanco.trim()) {
             erroSenhaDialog = "Senha incorreta. Verifique os dados."
             return
@@ -134,9 +174,13 @@ class EditProfileScreenViewModel(application: Application) : AndroidViewModel(ap
         val cpfPart = cpf.trim().toRequestBody(mediaType)
         val senhaPart = senhaBanco.trim().toRequestBody(mediaType)
 
-        val fotoUsuarioPart = urlFotoBanco.trim().toRequestBody(mediaType)
+        val fotoMultipart = fotoSelecionadaUri?.let { prepararArquivoFoto(context, it) }
 
-        android.util.Log.d("DEBUG_MULTIPART", "== ENVIANDO SEM MUDAR DATA/FOTO ==")
+        val fotoUsuarioPart = if (fotoMultipart == null) {
+            urlFotoBanco.trim().toRequestBody(mediaType)
+        } else {
+            null
+        }
 
         viewModelScope.launch {
             try {
@@ -148,7 +192,7 @@ class EditProfileScreenViewModel(application: Application) : AndroidViewModel(ap
                     cpf = cpfPart,
                     fotoUsuarioAntiga = fotoUsuarioPart,
                     senha = senhaPart,
-                    foto = null
+                    foto = fotoMultipart
                 )
 
                 isLoading = false
@@ -158,15 +202,9 @@ class EditProfileScreenViewModel(application: Application) : AndroidViewModel(ap
 
                     if (corpoResposta?.status == true) {
                         successMessage = "Perfil atualizado com sucesso!"
+                        fotoSelecionadaUri = null
 
-                        sessionManager.salvarSessao(
-                            id = idUsuarioLogado,
-                            nome = nome.trim(),
-                            email = email.trim(),
-                            cpf = cpf,
-                            dataNasc = sessionManager.getUserDataNasc(),
-                            senhaAtrevia = senhaBanco
-                        )
+                        buscarDadosFaltantesNoServidor(idUsuarioLogado)
                     } else {
                         errorMessage = corpoResposta?.message ?: "Erro interno da API ao atualizar."
                     }
