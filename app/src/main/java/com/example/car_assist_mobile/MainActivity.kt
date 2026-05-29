@@ -98,8 +98,18 @@ class MainActivity : ComponentActivity() {
                             RegisterCarScreen(navController = navController, idUsuarioLogado = idUsuario)
                         }
 
-                        composable(route = "DetailsCar") {
-                            DetailsCarScreen(navController)
+                        composable(
+                            route = "DetailsCar/{veiculoId}",
+                            arguments = listOf(androidx.navigation.navArgument("veiculoId") {
+                                type = androidx.navigation.NavType.IntType
+                            })
+                        ) { backStackEntry ->
+                            val veiculoId = backStackEntry.arguments?.getInt("veiculoId") ?: 0
+
+                            DetailsCarScreen(
+                                navController = navController,
+                                veiculoId = veiculoId
+                            )
                         }
                         composable(route = "ChatBot") {
                             ChatBotScreen(navController)

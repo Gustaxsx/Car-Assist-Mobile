@@ -2,6 +2,7 @@ package com.example.car_assist_mobile.data.network
 
 import com.example.car_assist_mobile.data.model.ApiResponseVeiculos
 import com.example.car_assist_mobile.data.model.ApiResponse
+import com.example.car_assist_mobile.data.model.ApiResponseSingleVeiculo
 import com.example.car_assist_mobile.data.model.LoginRequest
 import com.example.car_assist_mobile.data.model.LoginResponse
 import com.example.car_assist_mobile.data.model.ProfileDataResponse
@@ -27,6 +28,11 @@ interface ApiService {
     suspend fun login(
         @Body request: LoginRequest
     ): Response<LoginResponse>
+
+    @GET("v1/car-assist/veiculo/{id}")
+    suspend fun buscarVeiculoPorId(
+        @Path("id") id: Int
+    ): Response<ApiResponseSingleVeiculo>
 
     @Headers("Content-Type: application/json", "Accept: application/json")
     @POST("v1/car-assist/usuario")
@@ -69,4 +75,6 @@ interface ApiService {
         @Part("senha") senha: RequestBody,
         @Part foto: MultipartBody.Part? = null
     ): Response<ProfileDataResponse>
+
+
 }

@@ -22,9 +22,21 @@ data class UsuarioVeiculo(
 data class VeiculoResponse(
     val id: Int,
     val placa: String,
+    val marca: String?,
     val modelo: String,
     val cor: String?,
     val score: String?,
     val ano: Int?,
     val foto: String?
+)
+
+data class ApiResponseSingleVeiculo(
+    val status: Boolean,
+    val status_code: Int,
+    val message: String,
+    val data: DataSingleVeiculo?
+)
+
+data class DataSingleVeiculo(
+    val veiculo: List<VeiculoResponse>?
 )

@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -20,13 +21,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.car_assist_mobile.R
 import com.example.car_assist_mobile.components.CustomBottomBar
 import com.example.car_assist_mobile.ui.theme.Poppins
 
 @Composable
-fun DetailsCarScreen(navController: NavController) {
+fun DetailsCarScreen(
+    navController: NavController,
+    veiculoId: Int,
+    viewModel: DetailsCarViewModel = viewModel()
+) {
+    LaunchedEffect(veiculoId) {
+        viewModel.carregarDadosDoVeiculo(veiculoId)
+    }
 
     Scaffold(
         containerColor = Color.White,
@@ -49,6 +58,7 @@ fun DetailsCarScreen(navController: NavController) {
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
+
             Image(
                 painter = painterResource(id = R.drawable.icone_carro_branco),
                 contentDescription = null,
@@ -103,9 +113,12 @@ fun DetailsCarScreen(navController: NavController) {
 
                 Spacer(modifier = Modifier.height(50.dp))
 
-                Column(horizontalAlignment = Alignment.Start) {
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier.fillMaxWidth(0.65f)
+                ) {
                     Text(
-                        text = "Fiat",
+                        text = viewModel.marca,
                         fontSize = 14.sp,
                         color = Color.Gray,
                         fontWeight = FontWeight.Bold,
@@ -113,12 +126,14 @@ fun DetailsCarScreen(navController: NavController) {
                     )
 
                     Text(
-                        text = "Fastback\nAbarth",
-                        fontSize = 38.sp,
-                        lineHeight = 44.sp,
+                        text = viewModel.modelo.replace("_", " "),
+                        fontSize = 32.sp,
+                        lineHeight = 36.sp,
                         fontWeight = FontWeight.Black,
                         fontFamily = Poppins,
-                        color = Color.Black
+                        color = Color.Black,
+                        maxLines = 2,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                     )
                 }
 

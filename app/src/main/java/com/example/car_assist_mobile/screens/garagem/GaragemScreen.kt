@@ -220,7 +220,7 @@ fun GaragemScreen(
                                 score = veiculo.score ?: "100.0",
                                 fotoUrl = veiculo.foto
                             ) {
-                                navController.navigate("DetailsCar")
+                                navController.navigate("DetailsCar/${veiculo.id}")
                             }
                         }
                     }
