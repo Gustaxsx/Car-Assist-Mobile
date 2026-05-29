@@ -147,7 +147,7 @@ fun DetailsCarScreen(
                         text = "Editar Dados",
                         iconRes = R.drawable.icone_pincel
                     ) {
-                        navController.navigate("EditCar")
+                        navController.navigate("EditCar/$veiculoId")
                     }
 
                     ActionRow(

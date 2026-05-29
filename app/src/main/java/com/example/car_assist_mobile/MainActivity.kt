@@ -129,8 +129,14 @@ class MainActivity : ComponentActivity() {
                         composable(route = "AddManutencao") {
                             AddManutencaoScreen(navController)
                         }
-                        composable(route = "EditCar") {
-                            EditCarScreen(navController)
+                        composable(
+                            route = "EditCar/{veiculoId}",
+                            arguments = listOf(androidx.navigation.navArgument("veiculoId") {
+                                type = androidx.navigation.NavType.IntType
+                            })
+                        ) { backStackEntry ->
+                            val veiculoId = backStackEntry.arguments?.getInt("veiculoId") ?: 0
+                            EditCarScreen(navController = navController, veiculoId = veiculoId)
                         }
                         composable(route = "Posto") {
                             PostoScreen(navController)
