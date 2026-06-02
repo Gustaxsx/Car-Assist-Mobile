@@ -5,9 +5,11 @@ import com.example.car_assist_mobile.data.model.ApiResponse
 import com.example.car_assist_mobile.data.model.ApiResponseSingleVeiculo
 import com.example.car_assist_mobile.data.model.LoginRequest
 import com.example.car_assist_mobile.data.model.LoginResponse
+import com.example.car_assist_mobile.data.model.ManutencaoResponse
 import com.example.car_assist_mobile.data.model.ProfileDataResponse
 import com.example.car_assist_mobile.data.model.ProfileGetResponse
 import com.example.car_assist_mobile.data.model.RegisterRequest
+import com.example.car_assist_mobile.data.model.TipoManutencaoResponse
 import com.example.car_assist_mobile.data.model.UpdateUserRequest
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -76,5 +78,22 @@ interface ApiService {
         @Part foto: MultipartBody.Part? = null
     ): Response<ProfileDataResponse>
 
+    @Multipart
+    @POST("v1/car-assist/manutencao-evidencia")
+    suspend fun adicionarManutencao(
+        @Part("data_manutencao") dataManutencao: RequestBody,
+        @Part("custo") custo: RequestBody,
+        @Part("quilometragem") quilometragem: RequestBody,
+        @Part("oficina") oficina: RequestBody,
+        @Part("observacoes") observacoes: RequestBody,
+        @Part("fk_id_tipo_manutencao") idTipoManutencao: RequestBody,
+        @Part("fk_id_usuario") idUsuario: RequestBody,
+        @Part("fk_id_veiculo") idVeiculo: RequestBody,
+        @Part("pecas") pecas: RequestBody,
+        @Part evidencias: List<MultipartBody.Part>? = null
+    ): Response<ManutencaoResponse>
+
+    @GET("v1/car-assist/tipo-manutencao/")
+    suspend fun buscarTiposManutencao(): Response<TipoManutencaoResponse>
 
 }
