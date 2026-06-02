@@ -14,7 +14,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.car_assist_mobile.screens.adicionarcarro.AddCarScreen
-import com.example.car_assist_mobile.screens.adicionarlembrete.AddLembreteScreen
 import com.example.car_assist_mobile.screens.adicionarmanutencao.AddManutencaoScreen
 import com.example.car_assist_mobile.screens.cadastro.RegisterScreen
 import com.example.car_assist_mobile.screens.cadastrodecarro.RegisterCarScreen
@@ -25,6 +24,7 @@ import com.example.car_assist_mobile.screens.garagem.GaragemScreen
 import com.example.car_assist_mobile.screens.gastos.GastosScreen
 import com.example.car_assist_mobile.screens.guincho.GuinchoScreen
 import com.example.car_assist_mobile.screens.lavarapido.LavaRapidoScreen
+import com.example.car_assist_mobile.screens.lembrete.AddLembreteScreen
 import com.example.car_assist_mobile.screens.lembrete.LembreteScreen
 import com.example.car_assist_mobile.screens.login.LoginScreen
 import com.example.car_assist_mobile.screens.manutencao.ManutencaoScreen
@@ -101,11 +101,14 @@ class MainActivity : ComponentActivity() {
                         composable(route = "ChatBot") {
                             ChatBotScreen(navController)
                         }
-                        composable(route = "Lembrete") {
-                            LembreteScreen(navController)
+                        composable("Lembrete/{veiculoId}") { backStackEntry ->
+                            val veiculoId = backStackEntry.arguments?.getString("veiculoId")?.toIntOrNull() ?: 0
+                            LembreteScreen(navController = navController, veiculoId = veiculoId)
                         }
-                        composable(route = "AddLembrete") {
-                            AddLembreteScreen(navController)
+
+                        composable("AddLembrete/{veiculoId}") { backStackEntry ->
+                            val veiculoId = backStackEntry.arguments?.getString("veiculoId")?.toIntOrNull() ?: 0
+                            AddLembreteScreen(navController = navController, veiculoId = veiculoId)
                         }
                         composable(route = "Gastos") {
                             GastosScreen(navController)
