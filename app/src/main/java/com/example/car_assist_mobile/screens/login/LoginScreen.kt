@@ -109,19 +109,19 @@ fun LoginScreen(
 
                 CustomInputField(
                     label = "E-mail",
+                    placeholder = "Digite seu e-mail",
                     value = viewModel.email,
                     onValueChange = { viewModel.email = it }
-                    // Não precisa passar nada aqui, o padrão é 'VisualTransformation.None'
                 )
 
                 Spacer(modifier = Modifier.height(18.dp))
 
-                // CORREÇÃO AQUI: Passando a transformação de senha
                 CustomInputField(
                     label = "Senha",
+                    placeholder = "Digite sua senha",
                     value = viewModel.senha,
                     onValueChange = { viewModel.senha = it },
-                    visualTransformation = PasswordVisualTransformation() // Oculta a senha
+                    visualTransformation = PasswordVisualTransformation()
                 )
 
                 Text(
@@ -199,13 +199,13 @@ fun LoginScreen(
     }
 }
 
-// CORREÇÃO E MELHORIA NO CUSTOMINPUTFIELD
 @Composable
 fun CustomInputField(
     label: String,
+    placeholder: String,
     value: String,
     onValueChange: (String) -> Unit,
-    visualTransformation: VisualTransformation = VisualTransformation.None // Padrão: sem máscara
+    visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -225,6 +225,15 @@ fun CustomInputField(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(60.dp),
+            placeholder = {
+                Text(
+                    text = placeholder,
+                    fontFamily = Poppins,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 14.sp,
+                    color = Color.Gray
+                )
+            },
             shape = RoundedCornerShape(18.dp),
             singleLine = true,
             visualTransformation = visualTransformation,
