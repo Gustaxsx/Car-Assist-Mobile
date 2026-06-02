@@ -40,11 +40,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Car_Assist_MobileTheme {
-
                 val navController = rememberNavController()
-
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-
                     NavHost(
                         navController = navController,
                         startDestination = "login",
@@ -56,7 +53,9 @@ class MainActivity : ComponentActivity() {
                         composable(route = "register") {
                             RegisterScreen(navController)
                         }
-
+                        composable(route = "cadastro") {
+                            RegisterScreen(navController)
+                        }
                         composable(
                             route = "profile/{idUsuario}",
                             arguments = listOf(navArgument("idUsuario") { type = NavType.IntType })
@@ -64,7 +63,6 @@ class MainActivity : ComponentActivity() {
                             val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: 0
                             EditProfileScreen(navController = navController, idUsuarioLogado = idUsuario)
                         }
-
                         composable(
                             route = "garagem/{idUsuario}",
                             arguments = listOf(navArgument("idUsuario") { type = NavType.IntType })
@@ -72,7 +70,6 @@ class MainActivity : ComponentActivity() {
                             val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: 0
                             GaragemScreen(navController = navController, idUsuarioLogado = idUsuario)
                         }
-
                         composable(
                             route = "service/{idUsuario}",
                             arguments = listOf(navArgument("idUsuario") { type = NavType.IntType })
@@ -80,16 +77,13 @@ class MainActivity : ComponentActivity() {
                             val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: 0
                             ServicesScreen(navController = navController, idUsuarioLogado = idUsuario)
                         }
-
                         composable(
                             route = "AddCar/{idUsuario}",
                             arguments = listOf(navArgument("idUsuario") { type = NavType.IntType })
                         ) { backStackEntry ->
-
                             val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: 0
                             AddCarScreen(navController = navController, idUsuarioLogado = idUsuario)
                         }
-
                         composable(
                             route = "RegisterCar/{idUsuario}",
                             arguments = listOf(navArgument("idUsuario") { type = NavType.IntType })
@@ -97,19 +91,12 @@ class MainActivity : ComponentActivity() {
                             val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: 0
                             RegisterCarScreen(navController = navController, idUsuarioLogado = idUsuario)
                         }
-
                         composable(
                             route = "DetailsCar/{veiculoId}",
-                            arguments = listOf(androidx.navigation.navArgument("veiculoId") {
-                                type = androidx.navigation.NavType.IntType
-                            })
+                            arguments = listOf(navArgument("veiculoId") { type = NavType.IntType })
                         ) { backStackEntry ->
                             val veiculoId = backStackEntry.arguments?.getInt("veiculoId") ?: 0
-
-                            DetailsCarScreen(
-                                navController = navController,
-                                veiculoId = veiculoId
-                            )
+                            DetailsCarScreen(navController = navController, veiculoId = veiculoId)
                         }
                         composable(route = "ChatBot") {
                             ChatBotScreen(navController)
@@ -131,9 +118,7 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(
                             route = "EditCar/{veiculoId}",
-                            arguments = listOf(androidx.navigation.navArgument("veiculoId") {
-                                type = androidx.navigation.NavType.IntType
-                            })
+                            arguments = listOf(navArgument("veiculoId") { type = NavType.IntType })
                         ) { backStackEntry ->
                             val veiculoId = backStackEntry.arguments?.getInt("veiculoId") ?: 0
                             EditCarScreen(navController = navController, veiculoId = veiculoId)
