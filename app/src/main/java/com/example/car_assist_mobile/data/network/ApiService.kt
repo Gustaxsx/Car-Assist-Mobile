@@ -2,7 +2,9 @@ package com.example.car_assist_mobile.data.network
 
 import com.example.car_assist_mobile.data.model.ApiResponseVeiculos
 import com.example.car_assist_mobile.data.model.ApiResponse
+import com.example.car_assist_mobile.data.model.ApiResponseLembrete
 import com.example.car_assist_mobile.data.model.ApiResponseSingleVeiculo
+import com.example.car_assist_mobile.data.model.LembreteRequest
 import com.example.car_assist_mobile.data.model.LoginRequest
 import com.example.car_assist_mobile.data.model.LoginResponse
 import com.example.car_assist_mobile.data.model.ProfileDataResponse
@@ -76,5 +78,9 @@ interface ApiService {
         @Part foto: MultipartBody.Part? = null
     ): Response<ProfileDataResponse>
 
+    @POST("v1/car-assist/lembrete")
+    suspend fun cadastrarLembrete(
+        @Body request: LembreteRequest
+    ): Response<ApiResponseLembrete>
 
 }

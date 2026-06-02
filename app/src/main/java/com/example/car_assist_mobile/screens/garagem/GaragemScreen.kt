@@ -139,7 +139,11 @@ fun GaragemScreen(
 
                     IconeRedondoHeader(iconRes = R.drawable.icone_chat, onClick = { navController.navigate("chatbot") })
                     Spacer(modifier = Modifier.width(12.dp))
-                    IconeRedondoHeader(iconRes = R.drawable.icone_envelope, onClick = { navController.navigate("Lembrete") }, temNotificacao = true)
+                    IconeRedondoHeader(
+                        iconRes = R.drawable.icone_envelope,
+                        onClick = { navController.navigate("Lembrete/0") },
+                        temNotificacao = true
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(30.dp))

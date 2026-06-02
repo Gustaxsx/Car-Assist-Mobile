@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,21 +20,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.car_assist_mobile.components.CustomBottomBar
 
 data class Reminder(val text: String, val isUrgent: Boolean)
 
 @Composable
-fun LembreteScreen(navController: NavController) {
-    val reminders = listOf(
-        Reminder("Troca de óleo em 2 dias", true),
-        Reminder("Revisão dos freios", true),
-        Reminder("Renovação do seguro", false),
-        Reminder("Calibragem dos pneus", false),
-        Reminder("Limpeza do ar-condicionado", false),
-        Reminder("Troca do filtro de ar", false)
-    )
+fun LembreteScreen(
+    navController: NavController,
+    veiculoId: Int,
+    viewModel: LembreteScreenViewModel = viewModel()
+) {
+    LaunchedEffect(veiculoId) {
+        viewModel.buscarLembretes(veiculoId)
+    }
 
     Scaffold(
         bottomBar = {
@@ -80,7 +81,7 @@ fun LembreteScreen(navController: NavController) {
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(reminders) { reminder ->
+                items(viewModel.listaLembretes) { reminder ->
                     ReminderItem(reminder)
                 }
             }
@@ -88,7 +89,7 @@ fun LembreteScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = {navController.navigate("AddLembrete")},
+                onClick = { navController.navigate("AddLembrete/$veiculoId") }, // 💡 Passa o ID pro cadastro
                 modifier = Modifier
                     .height(48.dp)
                     .width(220.dp),
