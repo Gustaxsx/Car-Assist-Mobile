@@ -7,12 +7,15 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.car_assist_mobile.data.SessionManager
 import com.example.car_assist_mobile.screens.adicionarcarro.AddCarScreen
 import com.example.car_assist_mobile.screens.adicionarmanutencao.AddManutencaoScreen
 import com.example.car_assist_mobile.screens.cadastro.RegisterScreen
@@ -24,8 +27,8 @@ import com.example.car_assist_mobile.screens.garagem.GaragemScreen
 import com.example.car_assist_mobile.screens.gastos.GastosScreen
 import com.example.car_assist_mobile.screens.guincho.GuinchoScreen
 import com.example.car_assist_mobile.screens.lavarapido.LavaRapidoScreen
-//import com.example.car_assist_mobile.screens.lembrete.AddLembreteScreen
-//import com.example.car_assist_mobile.screens.lembrete.LembreteScreen
+import com.example.car_assist_mobile.screens.lembrete.AddLembreteScreen
+import com.example.car_assist_mobile.screens.lembrete.LembreteScreen
 import com.example.car_assist_mobile.screens.login.LoginScreen
 import com.example.car_assist_mobile.screens.manutencao.ManutencaoScreen
 import com.example.car_assist_mobile.screens.oficina.OficinaScreen
@@ -41,6 +44,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             Car_Assist_MobileTheme {
                 val navController = rememberNavController()
+
+                // 💡 Recupera o contexto e o SessionManager para obter o ID do usuário logado localmente
+                val context = LocalContext.current
+                val sessionManager = remember { SessionManager(context) }
+
+                // 💡 Busca o ID guardado na sessão. Caso o seu método tenha outro nome (ex: getUserId), altere aqui.
+                val idUsuarioLogado = sessionManager.getUserId()
+
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(
                         navController = navController,
@@ -101,15 +112,21 @@ class MainActivity : ComponentActivity() {
                         composable(route = "ChatBot") {
                             ChatBotScreen(navController)
                         }
-//                        composable("Lembrete/{veiculoId}") { backStackEntry ->
-//                            val veiculoId = backStackEntry.arguments?.getString("veiculoId")?.toIntOrNull() ?: 0
-//                            LembreteScreen(navController = navController, veiculoId = veiculoId)
-//                        }
-
-//                        composable("AddLembrete/{veiculoId}") { backStackEntry ->
-//                            val veiculoId = backStackEntry.arguments?.getString("veiculoId")?.toIntOrNull() ?: 0
-//                            AddLembreteScreen(navController = navController, veiculoId = veiculoId)
-//                        }
+                        composable("Lembrete/{veiculoId}") { backStackEntry ->
+                            val veiculoId = backStackEntry.arguments?.getString("veiculoId")?.toIntOrNull() ?: 0
+                            LembreteScreen(
+                                navController = navController,
+                                veiculoId = veiculoId
+                            )
+                        }
+                        composable("AddLembrete/{veiculoId}") { backStackEntry ->
+                            val veiculoId = backStackEntry.arguments?.getString("veiculoId")?.toIntOrNull() ?: 0
+                            AddLembreteScreen(
+                                navController = navController,
+                                veiculoId = veiculoId,
+                                idUsuarioLogado = idUsuarioLogado
+                            )
+                        }
                         composable(route = "Gastos") {
                             GastosScreen(navController)
                         }
