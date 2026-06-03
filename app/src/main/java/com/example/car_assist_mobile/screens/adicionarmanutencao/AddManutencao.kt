@@ -6,6 +6,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -42,11 +43,14 @@ import com.example.car_assist_mobile.data.model.TipoManutencaoItem
 @Composable
 fun AddManutencaoScreen(
     navController: NavController,
+    idUsuarioLogado: Int,
+    idVeiculoAtual: Int,
     viewModel: AddManutencaoScreenViewModel = viewModel()
 ) {
     val context = LocalContext.current
 
-    var data by remember { mutableStateOf("") }
+    var dataUI by remember { mutableStateOf("") }
+    var dataAPI by remember { mutableStateOf("") }
     var valor by remember { mutableStateOf("") }
     var km by remember { mutableStateOf("") }
     var oficina by remember { mutableStateOf("") }
@@ -54,7 +58,6 @@ fun AddManutencaoScreen(
     var observacoes by remember { mutableStateOf("") }
     var selectedImagesUris by remember { mutableStateOf<List<Uri>>(emptyList()) }
 
-    // Estados para o Select/Dropdown do Tipo de Manutenção
     var fkIdTipoManutencao by remember { mutableStateOf<Int?>(null) }
     var selectedTipoText by remember { mutableStateOf("") }
 
@@ -131,7 +134,14 @@ fun AddManutencaoScreen(
                 )
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    ManutencaoInput("Data", value = data, onValueChange = { data = it }, placeholder = "Ex: 2025-01-20", modifier = Modifier.weight(1f))
+                    DataPickerInput(
+                        valueUI = dataUI,
+                        onDateSelected = { uiDate, apiDate ->
+                            dataUI = uiDate
+                            dataAPI = apiDate
+                        },
+                        modifier = Modifier.weight(1f)
+                    )
                     ManutencaoInput("Valor", value = valor, onValueChange = { valor = it }, placeholder = "Ex: 150.00", modifier = Modifier.weight(1f))
                 }
 
@@ -161,15 +171,15 @@ fun AddManutencaoScreen(
                     Button(
                         onClick = {
                             viewModel.cadastrarManutencao(
-                                dataManutencao = data,
+                                dataManutencao = dataAPI,
                                 custo = valor,
                                 quilometragem = km,
                                 oficina = oficina,
                                 observacoes = observacoes,
                                 pecas = pecas,
-                                fkIdTipoManutencao = fkIdTipoManutencao, // Passando ID vindo do Select
-                                fkIdUsuario = 1,        // ID fixo para teste
-                                fkIdVeiculo = 9,        // ID fixo para teste
+                                fkIdTipoManutencao = fkIdTipoManutencao,
+                                fkIdUsuario = idUsuarioLogado,
+                                fkIdVeiculo = idVeiculoAtual,
                                 imagensUris = selectedImagesUris
                             )
                         },
@@ -324,8 +334,7 @@ fun EvidenciaImagePicker(
                 .height(45.dp),
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.White),
-            border = BorderStroke(1.dp, Color(0xFFE8E8E8)),
-            contentPadding = PaddingValues(horizontal = 16.dp)
+            border = BorderStroke(1.dp, Color(0xFFE8E8E8))
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -368,6 +377,89 @@ fun EvidenciaImagePicker(
                     )
                 }
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DataPickerInput(
+    valueUI: String,
+    onDateSelected: (String, String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var showDialog by remember { mutableStateOf(false) }
+    val datePickerState = rememberDatePickerState()
+
+    if (showDialog) {
+        DatePickerDialog(
+            onDismissRequest = { showDialog = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    datePickerState.selectedDateMillis?.let { millis ->
+                        val formatterUI = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale("pt", "BR"))
+                        val formatterAPI = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault())
+
+                        formatterUI.timeZone = java.util.TimeZone.getTimeZone("UTC")
+                        formatterAPI.timeZone = java.util.TimeZone.getTimeZone("UTC")
+
+                        val date = java.util.Date(millis)
+                        onDateSelected(formatterUI.format(date), formatterAPI.format(date))
+                    }
+                    showDialog = false
+                }) {
+                    Text("OK", color = Color(0xFF910D0D))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDialog = false }) {
+                    Text("Cancelar", color = Color.Gray)
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
+
+    Column(modifier = modifier.padding(bottom = 6.dp)) {
+        Text(
+            text = "Data",
+            color = Color.Black,
+            fontSize = 12.sp,
+            modifier = Modifier.padding(start = 4.dp, bottom = 2.dp)
+        )
+
+        Box(modifier = Modifier.fillMaxWidth()) {
+            OutlinedTextField(
+                value = valueUI,
+                onValueChange = {},
+                readOnly = true,
+                modifier = Modifier
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(8.dp),
+                singleLine = true,
+                textStyle = TextStyle(fontSize = 13.sp, color = Color.Black),
+                placeholder = {
+                    Text(
+                        text = "DD/MM/AAAA",
+                        color = Color.LightGray,
+                        fontSize = 13.sp,
+                        maxLines = 1
+                    )
+                },
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = Color(0xFFE8E8E8),
+                    focusedBorderColor = Color.Gray,
+                    unfocusedContainerColor = Color.White,
+                    focusedContainerColor = Color.White
+                )
+            )
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .clickable { showDialog = true }
+                    .background(Color.Transparent)
+            )
         }
     }
 }

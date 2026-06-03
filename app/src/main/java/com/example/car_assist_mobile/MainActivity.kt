@@ -92,11 +92,19 @@ class MainActivity : ComponentActivity() {
                             RegisterCarScreen(navController = navController, idUsuarioLogado = idUsuario)
                         }
                         composable(
-                            route = "DetailsCar/{veiculoId}",
-                            arguments = listOf(navArgument("veiculoId") { type = NavType.IntType })
+                            route = "DetailsCar/{idUsuario}/{veiculoId}",
+                            arguments = listOf(
+                                navArgument("idUsuario") { type = NavType.IntType },
+                                navArgument("veiculoId") { type = NavType.IntType }
+                            )
                         ) { backStackEntry ->
+                            val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: 0
                             val veiculoId = backStackEntry.arguments?.getInt("veiculoId") ?: 0
-                            DetailsCarScreen(navController = navController, veiculoId = veiculoId)
+                            DetailsCarScreen(
+                                navController = navController,
+                                idUsuarioLogado = idUsuario,
+                                veiculoId = veiculoId
+                            )
                         }
                         composable(route = "ChatBot") {
                             ChatBotScreen(navController)
@@ -110,11 +118,36 @@ class MainActivity : ComponentActivity() {
                         composable(route = "Gastos") {
                             GastosScreen(navController)
                         }
-                        composable(route = "Manutencao") {
-                            ManutencaoScreen(navController)
+                        composable(
+                            route = "Manutencao/{idUsuario}/{veiculoId}",
+                            arguments = listOf(
+                                navArgument("idUsuario") { type = NavType.IntType },
+                                navArgument("veiculoId") { type = NavType.IntType }
+                            )
+                        ) { backStackEntry ->
+                            val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: 0
+                            val veiculoId = backStackEntry.arguments?.getInt("veiculoId") ?: 0
+                            ManutencaoScreen(
+                                navController = navController,
+                                idUsuarioLogado = idUsuario,
+                                idVeiculoAtual = veiculoId
+                            )
                         }
-                        composable(route = "AddManutencao") {
-                            AddManutencaoScreen(navController)
+
+                        composable(
+                            route = "AddManutencao/{idUsuario}/{veiculoId}",
+                            arguments = listOf(
+                                navArgument("idUsuario") { type = NavType.IntType },
+                                navArgument("veiculoId") { type = NavType.IntType }
+                            )
+                        ) { backStackEntry ->
+                            val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: 0
+                            val veiculoId = backStackEntry.arguments?.getInt("veiculoId") ?: 0
+                            AddManutencaoScreen(
+                                navController = navController,
+                                idUsuarioLogado = idUsuario,
+                                idVeiculoAtual = veiculoId
+                            )
                         }
                         composable(
                             route = "EditCar/{veiculoId}",

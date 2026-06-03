@@ -2,12 +2,12 @@ package com.example.car_assist_mobile.screens.adicionarmanutencao
 
 import android.app.Application
 import android.net.Uri
-import androidx.compose.runtime.getValue // IMPORTANTE: Adicionado para o 'by' funcionar
-import androidx.compose.runtime.setValue // IMPORTANTE: Adicionado para o 'by' funcionar
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.car_assist_mobile.data.model.TipoManutencaoItem // IMPORTANTE: Import do seu Model
+import com.example.car_assist_mobile.data.model.TipoManutencaoItem
 import com.example.car_assist_mobile.data.network.RetrofitClient
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -27,18 +27,15 @@ class AddManutencaoScreenViewModel(application: Application) : AndroidViewModel(
     var isSuccess by mutableStateOf(false)
         private set
 
-    // --- VARIÁVEL QUE ESTAVA FALTANDO ---
     var tiposManutencao by mutableStateOf<List<TipoManutencaoItem>>(emptyList())
         private set
 
     private val context = application.applicationContext
 
-    // --- BLOCO QUE DISPARA A REQUISIÇÃO ASSIM QUE A VIEWMODEL INICIA ---
     init {
         carregarTiposManutencao()
     }
 
-    // --- FUNÇÃO QUE ESTAVA FALTANDO PARA BUSCAR OS TIPOS DO BANCO ---
     fun carregarTiposManutencao() {
         viewModelScope.launch {
             try {

@@ -24,7 +24,11 @@ import com.example.car_assist_mobile.components.CustomBottomBar
 data class Manutencao(val titulo: String, val data: String, val valor: String)
 
 @Composable
-fun ManutencaoScreen(navController: NavController) {
+fun ManutencaoScreen(
+    navController: NavController,
+    idUsuarioLogado: Int,
+    idVeiculoAtual: Int
+) {
 
     val listaManutencoes = listOf(
         Manutencao("Troca de Óleo", "23/12/2025", "R$350,00"),
@@ -84,7 +88,7 @@ fun ManutencaoScreen(navController: NavController) {
             }
 
             Button(
-                onClick = { navController.navigate("AddManutencao")},
+                onClick = { navController.navigate("AddManutencao/$idUsuarioLogado/$idVeiculoAtual") },
                 modifier = Modifier
                     .padding(bottom = 16.dp)
                     .height(48.dp)
