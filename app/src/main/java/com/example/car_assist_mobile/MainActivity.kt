@@ -24,8 +24,8 @@ import com.example.car_assist_mobile.screens.garagem.GaragemScreen
 import com.example.car_assist_mobile.screens.gastos.GastosScreen
 import com.example.car_assist_mobile.screens.guincho.GuinchoScreen
 import com.example.car_assist_mobile.screens.lavarapido.LavaRapidoScreen
-import com.example.car_assist_mobile.screens.lembrete.AddLembreteScreen
-import com.example.car_assist_mobile.screens.lembrete.LembreteScreen
+//import com.example.car_assist_mobile.screens.lembrete.AddLembreteScreen
+//import com.example.car_assist_mobile.screens.lembrete.LembreteScreen
 import com.example.car_assist_mobile.screens.login.LoginScreen
 import com.example.car_assist_mobile.screens.manutencao.ManutencaoScreen
 import com.example.car_assist_mobile.screens.oficina.OficinaScreen
@@ -101,15 +101,15 @@ class MainActivity : ComponentActivity() {
                         composable(route = "ChatBot") {
                             ChatBotScreen(navController)
                         }
-                        composable("Lembrete/{veiculoId}") { backStackEntry ->
-                            val veiculoId = backStackEntry.arguments?.getString("veiculoId")?.toIntOrNull() ?: 0
-                            LembreteScreen(navController = navController, veiculoId = veiculoId)
-                        }
+//                        composable("Lembrete/{veiculoId}") { backStackEntry ->
+//                            val veiculoId = backStackEntry.arguments?.getString("veiculoId")?.toIntOrNull() ?: 0
+//                            LembreteScreen(navController = navController, veiculoId = veiculoId)
+//                        }
 
-                        composable("AddLembrete/{veiculoId}") { backStackEntry ->
-                            val veiculoId = backStackEntry.arguments?.getString("veiculoId")?.toIntOrNull() ?: 0
-                            AddLembreteScreen(navController = navController, veiculoId = veiculoId)
-                        }
+//                        composable("AddLembrete/{veiculoId}") { backStackEntry ->
+//                            val veiculoId = backStackEntry.arguments?.getString("veiculoId")?.toIntOrNull() ?: 0
+//                            AddLembreteScreen(navController = navController, veiculoId = veiculoId)
+//                        }
                         composable(route = "Gastos") {
                             GastosScreen(navController)
                         }
