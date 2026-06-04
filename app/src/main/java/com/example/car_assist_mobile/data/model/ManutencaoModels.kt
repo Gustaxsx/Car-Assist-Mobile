@@ -33,3 +33,32 @@ data class ManutencaoRequest(
 data class ManutencaoResponse(
     val message: String? = null
 )
+
+data class ManutencaoListResponse(
+    val status: Boolean,
+    val status_code: Int,
+    val message: String,
+    val data: ManutencaoDataWrap?
+)
+
+data class ManutencaoDataWrap(
+    val manutencao: List<ManutencaoItemResponse>
+)
+
+data class ManutencaoItemResponse(
+    val id: Int,
+    val id_usuario: Int,
+    val id_veiculo: Int,
+    val data_manutencao: String,
+    val custo: String,
+    val quilometragem: Int,
+    val oficina: String,
+    val pecas: String,
+    val observacoes: String,
+    val tipo_manutencao: TipoManutencaoDetalhe?
+)
+
+data class TipoManutencaoDetalhe(
+    val id: Int,
+    val nome: String
+)

@@ -5,6 +5,7 @@ import com.example.car_assist_mobile.data.model.ApiResponse
 import com.example.car_assist_mobile.data.model.ApiResponseSingleVeiculo
 import com.example.car_assist_mobile.data.model.LoginRequest
 import com.example.car_assist_mobile.data.model.LoginResponse
+import com.example.car_assist_mobile.data.model.ManutencaoListResponse
 import com.example.car_assist_mobile.data.model.ManutencaoResponse
 import com.example.car_assist_mobile.data.model.ProfileDataResponse
 import com.example.car_assist_mobile.data.model.ProfileGetResponse
@@ -95,5 +96,10 @@ interface ApiService {
 
     @GET("v1/car-assist/tipo-manutencao/")
     suspend fun buscarTiposManutencao(): Response<TipoManutencaoResponse>
+
+    @GET("v1/car-assist/manutencao-veiculo/{id}")
+    suspend fun buscarManutencoesPorVeiculo(
+        @Path("id") veiculoId: Int
+    ): Response<ManutencaoListResponse>
 
 }
