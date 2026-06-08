@@ -30,6 +30,7 @@ import com.example.car_assist_mobile.ui.theme.Poppins
 @Composable
 fun DetailsCarScreen(
     navController: NavController,
+    idUsuarioLogado: Int,
     veiculoId: Int,
     viewModel: DetailsCarViewModel = viewModel()
 ) {
@@ -154,7 +155,7 @@ fun DetailsCarScreen(
                         text = "Manutenções",
                         iconRes = R.drawable.icone_engrenagem
                     ) {
-                        navController.navigate("Manutencao")
+                        navController.navigate("Manutencao/$idUsuarioLogado/$veiculoId")
                     }
 
                     ActionRow(
