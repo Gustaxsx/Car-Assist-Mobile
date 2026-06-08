@@ -47,15 +47,17 @@ data class ManutencaoDataWrap(
 
 data class ManutencaoItemResponse(
     val id: Int,
-    val id_usuario: Int,
-    val id_veiculo: Int,
-    val data_manutencao: String,
-    val custo: String,
-    val quilometragem: Int,
-    val oficina: String,
-    val pecas: String,
-    val observacoes: String,
-    val tipo_manutencao: TipoManutencaoDetalhe?
+    val id_usuario: Int?,
+    val id_veiculo: Int?,
+    val data_manutencao: String?,
+    val custo: String?,
+    val quilometragem: Int?,
+    val oficina: String?,
+    val pecas: String?,
+    val observacoes: String?,
+    val data: String?,
+    val tipo_manutencao: TipoManutencaoDetalhe?,
+    val evidencia: List<Any>?
 )
 
 data class TipoManutencaoDetalhe(

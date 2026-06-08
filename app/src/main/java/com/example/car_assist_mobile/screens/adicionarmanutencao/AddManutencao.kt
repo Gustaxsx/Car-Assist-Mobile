@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -49,21 +50,47 @@ fun AddManutencaoScreen(
 ) {
     val context = LocalContext.current
 
-    var dataUI by remember { mutableStateOf("") }
-    var dataAPI by remember { mutableStateOf("") }
-    var valor by remember { mutableStateOf("") }
-    var km by remember { mutableStateOf("") }
-    var oficina by remember { mutableStateOf("") }
-    var pecas by remember { mutableStateOf("") }
-    var observacoes by remember { mutableStateOf("") }
-    var selectedImagesUris by remember { mutableStateOf<List<Uri>>(emptyList()) }
+    val savedState = navController.previousBackStackEntry?.savedStateHandle
+    val editId = savedState?.get<Int>("edit_id")
+    val isEditMode = editId != null
 
-    var fkIdTipoManutencao by remember { mutableStateOf<Int?>(null) }
-    var selectedTipoText by remember { mutableStateOf("") }
+    fun formatarDataEdicao(isoData: String?, formatoSaida: String): String {
+        if (isoData.isNullOrBlank()) return ""
+        return try {
+            val parser = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", java.util.Locale.getDefault())
+            parser.timeZone = java.util.TimeZone.getTimeZone("UTC")
+            val formatter = java.text.SimpleDateFormat(formatoSaida, java.util.Locale("pt", "BR"))
+            val date = parser.parse(isoData)
+            date?.let { formatter.format(it) } ?: ""
+        } catch (e: Exception) { "" }
+    }
+
+    var dataAPI by remember { mutableStateOf(formatarDataEdicao(savedState?.get<String>("edit_data"), "yyyy-MM-dd")) }
+    var dataUI by remember { mutableStateOf(formatarDataEdicao(savedState?.get<String>("edit_data"), "dd/MM/yyyy")) }
+    var valor by remember { mutableStateOf(savedState?.get<String>("edit_custo") ?: "") }
+    var km by remember { mutableStateOf(savedState?.get<String>("edit_km") ?: "") }
+    var oficina by remember { mutableStateOf(savedState?.get<String>("edit_oficina") ?: "") }
+    var pecas by remember { mutableStateOf(savedState?.get<String>("edit_pecas") ?: "") }
+    var observacoes by remember { mutableStateOf(savedState?.get<String>("edit_obs") ?: "") }
+
+    var selectedImagesUris by remember { mutableStateOf<List<Any>>(
+        savedState?.get<ArrayList<String>>("edit_evidencias") ?: emptyList()
+    ) }
+
+    var fkIdTipoManutencao by remember { mutableStateOf<Int?>(savedState?.get<Int>("edit_tipo_id")) }
+    var selectedTipoText by remember { mutableStateOf(savedState?.get<String>("edit_tipo_nome") ?: "") }
 
     LaunchedEffect(viewModel.isSuccess) {
         if (viewModel.isSuccess) {
-            Toast.makeText(context, "Manutenção salva com sucesso!", Toast.LENGTH_SHORT).show()
+            val mensagem = if (isEditMode) "Manutenção atualizada!" else "Manutenção salva com sucesso!"
+            Toast.makeText(context, mensagem, Toast.LENGTH_SHORT).show()
+            navController.popBackStack()
+        }
+    }
+
+    LaunchedEffect(viewModel.isDeleteSuccess) {
+        if (viewModel.isDeleteSuccess) {
+            Toast.makeText(context, "Manutenção excluída com sucesso!", Toast.LENGTH_SHORT).show()
             navController.popBackStack()
         }
     }
@@ -168,33 +195,77 @@ fun AddManutencaoScreen(
                 if (viewModel.isLoading) {
                     CircularProgressIndicator(color = Color.Gray)
                 } else {
-                    Button(
-                        onClick = {
-                            viewModel.cadastrarManutencao(
-                                dataManutencao = dataAPI,
-                                custo = valor,
-                                quilometragem = km,
-                                oficina = oficina,
-                                observacoes = observacoes,
-                                pecas = pecas,
-                                fkIdTipoManutencao = fkIdTipoManutencao,
-                                fkIdUsuario = idUsuarioLogado,
-                                fkIdVeiculo = idVeiculoAtual,
-                                imagensUris = selectedImagesUris
+                    if (isEditMode) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            OutlinedButton(
+                                onClick = { viewModel.excluirManutencao(editId!!) },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .height(48.dp),
+                                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red),
+                                border = BorderStroke(1.dp, Color.Red),
+                                shape = RoundedCornerShape(12.dp)
+                            ) {
+                                Text("EXCLUIR", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                            }
+
+                            Button(
+                                onClick = {
+                                    viewModel.cadastrarManutencao(
+                                        manutencaoId = editId,
+                                        dataManutencao = dataAPI,
+                                        custo = valor,
+                                        quilometragem = km,
+                                        oficina = oficina,
+                                        observacoes = observacoes,
+                                        pecas = pecas,
+                                        fkIdTipoManutencao = fkIdTipoManutencao,
+                                        fkIdUsuario = idUsuarioLogado,
+                                        fkIdVeiculo = idVeiculoAtual,
+                                        imagensUris = selectedImagesUris
+                                    )
+                                },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .height(48.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD9D9D9)),
+                                shape = RoundedCornerShape(12.dp)
+                            ) {
+                                Text("SALVAR", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                            }
+                        }
+                    } else {
+                        Button(
+                            onClick = {
+                                viewModel.cadastrarManutencao(
+                                    dataManutencao = dataAPI,
+                                    custo = valor,
+                                    quilometragem = km,
+                                    oficina = oficina,
+                                    observacoes = observacoes,
+                                    pecas = pecas,
+                                    fkIdTipoManutencao = fkIdTipoManutencao,
+                                    fkIdUsuario = idUsuarioLogado,
+                                    fkIdVeiculo = idVeiculoAtual,
+                                    imagensUris = selectedImagesUris
+                                )
+                            },
+                            modifier = Modifier
+                                .width(180.dp)
+                                .height(48.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD9D9D9)),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Text(
+                                "SALVAR",
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp
                             )
-                        },
-                        modifier = Modifier
-                            .width(180.dp)
-                            .height(48.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD9D9D9)),
-                        shape = RoundedCornerShape(12.dp)
-                    ) {
-                        Text(
-                            "SALVAR",
-                            color = Color.Black,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp
-                        )
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.height(20.dp))
@@ -222,8 +293,7 @@ fun ManutencaoInput(
             value = value,
             onValueChange = onValueChange,
             placeholder = { Text(text = placeholder, color = Color.LightGray, fontSize = 13.sp) },
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(8.dp),
             singleLine = true,
             textStyle = TextStyle(fontSize = 13.sp, color = Color.Black),
@@ -296,8 +366,8 @@ fun TipoManutencaoDropdown(
 
 @Composable
 fun EvidenciaImagePicker(
-    selectedImagesUris: List<Uri>,
-    onImagesChanged: (List<Uri>) -> Unit,
+    selectedImagesUris: List<Any>,
+    onImagesChanged: (List<Any>) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -331,7 +401,7 @@ fun EvidenciaImagePicker(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(45.dp),
+                .height(48.dp),
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.White),
             border = BorderStroke(1.dp, Color(0xFFE8E8E8))
@@ -361,20 +431,61 @@ fun EvidenciaImagePicker(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                contentPadding = PaddingValues(horizontal = 4.dp, vertical = 4.dp)
             ) {
-                items(selectedImagesUris) { uri ->
-                    AsyncImage(
-                        model = uri,
-                        contentDescription = "Evidência selecionada",
-                        modifier = Modifier
-                            .size(60.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .clickable {
-                                onImagesChanged(selectedImagesUris - uri)
-                            },
-                        contentScale = ContentScale.Crop
-                    )
+                items(selectedImagesUris) { item ->
+
+                    val urlExtraida = if (item is Map<*, *> && item.containsKey("url")) {
+                        item["url"].toString()
+                    } else {
+                        item
+                    }
+
+                    val modeloImagem = if (urlExtraida is String && urlExtraida.contains("localhost")) {
+                        urlExtraida.replace("localhost", "10.0.2.2")
+                    } else {
+                        urlExtraida
+                    }
+
+                    Box(
+                        modifier = Modifier.size(76.dp)
+                    ) {
+                        AsyncImage(
+                            model = modeloImagem,
+                            contentDescription = "Evidência selecionada",
+                            modifier = Modifier
+                                .size(66.dp)
+                                .align(Alignment.BottomStart)
+                                .clip(RoundedCornerShape(12.dp))
+                                .border(1.dp, Color(0xFFE8E8E8), RoundedCornerShape(12.dp))
+                                .background(Color(0xFFF5F5F5)),
+                            contentScale = ContentScale.Crop,
+                            error = painterResource(id = R.drawable.icone_carro_moderno)
+                        )
+
+                        Surface(
+                            modifier = Modifier
+                                .size(22.dp)
+                                .align(Alignment.TopEnd)
+                                .clickable { onImagesChanged(selectedImagesUris - item) },
+                            shape = CircleShape,
+                            color = Color(0xFF910D0D),
+                            shadowElevation = 2.dp
+                        ) {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = "Excluir Imagem",
+                                    tint = Color.White,
+                                    modifier = Modifier.size(12.dp)
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -434,8 +545,7 @@ fun DataPickerInput(
                 value = valueUI,
                 onValueChange = {},
                 readOnly = true,
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
                 singleLine = true,
                 textStyle = TextStyle(fontSize = 13.sp, color = Color.Black),

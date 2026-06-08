@@ -9,12 +9,15 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.car_assist_mobile.data.model.TipoManutencaoItem
 import com.example.car_assist_mobile.data.network.RetrofitClient
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.InputStream
+import java.net.URL
 
 class AddManutencaoScreenViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -25,6 +28,9 @@ class AddManutencaoScreenViewModel(application: Application) : AndroidViewModel(
         private set
 
     var isSuccess by mutableStateOf(false)
+        private set
+
+    var isDeleteSuccess by mutableStateOf(false)
         private set
 
     var tiposManutencao by mutableStateOf<List<TipoManutencaoItem>>(emptyList())
@@ -51,7 +57,29 @@ class AddManutencaoScreenViewModel(application: Application) : AndroidViewModel(
         }
     }
 
+    fun excluirManutencao(manutencaoId: Int) {
+        viewModelScope.launch {
+            isLoading = true
+            errorMessage = null
+            isDeleteSuccess = false
+
+            try {
+                val response = RetrofitClient.apiService.deletarManutencao(manutencaoId)
+                if (response.isSuccessful) {
+                    isDeleteSuccess = true
+                } else {
+                    errorMessage = "Erro ao excluir: ${response.code()}"
+                }
+            } catch (e: Exception) {
+                errorMessage = "Falha ao conectar: ${e.message}"
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+
     fun cadastrarManutencao(
+        manutencaoId: Int? = null,
         dataManutencao: String,
         custo: String,
         quilometragem: String,
@@ -61,10 +89,15 @@ class AddManutencaoScreenViewModel(application: Application) : AndroidViewModel(
         fkIdTipoManutencao: Int?,
         fkIdUsuario: Int,
         fkIdVeiculo: Int,
-        imagensUris: List<Uri>
+        imagensUris: List<Any>
     ) {
         if (fkIdTipoManutencao == null) {
             errorMessage = "Por favor, selecione um tipo de manutenção."
+            return
+        }
+
+        if (imagensUris.isEmpty()) {
+            errorMessage = "É obrigatório adicionar pelo menos uma imagem como evidência."
             return
         }
 
@@ -89,22 +122,55 @@ class AddManutencaoScreenViewModel(application: Application) : AndroidViewModel(
                 val usuarioPart = createPartFromString(fkIdUsuario.toString())
                 val veiculoPart = createPartFromString(fkIdVeiculo.toString())
 
-                val evidenciasParts: List<MultipartBody.Part> = imagensUris.mapIndexed { index, uri ->
-                    prepareImagePart("evidencias", uri, index)
-                }.filterNotNull()
+                val evidenciasParts = mutableListOf<MultipartBody.Part>()
 
-                val response = RetrofitClient.apiService.adicionarManutencao(
-                    dataManutencao = dataPart,
-                    custo = custoPart,
-                    quilometragem = kmPart,
-                    oficina = oficinaPart,
-                    observacoes = obsPart,
-                    idTipoManutencao = tipoPart,
-                    idUsuario = usuarioPart,
-                    idVeiculo = veiculoPart,
-                    pecas = pecasPart,
-                    evidencias = if (evidenciasParts.isNotEmpty()) evidenciasParts else null
-                )
+                withContext(Dispatchers.IO) {
+                    imagensUris.forEachIndexed { index, item ->
+
+                        val itemProcessado = if (item is Map<*, *> && item.containsKey("url")) {
+                            item["url"].toString()
+                        } else {
+                            item
+                        }
+
+                        if (itemProcessado is String) {
+                            val part = prepareImagePartFromUrl("evidencias", itemProcessado, index)
+                            if (part != null) evidenciasParts.add(part)
+                        } else if (itemProcessado is Uri) {
+                            val part = prepareImagePart("evidencias", itemProcessado, index)
+                            if (part != null) evidenciasParts.add(part)
+                        }
+                    }
+                }
+
+                val response = if (manutencaoId != null) {
+                    RetrofitClient.apiService.atualizarManutencao(
+                        manutencaoId = manutencaoId,
+                        dataManutencao = dataPart,
+                        custo = custoPart,
+                        quilometragem = kmPart,
+                        oficina = oficinaPart,
+                        observacoes = obsPart,
+                        idTipoManutencao = tipoPart,
+                        idUsuario = usuarioPart,
+                        idVeiculo = veiculoPart,
+                        pecas = pecasPart,
+                        evidencias = if (evidenciasParts.isNotEmpty()) evidenciasParts else null
+                    )
+                } else {
+                    RetrofitClient.apiService.adicionarManutencao(
+                        dataManutencao = dataPart,
+                        custo = custoPart,
+                        quilometragem = kmPart,
+                        oficina = oficinaPart,
+                        observacoes = obsPart,
+                        idTipoManutencao = tipoPart,
+                        idUsuario = usuarioPart,
+                        idVeiculo = veiculoPart,
+                        pecas = pecasPart,
+                        evidencias = if (evidenciasParts.isNotEmpty()) evidenciasParts else null
+                    )
+                }
 
                 if (response.isSuccessful) {
                     isSuccess = true
@@ -122,6 +188,29 @@ class AddManutencaoScreenViewModel(application: Application) : AndroidViewModel(
 
     private fun createPartFromString(value: String): RequestBody {
         return value.toRequestBody(MultipartBody.FORM)
+    }
+
+    private fun prepareImagePartFromUrl(partName: String, urlString: String, index: Int): MultipartBody.Part? {
+        return try {
+            val finalUrl = if (urlString.contains("localhost")) {
+                urlString.replace("localhost", "10.0.2.2")
+            } else {
+                urlString
+            }
+
+            val connection = URL(finalUrl).openConnection()
+            connection.connectTimeout = 15000
+            connection.readTimeout = 15000
+
+            val bytes = connection.getInputStream().readBytes()
+            val requestFile = bytes.toRequestBody("image/jpeg".toMediaTypeOrNull(), 0, bytes.size)
+
+            val fileName = "evidencia_mantida_$index.jpg"
+            MultipartBody.Part.createFormData(partName, fileName, requestFile)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 
     private fun prepareImagePart(partName: String, fileUri: Uri, index: Int): MultipartBody.Part? {

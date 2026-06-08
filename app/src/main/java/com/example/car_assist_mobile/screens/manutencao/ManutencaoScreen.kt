@@ -3,6 +3,7 @@ package com.example.car_assist_mobile.screens.manutencao
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -38,41 +39,23 @@ fun ManutencaoScreen(
 
     Scaffold(
         bottomBar = {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp),
-                horizontalArrangement = Arrangement.Center
-            ) {
+            Row(modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp), horizontalArrangement = Arrangement.Center) {
                 CustomBottomBar(navController = navController, selectedItem = "garagem")
             }
         },
         containerColor = Color.White
     ) { innerPadding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = 24.dp),
+            modifier = Modifier.fillMaxSize().padding(innerPadding).padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(10.dp))
 
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                IconButton(
-                    onClick = { navController.popBackStack() },
-                    modifier = Modifier.border(0.5.dp, Color.LightGray, CircleShape).size(45.dp)
-                ) {
+            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
+                IconButton(onClick = { navController.popBackStack() }, modifier = Modifier.border(0.5.dp, Color.LightGray, CircleShape).size(45.dp)) {
                     Icon(Icons.Default.ArrowBack, null, tint = Color.Gray, modifier = Modifier.size(20.dp))
                 }
-                Text(
-                    text = "MANUTENÇÕES",
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium
-                )
+                Text("MANUTENÇÕES", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center, fontSize = 18.sp, fontWeight = FontWeight.Medium)
             }
 
             Spacer(modifier = Modifier.height(30.dp))
@@ -81,13 +64,18 @@ fun ManutencaoScreen(
                 Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator(color = Color(0xFF910D0D))
                 }
+            } else if (!viewModel.errorMessage.isNullOrEmpty()) {
+                Box(modifier = Modifier.weight(1f).padding(20.dp), contentAlignment = Alignment.Center) {
+                    Text(
+                        text = viewModel.errorMessage!!,
+                        color = Color.Red,
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
             } else if (viewModel.listaManutencoes.isEmpty()) {
                 Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                    Text(
-                        text = "Nenhuma manutenção registrada.",
-                        color = Color.Gray,
-                        fontSize = 14.sp
-                    )
+                    Text("Nenhuma manutenção registrada.", color = Color.Gray, fontSize = 14.sp)
                 }
             } else {
                 LazyColumn(
@@ -98,76 +86,79 @@ fun ManutencaoScreen(
                     items(viewModel.listaManutencoes) { item ->
                         CardManutencao(
                             manutencao = item,
-                            viewModel = viewModel
+                            viewModel = viewModel,
+                            onClick = {
+                                // Abre a edição sem limite de tempo
+                                navController.currentBackStackEntry?.savedStateHandle?.apply {
+                                    set("edit_id", item.id)
+                                    set("edit_data", item.data_manutencao)
+                                    set("edit_custo", item.custo)
+                                    set("edit_km", item.quilometragem?.toString())
+                                    set("edit_oficina", item.oficina)
+                                    set("edit_pecas", item.pecas)
+                                    set("edit_obs", item.observacoes)
+                                    set("edit_tipo_id", item.tipo_manutencao?.id)
+                                    set("edit_tipo_nome", item.tipo_manutencao?.nome)
+
+                                    val listaUrls = item.evidencia ?: emptyList()
+                                    set("edit_evidencias", ArrayList(listaUrls))
+                                }
+                                navController.navigate("AddManutencao/$idUsuarioLogado/$idVeiculoAtual")
+                            }
                         )
                     }
                 }
             }
 
             Button(
-                onClick = { navController.navigate("AddManutencao/$idUsuarioLogado/$idVeiculoAtual") },
-                modifier = Modifier
-                    .padding(bottom = 16.dp)
-                    .height(48.dp)
-                    .width(200.dp),
+                onClick = {
+                    navController.currentBackStackEntry?.savedStateHandle?.apply {
+                        remove<Int>("edit_id")
+                        remove<String>("edit_data")
+                        remove<String>("edit_custo")
+                        remove<String>("edit_km")
+                        remove<String>("edit_oficina")
+                        remove<String>("edit_pecas")
+                        remove<String>("edit_obs")
+                        remove<Int>("edit_tipo_id")
+                        remove<String>("edit_tipo_nome")
+                        remove<ArrayList<String>>("edit_evidencias")
+                    }
+                    navController.navigate("AddManutencao/$idUsuarioLogado/$idVeiculoAtual")
+                },
+                modifier = Modifier.padding(bottom = 16.dp).height(48.dp).width(200.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD9D9D9)),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Text(
-                    "NOVA MANUTENÇÃO",
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 12.sp
-                )
+                Text("NOVA MANUTENÇÃO", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 12.sp)
             }
         }
     }
 }
 
 @Composable
-fun CardManutencao(manutencao: ManutencaoItemResponse, viewModel: ManutencaoScreenViewModel) {
+fun CardManutencao(manutencao: ManutencaoItemResponse, viewModel: ManutencaoScreenViewModel, onClick: () -> Unit) {
     Surface(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().clickable { onClick() },
         shape = RoundedCornerShape(20.dp),
         border = BorderStroke(1.dp, Color(0xFFE0E0E0)),
         color = Color.White
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-
             Text("Manutenção", fontSize = 11.sp, color = Color.LightGray)
-
-            Text(
-                text = manutencao.tipo_manutencao?.nome ?: "Serviço Geral",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-
+            Text(manutencao.tipo_manutencao?.nome ?: "Serviço Geral", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.Black)
             Spacer(modifier = Modifier.height(8.dp))
             HorizontalDivider(color = Color(0xFFF0F0F0))
             Spacer(modifier = Modifier.height(8.dp))
-
             Row(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text("Data", fontSize = 11.sp, color = Color.LightGray)
-
-                    Text(
-                        text = viewModel.formatarDataBR(manutencao.data_manutencao),
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Text(viewModel.formatarDataBR(manutencao.data_manutencao ?: ""), fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 }
-
                 Box(modifier = Modifier.width(1.dp).height(30.dp).background(Color(0xFFF0F0F0)))
-
                 Column(modifier = Modifier.weight(1f).padding(start = 16.dp)) {
                     Text("Valor", fontSize = 11.sp, color = Color.LightGray)
-
-                    Text(
-                        text = viewModel.formatarMoedaBR(manutencao.custo),
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Text(viewModel.formatarMoedaBR(manutencao.custo ?: "0.00"), fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 }
             }
         }

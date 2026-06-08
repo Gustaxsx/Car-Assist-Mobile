@@ -16,6 +16,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Multipart
@@ -92,6 +93,27 @@ interface ApiService {
         @Part("fk_id_veiculo") idVeiculo: RequestBody,
         @Part("pecas") pecas: RequestBody,
         @Part evidencias: List<MultipartBody.Part>? = null
+    ): Response<ManutencaoResponse>
+
+    @Multipart
+    @PUT("v1/car-assist/manutencao/{id}")
+    suspend fun atualizarManutencao(
+        @Path("id") manutencaoId: Int,
+        @Part("data_manutencao") dataManutencao: RequestBody,
+        @Part("custo") custo: RequestBody,
+        @Part("quilometragem") quilometragem: RequestBody,
+        @Part("oficina") oficina: RequestBody,
+        @Part("observacoes") observacoes: RequestBody,
+        @Part("fk_id_tipo_manutencao") idTipoManutencao: RequestBody,
+        @Part("fk_id_usuario") idUsuario: RequestBody,
+        @Part("fk_id_veiculo") idVeiculo: RequestBody,
+        @Part("pecas") pecas: RequestBody,
+        @Part evidencias: List<MultipartBody.Part>? = null
+    ): Response<ManutencaoResponse>
+
+    @DELETE("v1/car-assist/manutencao/{id}")
+    suspend fun deletarManutencao(
+        @Path("id") manutencaoId: Int
     ): Response<ManutencaoResponse>
 
     @GET("v1/car-assist/tipo-manutencao/")
