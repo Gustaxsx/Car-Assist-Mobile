@@ -2,7 +2,11 @@ package com.example.car_assist_mobile.data.network
 
 import com.example.car_assist_mobile.data.model.ApiResponseVeiculos
 import com.example.car_assist_mobile.data.model.ApiResponse
+//import com.example.car_assist_mobile.data.model.ApiResponseLembrete
+//import com.example.car_assist_mobile.data.model.ApiResponseLembretes
+//import com.example.car_assist_mobile.data.model.ApiResponseSingleLembrete
 import com.example.car_assist_mobile.data.model.ApiResponseSingleVeiculo
+//import com.example.car_assist_mobile.data.model.LembreteRequest
 import com.example.car_assist_mobile.data.model.LoginRequest
 import com.example.car_assist_mobile.data.model.LoginResponse
 import com.example.car_assist_mobile.data.model.ManutencaoListResponse
@@ -79,6 +83,7 @@ interface ApiService {
         @Part("senha") senha: RequestBody,
         @Part foto: MultipartBody.Part? = null
     ): Response<ProfileDataResponse>
+}
 
     @Multipart
     @POST("v1/car-assist/manutencao-evidencia")
