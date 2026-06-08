@@ -18,7 +18,10 @@ data class TransferenciaUiState(
     val placaVeiculo: String = "EXE3006",
     val codigoGerado: String = "",
     val isLoading: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val nomeNovoDono: String = "Destinatário de Teste",
+    val cpfNovoDono: String = "000.000.000-00",
+    val emailNovoDono: String = ""
 )
 
 sealed interface TransferenciaUiEvent {
@@ -35,7 +38,10 @@ class TransferenciaViewModel : ViewModel() {
     val eventFlow: SharedFlow<TransferenciaUiEvent> = _eventFlow.asSharedFlow()
 
     fun onEmailChanged(novoEmail: String) {
-        uiState = uiState.copy(emailDestinatario = novoEmail)
+        uiState = uiState.copy(
+            emailDestinatario = novoEmail,
+            emailNovoDono = novoEmail
+        )
     }
 
     fun onSenhaChanged(novaSenha: String) {

@@ -1,7 +1,6 @@
 package com.example.car_assist_mobile.screens.transferencia
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,11 +40,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.car_assist_mobile.components.CustomBottomBar
 import com.example.car_assist_mobile.ui.theme.Poppins
-import com.example.car_assist_mobile.ui.theme.RedDesign
+
+private val LocalRed = Color(0xFFA61616)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TransferenciaCodigoScreen(
+fun TransferenciaSucessoScreen(
     navController: NavController,
     codigoTransferencia: String = "36282125"
 ) {
@@ -102,19 +102,19 @@ fun TransferenciaCodigoScreen(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                StepCircle(number = "1", label = "Dados", isCompleted = true, isActive = false)
+                StepCircle(number = "1", title = "Dados", isActive = false, isCompleted = true)
 
                 Spacer(modifier = Modifier.width(8.dp))
-                Box(modifier = Modifier.width(40.dp).height(1.dp).background(RedDesign.copy(alpha = 0.5f)))
+                Box(modifier = Modifier.width(40.dp).height(1.dp).background(LocalRed.copy(alpha = 0.5f)))
                 Spacer(modifier = Modifier.width(8.dp))
 
-                StepCircle(number = "2", label = "Confirmar", isCompleted = true, isActive = false)
+                StepCircle(number = "2", title = "Confirmar", isActive = false, isCompleted = true)
 
                 Spacer(modifier = Modifier.width(8.dp))
-                Box(modifier = Modifier.width(40.dp).height(1.dp).background(RedDesign.copy(alpha = 0.5f)))
+                Box(modifier = Modifier.width(40.dp).height(1.dp).background(LocalRed.copy(alpha = 0.5f)))
                 Spacer(modifier = Modifier.width(8.dp))
 
-                StepCircle(number = "3", label = "Concluído", isCompleted = false, isActive = true)
+                StepCircle(number = "3", title = "Concluído", isActive = true, isCompleted = false)
             }
 
             Spacer(modifier = Modifier.height(40.dp))
@@ -135,7 +135,7 @@ fun TransferenciaCodigoScreen(
             Icon(
                 imageVector = Icons.Filled.CheckCircle,
                 contentDescription = "Sucesso",
-                tint = RedDesign,
+                tint = LocalRed,
                 modifier = Modifier.size(72.dp)
             )
 
@@ -176,7 +176,7 @@ fun TransferenciaCodigoScreen(
                         fontFamily = Poppins,
                         fontSize = 36.sp,
                         fontWeight = FontWeight.Bold,
-                        color = RedDesign,
+                        color = LocalRed,
                         letterSpacing = 2.sp
                     )
                 )
@@ -221,7 +221,7 @@ fun TransferenciaCodigoScreen(
                     .padding(bottom = 8.dp),
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = RedDesign
+                    containerColor = LocalRed
                 )
             ) {
                 Text(

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -32,7 +33,10 @@ import com.example.car_assist_mobile.screens.oficina.OficinaScreen
 import com.example.car_assist_mobile.screens.perfil.EditProfileScreen
 import com.example.car_assist_mobile.screens.posto.PostoScreen
 import com.example.car_assist_mobile.screens.service.ServicesScreen
+import com.example.car_assist_mobile.screens.transferencia.TransferenciaConfirmarScreen
 import com.example.car_assist_mobile.screens.transferencia.TransferenciaScreen
+import com.example.car_assist_mobile.screens.transferencia.TransferenciaSucessoScreen
+import com.example.car_assist_mobile.screens.transferencia.TransferenciaViewModel
 import com.example.car_assist_mobile.ui.theme.Car_Assist_MobileTheme
 
 class MainActivity : ComponentActivity() {
@@ -43,16 +47,34 @@ class MainActivity : ComponentActivity() {
             Car_Assist_MobileTheme {
 
                 val navController = rememberNavController()
+                val transferenciaViewModel: TransferenciaViewModel = viewModel()
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
                     NavHost(
                         navController = navController,
-                        startDestination = "transferencia", // Abre direto na transferência para testes
+                        startDestination = "transferencia",
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable(route = "transferencia") {
-                            TransferenciaScreen(navController = navController)
+                            TransferenciaScreen(
+                                navController = navController,
+                                viewModel = transferenciaViewModel
+                            )
+                        }
+
+                        composable(route = "transferencia_confirmar") {
+                            TransferenciaConfirmarScreen(
+                                navController = navController,
+                                viewModel = transferenciaViewModel
+                            )
+                        }
+
+                        composable(route = "transferencia_codigo") {
+                            TransferenciaSucessoScreen(
+                                navController = navController,
+                                codigoTransferencia = transferenciaViewModel.uiState.codigoGerado
+                            )
                         }
 
                         composable(route = "login") {

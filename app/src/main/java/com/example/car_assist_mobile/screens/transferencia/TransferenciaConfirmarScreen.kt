@@ -2,7 +2,6 @@ package com.example.car_assist_mobile.screens.transferencia
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +25,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -42,7 +42,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.car_assist_mobile.components.CustomBottomBar
 import com.example.car_assist_mobile.ui.theme.Poppins
-import com.example.car_assist_mobile.ui.theme.RedDesign
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,76 +50,67 @@ fun TransferenciaConfirmarScreen(
     viewModel: TransferenciaViewModel
 ) {
     val uiState = viewModel.uiState
+    val scrollState = rememberScrollState()
 
     Scaffold(
         containerColor = Color.White,
         bottomBar = {
-            CustomBottomBar(navController = navController)
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                CustomBottomBar(navController = navController, selectedItem = "garagem")
+            }
         }
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = 24.dp)
-                .verticalScroll(rememberScrollState()),
+                .padding(horizontal = 30.dp)
+                .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Cabeçalho ajustado para não quebrar o texto
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 24.dp),
+                modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.CenterStart
             ) {
-                IconButton(
-                    onClick = { navController.popBackStack() },
-                    modifier = Modifier
-                        .size(40.dp)
-                        .background(Color(0xFFF7F7F7), shape = CircleShape)
+                Surface(
+                    modifier = Modifier.size(44.dp),
+                    shape = CircleShape,
+                    color = Color.Transparent,
+                    border = BorderStroke(1.dp, Color(0xFFEFEFEF))
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Voltar",
-                        tint = Color.Black
-                    )
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = null,
+                            tint = Color.Black,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                 }
-
                 Text(
-                    text = "TRANSFERÊNCIA",
-                    style = TextStyle(
-                        fontFamily = Poppins,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp,
-                        color = Color.Black
-                    ),
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center
+                    text = "CONFIRMAR TRANSFERÊNCIA",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 52.dp, end = 8.dp),
+                    textAlign = TextAlign.Center,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = Poppins,
+                    color = Color.Black
                 )
             }
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                StepCircle(number = "1", label = "Dados", isCompleted = true, isActive = false)
+            TransferenciaStepper(passoAtual = 2)
 
-                Spacer(modifier = Modifier.width(8.dp))
-                Box(modifier = Modifier.width(40.dp).height(1.dp).background(Color(0xFFE0E0E0)))
-                Spacer(modifier = Modifier.width(8.dp))
-
-                StepCircle(number = "2", label = "Confirmar", isCompleted = false, isActive = true)
-
-                Spacer(modifier = Modifier.width(8.dp))
-                Box(modifier = Modifier.width(40.dp).height(1.dp).background(Color(0xFFE0E0E0)))
-                Spacer(modifier = Modifier.width(8.dp))
-
-                StepCircle(number = "3", label = "Concluído", isCompleted = false, isActive = false)
-            }
-
-            Spacer(modifier = Modifier.height(64.dp))
+            Spacer(modifier = Modifier.height(48.dp))
 
             Text(
                 text = buildAnnotatedString {
@@ -136,55 +126,105 @@ fun TransferenciaConfirmarScreen(
                 },
                 style = TextStyle(
                     fontFamily = Poppins,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color(0xFF666666),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
                     textAlign = TextAlign.Center,
-                    lineHeight = 24.sp
+                    lineHeight = 30.sp
                 ),
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(64.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
-            Button(
-                onClick = {
-                    viewModel.gerarCodigoTransferencia()
-                    navController.navigate("transferencia_codigo")
-                },
-                modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                    .height(48.dp),
-                shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = RedDesign
+            val (textoAlerta, corCardBack, corTextoAlerta) = when (uiState.nivelPermissao) {
+                "Somente leitura" -> Triple(
+                    "Isso dará acesso de Somente Leitura. O usuário poderá ver os dados, mas não alterá-los.",
+                    Color(0xFFF1F1F1),
+                    Color(0xFF333333)
                 )
-            ) {
-                Text(
-                    text = "Sim",
-                    style = TextStyle(
-                        fontFamily = Poppins,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color.White
-                    )
+                "Acesso editável" -> Triple(
+                    "Isso dará Acesso Editável. O usuário poderá alterar as informações do veículo.",
+                    Color(0xFFF1F1F1),
+                    Color(0xFF333333)
+                )
+                else -> Triple(
+                    "ATENÇÃO: Você está transferindo a propriedade. Isso removerá todos os usuários atuais vinculados a este veículo.",
+                    Color(0xFFFCE8E6),
+                    RedDesign
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = "Cancelar",
-                style = TextStyle(
-                    fontFamily = Poppins,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = Color.Gray
-                ),
+            Box(
                 modifier = Modifier
-                    .clickable { navController.popBackStack() }
-                    .padding(8.dp)
-            )
+                    .fillMaxWidth()
+                    .background(corCardBack, shape = RoundedCornerShape(12.dp))
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = textoAlerta,
+                    style = TextStyle(
+                        fontFamily = Poppins,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = corTextoAlerta,
+                        textAlign = TextAlign.Center,
+                        lineHeight = 22.sp
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            Spacer(modifier = Modifier.height(48.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Button(
+                    onClick = { navController.popBackStack() },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(52.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+                    border = BorderStroke(1.dp, Color(0xFFCCCCCC))
+                ) {
+                    Text(
+                        text = "Não",
+                        style = TextStyle(
+                            fontFamily = Poppins,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF555555)
+                        )
+                    )
+                }
+
+                Button(
+                    onClick = {
+                        viewModel.gerarCodigoTransferencia()
+                        navController.navigate("transferencia_codigo")
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(52.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = RedDesign)
+                ) {
+                    Text(
+                        text = "Sim",
+                        style = TextStyle(
+                            fontFamily = Poppins,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }

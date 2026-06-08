@@ -15,3 +15,5 @@ val DarkGrey = Color(0xFF2D3239)
 val LightGrey = Color(0xFFF7F7F7)
 
 val ButtonGrey = Color(0xFFC4C4C4)
+
+val RedDesign = Color(0xFFA61616)

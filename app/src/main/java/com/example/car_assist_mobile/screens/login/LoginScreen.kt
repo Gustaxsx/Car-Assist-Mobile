@@ -24,7 +24,7 @@ import androidx.navigation.NavController
 import com.example.car_assist_mobile.R
 import com.example.car_assist_mobile.ui.theme.Poppins
 
-val MarromDesign = Color(0xFF73261D)
+val RedDesign = Color(0xFFA61616)
 
 @Composable
 fun LoginScreen(
@@ -43,7 +43,7 @@ fun LoginScreen(
                 .align(Alignment.TopCenter)
                 .offset(y = (-620).dp)
                 .clip(CircleShape)
-                .background(MarromDesign)
+                .background(RedDesign)
         )
 
         Column(
@@ -143,7 +143,7 @@ fun LoginScreen(
                         .fillMaxWidth()
                         .height(58.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MarromDesign
+                        containerColor = RedDesign
                     ),
                     shape = RoundedCornerShape(20.dp),
                     enabled = !viewModel.isLoading
