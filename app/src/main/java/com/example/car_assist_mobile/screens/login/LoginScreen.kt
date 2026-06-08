@@ -11,12 +11,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation // NOVO IMPORT
+import androidx.compose.ui.text.input.VisualTransformation // NOVO IMPORT
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -56,15 +58,14 @@ fun LoginScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(280.dp),
-                contentAlignment = Alignment.TopCenter
+                contentAlignment = Alignment.BottomCenter
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.icone_carro_branco),
+                    painter = painterResource(id = R.drawable.car_login_static),
                     contentDescription = "Carro Assist",
                     modifier = Modifier
-                        .size(330.dp)
-                        .offset(y = (-40).dp)
-                        .rotate(-90f),
+                        .size(1000.dp)
+                        .offset(y = 40.dp), // Mantendo a carango mais para baixo como você quis
                     contentScale = ContentScale.Fit
                 )
             }
@@ -101,13 +102,14 @@ fun LoginScreen(
                         fontFamily = Poppins,
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Medium,
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                        textAlign = TextAlign.Center,
                         modifier = Modifier.padding(bottom = 12.dp)
                     )
                 }
 
                 CustomInputField(
                     label = "E-mail",
+                    placeholder = "Digite seu e-mail",
                     value = viewModel.email,
                     onValueChange = { viewModel.email = it }
                 )
@@ -116,8 +118,10 @@ fun LoginScreen(
 
                 CustomInputField(
                     label = "Senha",
+                    placeholder = "Digite sua senha",
                     value = viewModel.senha,
-                    onValueChange = { viewModel.senha = it }
+                    onValueChange = { viewModel.senha = it },
+                    visualTransformation = PasswordVisualTransformation()
                 )
 
                 Text(
@@ -198,8 +202,10 @@ fun LoginScreen(
 @Composable
 fun CustomInputField(
     label: String,
+    placeholder: String,
     value: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -219,8 +225,18 @@ fun CustomInputField(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(60.dp),
+            placeholder = {
+                Text(
+                    text = placeholder,
+                    fontFamily = Poppins,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 14.sp,
+                    color = Color.Gray
+                )
+            },
             shape = RoundedCornerShape(18.dp),
             singleLine = true,
+            visualTransformation = visualTransformation,
             textStyle = TextStyle(
                 fontFamily = Poppins,
                 fontWeight = FontWeight.Medium,
@@ -229,8 +245,8 @@ fun CustomInputField(
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color.LightGray,
                 unfocusedBorderColor = Color.LightGray,
-                unfocusedContainerColor = Color.Transparent,
-                focusedContainerColor = Color.Transparent
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent
             )
         )
     }
