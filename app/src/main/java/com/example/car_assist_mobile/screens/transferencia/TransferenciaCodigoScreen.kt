@@ -43,6 +43,7 @@ import com.example.car_assist_mobile.ui.theme.Poppins
 
 private val LocalRed = Color(0xFFA61616)
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransferenciaSucessoScreen(
