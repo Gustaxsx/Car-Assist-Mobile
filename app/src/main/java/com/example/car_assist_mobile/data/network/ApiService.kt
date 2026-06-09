@@ -83,7 +83,6 @@ interface ApiService {
         @Part("senha") senha: RequestBody,
         @Part foto: MultipartBody.Part? = null
     ): Response<ProfileDataResponse>
-}
 
     @Multipart
     @POST("v1/car-assist/manutencao-evidencia")
