@@ -25,6 +25,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.car_assist_mobile.R
 import com.example.car_assist_mobile.components.CustomBottomBar
+import com.example.car_assist_mobile.screens.transferencia.TransferenciaScreenViewModel
 import com.example.car_assist_mobile.ui.theme.Poppins
 
 @Composable
@@ -32,7 +33,8 @@ fun DetailsCarScreen(
     navController: NavController,
     idUsuarioLogado: Int,
     veiculoId: Int,
-    viewModel: DetailsCarViewModel = viewModel()
+    viewModel: DetailsCarViewModel = viewModel(),
+    transferenciaViewModel: TransferenciaScreenViewModel = viewModel()
 ) {
     LaunchedEffect(veiculoId) {
         viewModel.carregarDadosDoVeiculo(veiculoId)
@@ -42,8 +44,7 @@ fun DetailsCarScreen(
         containerColor = Color.White,
         bottomBar = {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
                 CustomBottomBar(
@@ -119,7 +120,7 @@ fun DetailsCarScreen(
                     modifier = Modifier.fillMaxWidth(0.65f)
                 ) {
                     Text(
-                        text = viewModel.marca,
+                        text = viewModel.marca.ifBlank { "A carregar..." },
                         fontSize = 14.sp,
                         color = Color.Gray,
                         fontWeight = FontWeight.Bold,
@@ -127,7 +128,7 @@ fun DetailsCarScreen(
                     )
 
                     Text(
-                        text = viewModel.modelo.replace("_", " "),
+                        text = viewModel.modelo.replace("_", " ").ifBlank { "A carregar..." },
                         fontSize = 32.sp,
                         lineHeight = 36.sp,
                         fontWeight = FontWeight.Black,
@@ -144,38 +145,44 @@ fun DetailsCarScreen(
                     verticalArrangement = Arrangement.spacedBy(20.dp),
                     modifier = Modifier.fillMaxWidth(0.60f)
                 ) {
-                    ActionRow(
+                    DetailsActionRow(
                         text = "Editar Dados",
                         iconRes = R.drawable.icone_pincel
                     ) {
                         navController.navigate("EditCar/$veiculoId")
                     }
 
-                    ActionRow(
+                    DetailsActionRow(
                         text = "Manutenções",
                         iconRes = R.drawable.icone_engrenagem
                     ) {
                         navController.navigate("Manutencao/$idUsuarioLogado/$veiculoId")
                     }
 
-                    ActionRow(
+                    DetailsActionRow(
                         text = "Gastos",
                         iconRes = R.drawable.icone_gasto
                     ) {
                         navController.navigate("Gastos")
                     }
 
-                    ActionRow(
+                    DetailsActionRow(
                         text = "Histórico de Donos",
                         iconRes = R.drawable.icone_pessoas
                     ) {}
 
                     Spacer(modifier = Modifier.height(40.dp))
 
-                    ActionRow(
+                    DetailsActionRow(
                         text = "Transferir Veículo",
                         iconRes = R.drawable.icone_transfer
-                    ) {}
+                    ) {
+                        transferenciaViewModel.uiState = transferenciaViewModel.uiState.copy(
+                            nomeVeiculo = viewModel.modelo.replace("_", " "),
+                            placaVeiculo = viewModel.placa
+                        )
+                        navController.navigate("transferencia")
+                    }
                 }
             }
         }
@@ -183,7 +190,7 @@ fun DetailsCarScreen(
 }
 
 @Composable
-fun ActionRow(
+fun DetailsActionRow(
     text: String,
     iconRes: Int,
     onClick: () -> Unit

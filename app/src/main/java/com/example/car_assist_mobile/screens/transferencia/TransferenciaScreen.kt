@@ -52,7 +52,7 @@ import com.example.car_assist_mobile.ui.theme.Poppins
 val RedDesign = Color(0xFFA61616)
 
 @Composable
-fun TransferenciaScreen(navController: NavController, viewModel: TransferenciaViewModel) {
+fun TransferenciaScreen(navController: NavController, viewModel: TransferenciaScreenViewModel) {
     val uiState = viewModel.uiState
     val scrollState = rememberScrollState()
 
@@ -107,7 +107,6 @@ fun TransferenciaScreen(navController: NavController, viewModel: TransferenciaVi
                     bottom = innerPadding.calculateBottomPadding()
                 )
                 .padding(horizontal = 30.dp)
-                // O segredo está aqui: adicionamos um espaço extra de 100.dp no fim da rolagem
                 .verticalScroll(state = scrollState, reverseScrolling = false),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -206,7 +205,6 @@ fun TransferenciaScreen(navController: NavController, viewModel: TransferenciaVi
                 )
             }
 
-            // Espaço invisível extra para empurrar o conteúdo acima do botão fixo durante o scroll
             Spacer(modifier = Modifier.height(120.dp))
         }
     }

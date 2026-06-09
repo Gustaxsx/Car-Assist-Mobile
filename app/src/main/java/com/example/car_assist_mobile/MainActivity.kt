@@ -31,10 +31,10 @@ import com.example.car_assist_mobile.screens.oficina.OficinaScreen
 import com.example.car_assist_mobile.screens.perfil.EditProfileScreen
 import com.example.car_assist_mobile.screens.posto.PostoScreen
 import com.example.car_assist_mobile.screens.service.ServicesScreen
-import com.example.car_assist_mobile.screens.transferencia.TransferenciaConfirmarScreen
 import com.example.car_assist_mobile.screens.transferencia.TransferenciaScreen
-import com.example.car_assist_mobile.screens.transferencia.TransferenciaSucessoScreen
-import com.example.car_assist_mobile.screens.transferencia.TransferenciaViewModel
+import com.example.car_assist_mobile.screens.transferencia.TransferenciaConfirmarScreen
+import com.example.car_assist_mobile.screens.transferencia.TransferenciaCodigoScreen
+import com.example.car_assist_mobile.screens.transferencia.TransferenciaScreenViewModel
 import com.example.car_assist_mobile.ui.theme.Car_Assist_MobileTheme
 
 class MainActivity : ComponentActivity() {
@@ -45,13 +45,13 @@ class MainActivity : ComponentActivity() {
             Car_Assist_MobileTheme {
 
                 val navController = rememberNavController()
-                val transferenciaViewModel: TransferenciaViewModel = viewModel()
+                val transferenciaViewModel: TransferenciaScreenViewModel = viewModel()
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
                     NavHost(
                         navController = navController,
-                        startDestination = "transferencia",
+                        startDestination = "login",
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable(route = "transferencia") {
@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(route = "transferencia_codigo") {
-                            TransferenciaSucessoScreen(
+                            TransferenciaCodigoScreen(
                                 navController = navController,
                                 codigoTransferencia = transferenciaViewModel.uiState.codigoGerado
                             )
@@ -144,7 +144,8 @@ class MainActivity : ComponentActivity() {
                             DetailsCarScreen(
                                 navController = navController,
                                 idUsuarioLogado = idUsuario,
-                                veiculoId = veiculoId
+                                veiculoId = veiculoId,
+                                transferenciaViewModel = transferenciaViewModel
                             )
                         }
 

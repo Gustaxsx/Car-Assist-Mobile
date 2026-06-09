@@ -29,10 +29,9 @@ sealed interface TransferenciaUiEvent {
     data class Erro(val message: String) : TransferenciaUiEvent
 }
 
-class TransferenciaViewModel : ViewModel() {
+class TransferenciaScreenViewModel : ViewModel() {
 
     var uiState by mutableStateOf(TransferenciaUiState())
-        private set
 
     private val _eventFlow = MutableSharedFlow<TransferenciaUiEvent>()
     val eventFlow: SharedFlow<TransferenciaUiEvent> = _eventFlow.asSharedFlow()

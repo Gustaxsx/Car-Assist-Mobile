@@ -21,7 +21,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -43,11 +42,10 @@ import androidx.navigation.NavController
 import com.example.car_assist_mobile.components.CustomBottomBar
 import com.example.car_assist_mobile.ui.theme.Poppins
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransferenciaConfirmarScreen(
     navController: NavController,
-    viewModel: TransferenciaViewModel
+    viewModel: TransferenciaScreenViewModel
 ) {
     val uiState = viewModel.uiState
     val scrollState = rememberScrollState()
@@ -73,7 +71,6 @@ fun TransferenciaConfirmarScreen(
         ) {
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Cabeçalho ajustado para não quebrar o texto
             Box(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.CenterStart

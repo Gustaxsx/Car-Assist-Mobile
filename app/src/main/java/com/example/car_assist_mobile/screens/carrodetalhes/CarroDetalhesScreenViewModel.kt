@@ -13,6 +13,7 @@ class DetailsCarViewModel : ViewModel() {
 
     var modelo by mutableStateOf("Carregando...")
     var marca by mutableStateOf("Aguarde")
+    var placa by mutableStateOf("")
     var fotoUrl by mutableStateOf<String?>(null)
     var isLoading by mutableStateOf(false)
 
@@ -30,6 +31,7 @@ class DetailsCarViewModel : ViewModel() {
                     veiculo?.let {
                         modelo = it.modelo
                         marca = it.marca ?: "Marca Desconhecida"
+                        placa = it.placa ?: ""
                         fotoUrl = it.foto
                     }
                 }
