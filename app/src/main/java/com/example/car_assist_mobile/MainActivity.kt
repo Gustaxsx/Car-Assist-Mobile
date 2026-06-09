@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -24,14 +25,16 @@ import com.example.car_assist_mobile.screens.garagem.GaragemScreen
 import com.example.car_assist_mobile.screens.gastos.GastosScreen
 import com.example.car_assist_mobile.screens.guincho.GuinchoScreen
 import com.example.car_assist_mobile.screens.lavarapido.LavaRapidoScreen
-//import com.example.car_assist_mobile.screens.lembrete.AddLembreteScreen
-//import com.example.car_assist_mobile.screens.lembrete.LembreteScreen
 import com.example.car_assist_mobile.screens.login.LoginScreen
 import com.example.car_assist_mobile.screens.manutencao.ManutencaoScreen
 import com.example.car_assist_mobile.screens.oficina.OficinaScreen
 import com.example.car_assist_mobile.screens.perfil.EditProfileScreen
 import com.example.car_assist_mobile.screens.posto.PostoScreen
 import com.example.car_assist_mobile.screens.service.ServicesScreen
+import com.example.car_assist_mobile.screens.transferencia.TransferenciaConfirmarScreen
+import com.example.car_assist_mobile.screens.transferencia.TransferenciaScreen
+import com.example.car_assist_mobile.screens.transferencia.TransferenciaSucessoScreen
+import com.example.car_assist_mobile.screens.transferencia.TransferenciaViewModel
 import com.example.car_assist_mobile.ui.theme.Car_Assist_MobileTheme
 
 class MainActivity : ComponentActivity() {
@@ -40,84 +43,82 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Car_Assist_MobileTheme {
+
                 val navController = rememberNavController()
+                val transferenciaViewModel: TransferenciaViewModel = viewModel()
+
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+
                     NavHost(
                         navController = navController,
-                        startDestination = "login",
+                        startDestination = "transferencia",
                         modifier = Modifier.padding(innerPadding)
                     ) {
+                        composable(route = "transferencia") {
+                            TransferenciaScreen(
+                                navController = navController,
+                                viewModel = transferenciaViewModel
+                            )
+                        }
+
+                        composable(route = "transferencia_confirmar") {
+                            TransferenciaConfirmarScreen(
+                                navController = navController,
+                                viewModel = transferenciaViewModel
+                            )
+                        }
+
+                        composable(route = "transferencia_codigo") {
+                            TransferenciaSucessoScreen(
+                                navController = navController,
+                                codigoTransferencia = transferenciaViewModel.uiState.codigoGerado
+                            )
+                        }
+
                         composable(route = "login") {
                             LoginScreen(navController)
                         }
                         composable(route = "register") {
                             RegisterScreen(navController)
                         }
-                        composable(route = "cadastro") {
-                            RegisterScreen(navController)
+                        composable(route = "profile") {
+                            EditProfileScreen(navController)
                         }
-                        composable(
-                            route = "profile/{idUsuario}",
-                            arguments = listOf(navArgument("idUsuario") { type = NavType.IntType })
-                        ) { backStackEntry ->
-                            val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: 0
-                            EditProfileScreen(navController = navController, idUsuarioLogado = idUsuario)
-                        }
+
                         composable(
                             route = "garagem/{idUsuario}",
                             arguments = listOf(navArgument("idUsuario") { type = NavType.IntType })
                         ) { backStackEntry ->
                             val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: 0
-                            GaragemScreen(navController = navController, idUsuarioLogado = idUsuario)
+                            GaragemScreen(navController, idUsuario)
                         }
-                        composable(
-                            route = "service/{idUsuario}",
-                            arguments = listOf(navArgument("idUsuario") { type = NavType.IntType })
-                        ) { backStackEntry ->
-                            val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: 0
-                            ServicesScreen(navController = navController, idUsuarioLogado = idUsuario)
+
+                        composable(route = "service") {
+                            ServicesScreen(navController)
                         }
+
                         composable(
                             route = "AddCar/{idUsuario}",
                             arguments = listOf(navArgument("idUsuario") { type = NavType.IntType })
                         ) { backStackEntry ->
                             val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: 0
-                            AddCarScreen(navController = navController, idUsuarioLogado = idUsuario)
+                            AddCarScreen(navController, idUsuario)
                         }
+
                         composable(
                             route = "RegisterCar/{idUsuario}",
                             arguments = listOf(navArgument("idUsuario") { type = NavType.IntType })
                         ) { backStackEntry ->
                             val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: 0
-                            RegisterCarScreen(navController = navController, idUsuarioLogado = idUsuario)
+                            RegisterCarScreen(navController, idUsuario)
                         }
-                        composable(
-                            route = "DetailsCar/{idUsuario}/{veiculoId}",
-                            arguments = listOf(
-                                navArgument("idUsuario") { type = NavType.IntType },
-                                navArgument("veiculoId") { type = NavType.IntType }
-                            )
-                        ) { backStackEntry ->
-                            val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: 0
-                            val veiculoId = backStackEntry.arguments?.getInt("veiculoId") ?: 0
-                            DetailsCarScreen(
-                                navController = navController,
-                                idUsuarioLogado = idUsuario,
-                                veiculoId = veiculoId
-                            )
+
+                        composable(route = "DetailsCar") {
+                            DetailsCarScreen(navController)
                         }
                         composable(route = "ChatBot") {
                             ChatBotScreen(navController)
                         }
-//                        composable("Lembrete/{veiculoId}") { backStackEntry ->
-//                            val veiculoId = backStackEntry.arguments?.getString("veiculoId")?.toIntOrNull() ?: 0
-//                            LembreteScreen(navController = navController, veiculoId = veiculoId)
-//                        }
-
-//                        composable("AddLembrete/{veiculoId}") { backStackEntry ->
-//                            val veiculoId = backStackEntry.arguments?.getString("veiculoId")?.toIntOrNull() ?: 0
-//                            AddLembreteScreen(navController = navController, veiculoId = veiculoId)
-//                        }
                         composable(route = "Gastos") {
                             GastosScreen(navController)
                         }
@@ -152,12 +153,8 @@ class MainActivity : ComponentActivity() {
                                 idVeiculoAtual = veiculoId
                             )
                         }
-                        composable(
-                            route = "EditCar/{veiculoId}",
-                            arguments = listOf(navArgument("veiculoId") { type = NavType.IntType })
-                        ) { backStackEntry ->
-                            val veiculoId = backStackEntry.arguments?.getInt("veiculoId") ?: 0
-                            EditCarScreen(navController = navController, veiculoId = veiculoId)
+                        composable(route = "EditCar") {
+                            EditCarScreen(navController)
                         }
                         composable(route = "Posto") {
                             PostoScreen(navController)
