@@ -231,25 +231,36 @@ fun GaragemScreen(
                 }
             }
 
-            Surface(
+            Button(
+                onClick = { navController.navigate("AddCar/$idUsuarioLogado") },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 24.dp)
-                    .clickable { navController.navigate("AddCar/$idUsuarioLogado") },
-                color = BadgeRosadaCard,
-                shape = RoundedCornerShape(25.dp)
+                    .padding(bottom = 32.dp)
+                    .height(52.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = CorPrimariaVermelha,
+                    contentColor = Color.White
+                ),
+                shape = RoundedCornerShape(26.dp),
+                elevation = ButtonDefaults.buttonElevation(
+                    defaultElevation = 6.dp,
+                    pressedElevation = 2.dp
+                )
             ) {
                 Row(
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    Icon(painterResource(id = R.drawable.icone_mais), null, modifier = Modifier.size(16.dp))
+                    Icon(
+                        painter = painterResource(id = R.drawable.icone_mais),
+                        contentDescription = "Adicionar Carro",
+                        modifier = Modifier.size(16.dp)
+                    )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        "ADICIONAR CARRO",
+                        text = "ADICIONAR CARRO",
                         fontFamily = Poppins,
-                        color = Color.Black,
-                        fontSize = 11.sp,
+                        fontSize = 13.sp,
                         fontWeight = FontWeight.ExtraBold
                     )
                 }

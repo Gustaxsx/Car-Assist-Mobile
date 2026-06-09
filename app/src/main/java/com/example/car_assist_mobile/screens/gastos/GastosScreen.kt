@@ -23,6 +23,9 @@ import androidx.navigation.NavController
 import com.example.car_assist_mobile.components.CustomBottomBar
 import com.example.car_assist_mobile.ui.theme.Poppins
 
+// >>> IMPORT DA SUA COR CENTRALIZADA AQUI <<<
+import com.example.car_assist_mobile.ui.theme.RedDesign
+
 @Composable
 fun GastosScreen(navController: NavController) {
     var isSemanalSelected by remember { mutableStateOf(true) }
@@ -117,14 +120,14 @@ fun GastosScreen(navController: NavController) {
                     ) {
                         Text(
                             text = "Total",
-                            color = Color(0xFF910D0D),
+                            color = RedDesign, // Usando a cor do app
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             fontFamily = Poppins
                         )
                         Text(
                             text = "R$ 1380,00",
-                            color = Color(0xFF910D0D),
+                            color = RedDesign, // Usando a cor do app
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             fontFamily = Poppins
@@ -135,16 +138,19 @@ fun GastosScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(30.dp))
 
+            // >>> BOTÃO PRINCIPAL ATUALIZADO <<<
             Button(
                 onClick = {},
-                modifier = Modifier.width(240.dp).height(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2D3239)),
-                shape = RoundedCornerShape(16.dp)
+                modifier = Modifier
+                    .fillMaxWidth() // Padronizado com as outras telas
+                    .height(55.dp), // Altura padronizada
+                colors = ButtonDefaults.buttonColors(containerColor = RedDesign), // Cor do app
+                shape = RoundedCornerShape(24.dp) // Borda mais arredondada
             ) {
                 Text(
                     text = "Inserir Novo Valor",
                     color = Color.White,
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = FontWeight.ExtraBold,
                     fontFamily = Poppins,
                     fontSize = 16.sp
                 )
@@ -159,16 +165,18 @@ fun TabButtonDesign(text: String, isSelected: Boolean, modifier: Modifier, onCli
         modifier = modifier
             .height(45.dp)
             .clickable { onClick() },
-        shape = RoundedCornerShape(10.dp),
-        color = if (isSelected) Color(0xFF757575) else Color(0xFFD9D9D9)
+        shape = RoundedCornerShape(12.dp),
+        // Fundo vermelho se selecionado, cinza bem clarinho se não
+        color = if (isSelected) RedDesign else Color(0xFFF5F5F5)
     ) {
         Box(contentAlignment = Alignment.Center) {
             Text(
                 text = text,
-                color = if (isSelected) Color.White else Color.Black,
-                fontWeight = FontWeight.Medium,
+                // Texto branco se selecionado, cinza escuro se não
+                color = if (isSelected) Color.White else Color.Gray,
+                fontWeight = FontWeight.Bold,
                 fontFamily = Poppins,
-                fontSize = 16.sp
+                fontSize = 15.sp
             )
         }
     }

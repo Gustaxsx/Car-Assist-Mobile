@@ -1,5 +1,6 @@
 package com.example.car_assist_mobile.data.network
 
+import com.example.car_assist_mobile.data.model.AceitarTransferenciaRequest
 import com.example.car_assist_mobile.data.model.ApiResponseVeiculos
 import com.example.car_assist_mobile.data.model.ApiResponse
 //import com.example.car_assist_mobile.data.model.ApiResponseLembrete
@@ -127,5 +128,11 @@ interface ApiService {
     suspend fun buscarManutencoesPorVeiculo(
         @Path("id") veiculoId: Int
     ): Response<ManutencaoListResponse>
+
+    @Headers("Content-Type: application/json", "Accept: application/json")
+    @POST("v1/car-assist/transferencia/aceitar")
+    suspend fun aceitarTransferencia(
+        @Body request: AceitarTransferenciaRequest
+    ): Response<ApiResponse>
 
 }
