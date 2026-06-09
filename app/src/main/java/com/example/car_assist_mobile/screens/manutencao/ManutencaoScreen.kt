@@ -25,6 +25,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.car_assist_mobile.components.CustomBottomBar
 import com.example.car_assist_mobile.data.model.ManutencaoItemResponse
+import com.example.car_assist_mobile.ui.theme.RedDesign
 
 @Composable
 fun ManutencaoScreen(
@@ -40,7 +41,11 @@ fun ManutencaoScreen(
     Scaffold(
         bottomBar = {
             Row(modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp), horizontalArrangement = Arrangement.Center) {
-                CustomBottomBar(navController = navController, selectedItem = "garagem")
+                CustomBottomBar(
+                    navController = navController,
+                    selectedItem = "garagem",
+                    idUsuarioLogado = idUsuarioLogado
+                )
             }
         },
         containerColor = Color.White
@@ -55,14 +60,14 @@ fun ManutencaoScreen(
                 IconButton(onClick = { navController.popBackStack() }, modifier = Modifier.border(0.5.dp, Color.LightGray, CircleShape).size(45.dp)) {
                     Icon(Icons.Default.ArrowBack, null, tint = Color.Gray, modifier = Modifier.size(20.dp))
                 }
-                Text("MANUTENÇÕES", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center, fontSize = 18.sp, fontWeight = FontWeight.Medium)
+                Text("MANUTENÇÕES", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             }
 
             Spacer(modifier = Modifier.height(30.dp))
 
             if (viewModel.isLoading) {
                 Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = Color(0xFF910D0D))
+                    CircularProgressIndicator(color = RedDesign)
                 }
             } else if (!viewModel.errorMessage.isNullOrEmpty()) {
                 Box(modifier = Modifier.weight(1f).padding(20.dp), contentAlignment = Alignment.Center) {
@@ -74,8 +79,14 @@ fun ManutencaoScreen(
                     )
                 }
             } else if (viewModel.listaManutencoes.isEmpty()) {
+                // >>> ESTADO VAZIO ATUALIZADO AQUI <<<
                 Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                    Text("Nenhuma manutenção registrada.", color = Color.Gray, fontSize = 14.sp)
+                    Text(
+                        text = "Este veículo não possui nenhuma\nmanutenção cadastrada ainda.",
+                        color = Color.Gray,
+                        fontSize = 15.sp,
+                        textAlign = TextAlign.Center
+                    )
                 }
             } else {
                 LazyColumn(
@@ -88,7 +99,6 @@ fun ManutencaoScreen(
                             manutencao = item,
                             viewModel = viewModel,
                             onClick = {
-                                // Abre a edição sem limite de tempo
                                 navController.currentBackStackEntry?.savedStateHandle?.apply {
                                     set("edit_id", item.id)
                                     set("edit_data", item.data_manutencao)
@@ -126,11 +136,21 @@ fun ManutencaoScreen(
                     }
                     navController.navigate("AddManutencao/$idUsuarioLogado/$idVeiculoAtual")
                 },
-                modifier = Modifier.padding(bottom = 16.dp).height(48.dp).width(200.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD9D9D9)),
-                shape = RoundedCornerShape(12.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
+                    .height(55.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = RedDesign,
+                    contentColor = Color.White
+                ),
+                shape = RoundedCornerShape(24.dp)
             ) {
-                Text("NOVA MANUTENÇÃO", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                Text(
+                    text = "NOVA MANUTENÇÃO",
+                    fontWeight = FontWeight.ExtraBold,
+                    fontSize = 16.sp
+                )
             }
         }
     }

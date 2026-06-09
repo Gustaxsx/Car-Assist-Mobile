@@ -14,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.car_assist_mobile.screens.adicionarcarro.AcquireCarScreen
 import com.example.car_assist_mobile.screens.adicionarcarro.AddCarScreen
 import com.example.car_assist_mobile.screens.adicionarmanutencao.AddManutencaoScreen
 import com.example.car_assist_mobile.screens.cadastro.RegisterScreen
@@ -211,6 +212,18 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(route = "Guincho") {
                             GuinchoScreen(navController)
+                        }
+
+                        composable(
+                            route = "AcquireCar/{idUsuario}",
+                            arguments = listOf(navArgument("idUsuario") { type = NavType.IntType })
+                        ) { backStackEntry ->
+                            val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: 0
+
+                            AcquireCarScreen(
+                                navController = navController,
+                                idUsuarioLogado = idUsuario
+                            )
                         }
                     }
                 }

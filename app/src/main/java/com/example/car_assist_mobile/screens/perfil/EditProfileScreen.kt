@@ -32,8 +32,7 @@ import coil.compose.AsyncImage
 import com.example.car_assist_mobile.R
 import com.example.car_assist_mobile.components.CustomBottomBar
 import com.example.car_assist_mobile.ui.theme.Poppins
-
-val MarromDesign = Color(0xFF73261D)
+import com.example.car_assist_mobile.ui.theme.RedDesign
 
 @Composable
 fun EditProfileScreen(
@@ -101,7 +100,7 @@ fun EditProfileScreen(
 
             if (viewModel.isLoading) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = MarromDesign)
+                    CircularProgressIndicator(color = RedDesign)
                 }
             } else {
                 Column(
@@ -127,7 +126,7 @@ fun EditProfileScreen(
                             modifier = Modifier.size(110.dp),
                             shape = CircleShape,
                             color = Color(0xFFF9F9F9),
-                            border = BorderStroke(2.dp, MarromDesign.copy(alpha = 0.1f))
+                            border = BorderStroke(2.dp, RedDesign.copy(alpha = 0.1f))
                         ) {
                             Box(contentAlignment = Alignment.Center) {
                                 if (viewModel.fotoSelecionadaUri != null) {
@@ -159,7 +158,7 @@ fun EditProfileScreen(
                         Surface(
                             modifier = Modifier.size(32.dp).offset(x = (-5).dp, y = (-5).dp),
                             shape = CircleShape,
-                            color = MarromDesign
+                            color = RedDesign
                         ) {
                             Box(contentAlignment = Alignment.Center) {
                                 Icon(
@@ -243,7 +242,7 @@ fun EditProfileScreen(
                                 Button(
                                     onClick = { viewModel.acionarSalvar() },
                                     modifier = Modifier.weight(1f).height(52.dp),
-                                    colors = ButtonDefaults.buttonColors(containerColor = MarromDesign),
+                                    colors = ButtonDefaults.buttonColors(containerColor = RedDesign),
                                     shape = RoundedCornerShape(14.dp)
                                 ) {
                                     Text("Salvar", color = Color.White, fontFamily = Poppins, fontWeight = FontWeight.Bold)
@@ -288,7 +287,7 @@ fun EditProfileScreen(
                                 visualTransformation = PasswordVisualTransformation(),
                                 textStyle = TextStyle(fontFamily = Poppins, fontSize = 14.sp),
                                 colors = OutlinedTextFieldDefaults.colors(
-                                    focusedBorderColor = MarromDesign,
+                                    focusedBorderColor = RedDesign,
                                     unfocusedBorderColor = Color(0xFFEFEFEF)
                                 )
                             )
@@ -306,15 +305,20 @@ fun EditProfileScreen(
                     confirmButton = {
                         Button(
                             onClick = { viewModel.confirmarSenhaEAtualizar(idUsuarioLogado, context) },
-                            colors = ButtonDefaults.buttonColors(containerColor = MarromDesign),
+                            colors = ButtonDefaults.buttonColors(containerColor = RedDesign),
                             shape = RoundedCornerShape(10.dp)
                         ) {
                             Text("Confirmar", fontFamily = Poppins, fontWeight = FontWeight.Bold, color = Color.White)
                         }
                     },
+                    // >>> BOTÃO DE CANCELAR ATUALIZADO AQUI <<<
                     dismissButton = {
-                        TextButton(onClick = { viewModel.mostrarDialogSenha = false }) {
-                            Text("Cancelar", fontFamily = Poppins, color = Color.Gray)
+                        OutlinedButton(
+                            onClick = { viewModel.mostrarDialogSenha = false },
+                            shape = RoundedCornerShape(10.dp),
+                            border = BorderStroke(1.dp, Color(0xFFDCDCDC)) // Borda cinza suave
+                        ) {
+                            Text("Cancelar", fontFamily = Poppins, fontWeight = FontWeight.Bold, color = Color.Gray)
                         }
                     }
                 )
@@ -342,7 +346,7 @@ fun EditField(label: String, value: String, onValueChange: (String) -> Unit) {
             singleLine = true,
             textStyle = TextStyle(fontFamily = Poppins, fontSize = 14.sp, color = Color.Black),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = MarromDesign,
+                focusedBorderColor = RedDesign,
                 unfocusedBorderColor = Color(0xFFEFEFEF),
                 unfocusedContainerColor = Color(0xFFF9F9F9),
                 focusedContainerColor = Color.White

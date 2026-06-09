@@ -39,6 +39,7 @@ import coil.compose.AsyncImage
 import com.example.car_assist_mobile.R
 import com.example.car_assist_mobile.components.CustomBottomBar
 import com.example.car_assist_mobile.data.model.TipoManutencaoItem
+import com.example.car_assist_mobile.ui.theme.RedDesign
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -110,7 +111,11 @@ fun AddManutencaoScreen(
                     .padding(bottom = 24.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                CustomBottomBar(navController = navController, selectedItem = "garagem")
+                CustomBottomBar(
+                    navController = navController,
+                    selectedItem = "garagem",
+                    idUsuarioLogado = idUsuarioLogado
+                )
             }
         },
         containerColor = Color.White
@@ -193,7 +198,7 @@ fun AddManutencaoScreen(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 if (viewModel.isLoading) {
-                    CircularProgressIndicator(color = Color.Gray)
+                    CircularProgressIndicator(color = RedDesign)
                 } else {
                     if (isEditMode) {
                         Row(
@@ -205,8 +210,8 @@ fun AddManutencaoScreen(
                                 modifier = Modifier
                                     .weight(1f)
                                     .height(48.dp),
-                                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red),
-                                border = BorderStroke(1.dp, Color.Red),
+                                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFD32F2F)),
+                                border = BorderStroke(1.dp, Color(0xFFD32F2F)),
                                 shape = RoundedCornerShape(12.dp)
                             ) {
                                 Text("EXCLUIR", fontWeight = FontWeight.Bold, fontSize = 14.sp)
@@ -231,10 +236,10 @@ fun AddManutencaoScreen(
                                 modifier = Modifier
                                     .weight(1f)
                                     .height(48.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD9D9D9)),
+                                colors = ButtonDefaults.buttonColors(containerColor = RedDesign),
                                 shape = RoundedCornerShape(12.dp)
                             ) {
-                                Text("SALVAR", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                                Text("SALVAR", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
                             }
                         }
                     } else {
@@ -256,12 +261,12 @@ fun AddManutencaoScreen(
                             modifier = Modifier
                                 .width(180.dp)
                                 .height(48.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD9D9D9)),
+                            colors = ButtonDefaults.buttonColors(containerColor = RedDesign),
                             shape = RoundedCornerShape(12.dp)
                         ) {
                             Text(
                                 "SALVAR",
-                                color = Color.Black,
+                                color = Color.White,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 14.sp
                             )
@@ -299,7 +304,7 @@ fun ManutencaoInput(
             textStyle = TextStyle(fontSize = 13.sp, color = Color.Black),
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedBorderColor = Color(0xFFE8E8E8),
-                focusedBorderColor = Color.Gray,
+                focusedBorderColor = RedDesign,
                 unfocusedContainerColor = Color.White,
                 focusedContainerColor = Color.White
             )
@@ -341,7 +346,7 @@ fun TipoManutencaoDropdown(
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = Color(0xFFE8E8E8),
-                    focusedBorderColor = Color.Gray,
+                    focusedBorderColor = RedDesign,
                     unfocusedContainerColor = Color.White,
                     focusedContainerColor = Color.White
                 )
@@ -470,7 +475,7 @@ fun EvidenciaImagePicker(
                                 .align(Alignment.TopEnd)
                                 .clickable { onImagesChanged(selectedImagesUris - item) },
                             shape = CircleShape,
-                            color = Color(0xFF910D0D),
+                            color = Color(0xFFD32F2F),
                             shadowElevation = 2.dp
                         ) {
                             Box(
@@ -519,7 +524,7 @@ fun DataPickerInput(
                     }
                     showDialog = false
                 }) {
-                    Text("OK", color = Color(0xFF910D0D))
+                    Text("OK", color = RedDesign)
                 }
             },
             dismissButton = {
@@ -559,7 +564,7 @@ fun DataPickerInput(
                 },
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = Color(0xFFE8E8E8),
-                    focusedBorderColor = Color.Gray,
+                    focusedBorderColor = RedDesign,
                     unfocusedContainerColor = Color.White,
                     focusedContainerColor = Color.White
                 )

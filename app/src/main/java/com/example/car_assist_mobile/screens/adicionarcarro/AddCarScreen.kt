@@ -1,5 +1,6 @@
 package com.example.car_assist_mobile.screens.adicionarcarro
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,6 +20,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.car_assist_mobile.components.CustomBottomBar
+import com.example.car_assist_mobile.ui.theme.RedDesign
 
 @Composable
 fun AddCarScreen(
@@ -94,31 +97,58 @@ fun AddCarScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                SelectionButton("CADASTRAR") {
+                SelectionButton("CADASTRAR", isPrimary = true) {
                     navController.navigate("RegisterCar/$idUsuarioLogado")
                 }
+
                 Spacer(modifier = Modifier.height(20.dp))
-                SelectionButton("ADQUIRIR") {}
+
+                SelectionButton("ADQUIRIR", isPrimary = false) {
+                    navController.navigate("AcquireCar/$idUsuarioLogado")
+                }
             }
         }
     }
 }
 
 @Composable
-fun SelectionButton(text: String, onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(65.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD9D9D9)),
-        shape = RoundedCornerShape(24.dp)
-    ) {
-        Text(
-            text = text,
-            color = Color.Black,
-            fontWeight = FontWeight.ExtraBold,
-            fontSize = 18.sp
-        )
+fun SelectionButton(
+    text: String,
+    isPrimary: Boolean = true,
+    onClick: () -> Unit
+) {
+    if (isPrimary) {
+        Button(
+            onClick = onClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(65.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = RedDesign),
+            shape = RoundedCornerShape(24.dp)
+        ) {
+            Text(
+                text = text,
+                color = Color.White,
+                fontWeight = FontWeight.ExtraBold,
+                fontSize = 18.sp
+            )
+        }
+    } else {
+        OutlinedButton(
+            onClick = onClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(65.dp),
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = RedDesign),
+            border = BorderStroke(2.dp, RedDesign),
+            shape = RoundedCornerShape(24.dp)
+        ) {
+            Text(
+                text = text,
+                color = RedDesign,
+                fontWeight = FontWeight.ExtraBold,
+                fontSize = 18.sp
+            )
+        }
     }
 }

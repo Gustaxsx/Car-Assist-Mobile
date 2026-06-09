@@ -31,8 +31,17 @@ class ManutencaoScreenViewModel : ViewModel() {
 
             try {
                 val response = RetrofitClient.apiService.buscarManutencoesPorVeiculo(veiculoId)
-                if (response.isSuccessful && response.body()?.status == true) {
-                    listaManutencoes = response.body()?.data?.manutencao ?: emptyList()
+
+                if (response.isSuccessful) {
+                    if (response.body()?.status == true) {
+                        listaManutencoes = response.body()?.data?.manutencao ?: emptyList()
+                    } else {
+                        // Se a API retornar 200 mas status = false (Lista vazia)
+                        listaManutencoes = emptyList()
+                    }
+                } else if (response.code() == 404) {
+                    // Se a API retornar 404 (Não encontrado) indicando que não há manutenções
+                    listaManutencoes = emptyList()
                 } else {
                     errorMessage = "Erro ao carregar o histórico de manutenções."
                 }
