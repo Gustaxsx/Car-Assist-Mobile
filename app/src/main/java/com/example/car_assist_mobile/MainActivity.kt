@@ -122,11 +122,36 @@ class MainActivity : ComponentActivity() {
                         composable(route = "Gastos") {
                             GastosScreen(navController)
                         }
-                        composable(route = "Manutencao") {
-                            ManutencaoScreen(navController)
+                        composable(
+                            route = "Manutencao/{idUsuario}/{veiculoId}",
+                            arguments = listOf(
+                                navArgument("idUsuario") { type = NavType.IntType },
+                                navArgument("veiculoId") { type = NavType.IntType }
+                            )
+                        ) { backStackEntry ->
+                            val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: 0
+                            val veiculoId = backStackEntry.arguments?.getInt("veiculoId") ?: 0
+                            ManutencaoScreen(
+                                navController = navController,
+                                idUsuarioLogado = idUsuario,
+                                idVeiculoAtual = veiculoId
+                            )
                         }
-                        composable(route = "AddManutencao") {
-                            AddManutencaoScreen(navController)
+
+                        composable(
+                            route = "AddManutencao/{idUsuario}/{veiculoId}",
+                            arguments = listOf(
+                                navArgument("idUsuario") { type = NavType.IntType },
+                                navArgument("veiculoId") { type = NavType.IntType }
+                            )
+                        ) { backStackEntry ->
+                            val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: 0
+                            val veiculoId = backStackEntry.arguments?.getInt("veiculoId") ?: 0
+                            AddManutencaoScreen(
+                                navController = navController,
+                                idUsuarioLogado = idUsuario,
+                                idVeiculoAtual = veiculoId
+                            )
                         }
                         composable(route = "EditCar") {
                             EditCarScreen(navController)

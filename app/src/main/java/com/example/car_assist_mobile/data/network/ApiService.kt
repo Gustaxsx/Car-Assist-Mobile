@@ -9,14 +9,18 @@ import com.example.car_assist_mobile.data.model.ApiResponseSingleVeiculo
 //import com.example.car_assist_mobile.data.model.LembreteRequest
 import com.example.car_assist_mobile.data.model.LoginRequest
 import com.example.car_assist_mobile.data.model.LoginResponse
+import com.example.car_assist_mobile.data.model.ManutencaoListResponse
+import com.example.car_assist_mobile.data.model.ManutencaoResponse
 import com.example.car_assist_mobile.data.model.ProfileDataResponse
 import com.example.car_assist_mobile.data.model.ProfileGetResponse
 import com.example.car_assist_mobile.data.model.RegisterRequest
+import com.example.car_assist_mobile.data.model.TipoManutencaoResponse
 import com.example.car_assist_mobile.data.model.UpdateUserRequest
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Multipart
@@ -81,12 +85,48 @@ interface ApiService {
     ): Response<ProfileDataResponse>
 }
 
-//    @POST("v1/car-assist/lembrete")
-//    suspend fun cadastrarLembrete(
-//        @Body request: LembreteRequest
-//    ): Response<ApiResponseLembrete>
-//
-//    @GET("v1/car-assist/lembrete/{id}")
-//    suspend fun buscarLembretePorId(
-//        @Path("id") id: Int
-//    ): Response<ApiResponseSingleLembrete>
+    @Multipart
+    @POST("v1/car-assist/manutencao-evidencia")
+    suspend fun adicionarManutencao(
+        @Part("data_manutencao") dataManutencao: RequestBody,
+        @Part("custo") custo: RequestBody,
+        @Part("quilometragem") quilometragem: RequestBody,
+        @Part("oficina") oficina: RequestBody,
+        @Part("observacoes") observacoes: RequestBody,
+        @Part("fk_id_tipo_manutencao") idTipoManutencao: RequestBody,
+        @Part("fk_id_usuario") idUsuario: RequestBody,
+        @Part("fk_id_veiculo") idVeiculo: RequestBody,
+        @Part("pecas") pecas: RequestBody,
+        @Part evidencias: List<MultipartBody.Part>? = null
+    ): Response<ManutencaoResponse>
+
+    @Multipart
+    @PUT("v1/car-assist/manutencao/{id}")
+    suspend fun atualizarManutencao(
+        @Path("id") manutencaoId: Int,
+        @Part("data_manutencao") dataManutencao: RequestBody,
+        @Part("custo") custo: RequestBody,
+        @Part("quilometragem") quilometragem: RequestBody,
+        @Part("oficina") oficina: RequestBody,
+        @Part("observacoes") observacoes: RequestBody,
+        @Part("fk_id_tipo_manutencao") idTipoManutencao: RequestBody,
+        @Part("fk_id_usuario") idUsuario: RequestBody,
+        @Part("fk_id_veiculo") idVeiculo: RequestBody,
+        @Part("pecas") pecas: RequestBody,
+        @Part evidencias: List<MultipartBody.Part>? = null
+    ): Response<ManutencaoResponse>
+
+    @DELETE("v1/car-assist/manutencao/{id}")
+    suspend fun deletarManutencao(
+        @Path("id") manutencaoId: Int
+    ): Response<ManutencaoResponse>
+
+    @GET("v1/car-assist/tipo-manutencao/")
+    suspend fun buscarTiposManutencao(): Response<TipoManutencaoResponse>
+
+    @GET("v1/car-assist/manutencao-veiculo/{id}")
+    suspend fun buscarManutencoesPorVeiculo(
+        @Path("id") veiculoId: Int
+    ): Response<ManutencaoListResponse>
+
+}
