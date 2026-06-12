@@ -1,10 +1,14 @@
 package com.example.car_assist_mobile.screens.editarcarro
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -13,9 +17,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,8 +36,12 @@ import com.example.car_assist_mobile.ui.theme.Poppins
 fun EditCarScreen(
     navController: NavController,
     veiculoId: Int,
+    idUsuarioLogado: Int,
     viewModel: EditCarViewModel = viewModel()
 ) {
+    val context = LocalContext.current
+    val scrollState = rememberScrollState()
+
     LaunchedEffect(veiculoId) {
         viewModel.carregarDadosDoVeiculo(veiculoId)
     }
@@ -42,7 +52,11 @@ fun EditCarScreen(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                CustomBottomBar(navController = navController, selectedItem = "garagem")
+                CustomBottomBar(
+                    navController = navController,
+                    selectedItem = "garagem",
+                    idUsuarioLogado = idUsuarioLogado
+                )
             }
         },
         containerColor = Color.White
@@ -52,6 +66,7 @@ fun EditCarScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(horizontal = 30.dp)
+                .verticalScroll(scrollState)
         ) {
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -71,7 +86,7 @@ fun EditCarScreen(
                     }
                 }
                 Text(
-                    text = "DADOS DO CARRO",
+                    text = "EDITAR DADOS",
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     fontSize = 18.sp,
@@ -82,7 +97,6 @@ fun EditCarScreen(
             }
 
             Spacer(modifier = Modifier.height(30.dp))
-
 
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -120,9 +134,9 @@ fun EditCarScreen(
                     color = Color(0xFFF9F9F9),
                     border = BorderStroke(1.dp, Color(0xFFEFEFEF))
                 ) {
-                    if (!viewModel.fotoUrl.isNullOrBlank()) {
+                    if (!viewModel.fotoUrl.isNullOrBlank() || viewModel.fotoSelecionadaUri != null) {
                         AsyncImage(
-                            model = viewModel.fotoUrl,
+                            model = viewModel.fotoSelecionadaUri ?: viewModel.fotoUrl,
                             contentDescription = "Foto do veículo",
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop,
@@ -144,6 +158,17 @@ fun EditCarScreen(
 
             Spacer(modifier = Modifier.height(30.dp))
 
+            if (viewModel.errorMessage.isNotEmpty()) {
+                Text(
+                    text = viewModel.errorMessage,
+                    color = Color.Red,
+                    fontFamily = Poppins,
+                    fontSize = 12.sp,
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
+
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     EditInfoItem(label = "Marca", value = viewModel.marca, onValueChange = { viewModel.marca = it }, modifier = Modifier.weight(1f))
@@ -153,24 +178,51 @@ fun EditCarScreen(
                     EditInfoItem(label = "Ano", value = viewModel.ano, onValueChange = { viewModel.ano = it }, modifier = Modifier.weight(1f))
                     EditInfoItem(label = "Cor", value = viewModel.cor, onValueChange = { viewModel.cor = it }, modifier = Modifier.weight(1f))
                 }
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    EditInfoItem(
+                        label = "Quilometragem",
+                        value = viewModel.quilometragem,
+                        onValueChange = { viewModel.quilometragem = it },
+                        modifier = Modifier.weight(1f),
+                        keyboardType = KeyboardType.Number
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(30.dp))
 
             Button(
-                onClick = {},
+                onClick = {
+                    viewModel.atualizarVeiculo(veiculoId, context) {
+                        Toast.makeText(context, "Veículo atualizado com sucesso!", Toast.LENGTH_SHORT).show()
+                        navController.popBackStack()
+                    }
+                },
                 modifier = Modifier.align(Alignment.CenterHorizontally).width(150.dp).height(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE0E0E0)),
-                shape = RoundedCornerShape(12.dp)
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF910D0D)),
+                shape = RoundedCornerShape(12.dp),
+                enabled = !viewModel.isLoading
             ) {
-                Text("SALVAR", color = Color.Black, fontWeight = FontWeight.Bold)
+                if (viewModel.isLoading) {
+                    CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp))
+                } else {
+                    Text("SALVAR", color = Color.White, fontWeight = FontWeight.Bold, fontFamily = Poppins)
+                }
             }
+
+            Spacer(modifier = Modifier.height(40.dp))
         }
     }
 }
 
 @Composable
-fun EditInfoItem(label: String, value: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier) {
+fun EditInfoItem(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    keyboardType: KeyboardType = KeyboardType.Text
+) {
     Surface(
         modifier = modifier.height(85.dp),
         shape = RoundedCornerShape(16.dp),
@@ -187,6 +239,7 @@ fun EditInfoItem(label: String, value: String, onValueChange: (String) -> Unit, 
             BasicTextField(
                 value = value,
                 onValueChange = onValueChange,
+                keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
                 textStyle = TextStyle(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,

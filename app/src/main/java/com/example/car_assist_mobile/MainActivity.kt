@@ -7,13 +7,17 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.car_assist_mobile.data.SessionManager
+import com.example.car_assist_mobile.data.model.HistoricoDono
 import com.example.car_assist_mobile.screens.adicionarcarro.AcquireCarScreen
 import com.example.car_assist_mobile.screens.adicionarcarro.AddCarScreen
 import com.example.car_assist_mobile.screens.adicionarmanutencao.AddManutencaoScreen
@@ -25,6 +29,7 @@ import com.example.car_assist_mobile.screens.editarcarro.EditCarScreen
 import com.example.car_assist_mobile.screens.garagem.GaragemScreen
 import com.example.car_assist_mobile.screens.gastos.GastosScreen
 import com.example.car_assist_mobile.screens.guincho.GuinchoScreen
+import com.example.car_assist_mobile.screens.historico.HistoricoDonoScreen // 💡 IMPORTADO: Tela de Histórico
 import com.example.car_assist_mobile.screens.lavarapido.LavaRapidoScreen
 import com.example.car_assist_mobile.screens.login.LoginScreen
 import com.example.car_assist_mobile.screens.manutencao.ManutencaoScreen
@@ -48,6 +53,10 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val transferenciaViewModel: TransferenciaScreenViewModel = viewModel()
 
+                val context = LocalContext.current
+                val sessionManager = remember { SessionManager(context) }
+                val idUsuarioLogadoGlobal = sessionManager.getUserId()
+
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
                     NavHost(
@@ -55,9 +64,11 @@ class MainActivity : ComponentActivity() {
                         startDestination = "login",
                         modifier = Modifier.padding(innerPadding)
                     ) {
+
                         composable(route = "transferencia") {
                             TransferenciaScreen(
                                 navController = navController,
+                                idUsuarioLogado = idUsuarioLogadoGlobal,
                                 viewModel = transferenciaViewModel
                             )
                         }
@@ -65,6 +76,7 @@ class MainActivity : ComponentActivity() {
                         composable(route = "transferencia_confirmar") {
                             TransferenciaConfirmarScreen(
                                 navController = navController,
+                                idUsuarioLogado = idUsuarioLogadoGlobal,
                                 viewModel = transferenciaViewModel
                             )
                         }
@@ -72,6 +84,7 @@ class MainActivity : ComponentActivity() {
                         composable(route = "transferencia_codigo") {
                             TransferenciaCodigoScreen(
                                 navController = navController,
+                                idUsuarioLogado = idUsuarioLogadoGlobal,
                                 codigoTransferencia = transferenciaViewModel.uiState.codigoGerado
                             )
                         }
@@ -150,12 +163,32 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
+                        composable(
+                            route = "OwnerHistory/{idUsuario}/{veiculoId}",
+                            arguments = listOf(
+                                navArgument("idUsuario") { type = NavType.IntType },
+                                navArgument("veiculoId") { type = NavType.IntType }
+                            )
+                        ) { backStackEntry ->
+                            val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: 0
+                            val veiculoId = backStackEntry.arguments?.getInt("veiculoId") ?: 0
+
+                            HistoricoDonoScreen(
+                                navController = navController,
+                                veiculoId = veiculoId,
+                                idUsuarioLogado = idUsuario
+                            )
+                        }
+
                         composable(route = "ChatBot") {
                             ChatBotScreen(navController)
                         }
 
                         composable(route = "Gastos") {
-                            GastosScreen(navController)
+                            GastosScreen(
+                                navController = navController,
+                                idUsuarioLogado = idUsuarioLogadoGlobal
+                            )
                         }
 
                         composable(
@@ -198,9 +231,11 @@ class MainActivity : ComponentActivity() {
 
                             EditCarScreen(
                                 navController = navController,
-                                veiculoId = veiculoId
+                                veiculoId = veiculoId,
+                                idUsuarioLogado = idUsuarioLogadoGlobal
                             )
                         }
+
                         composable(route = "Posto") {
                             PostoScreen(navController)
                         }

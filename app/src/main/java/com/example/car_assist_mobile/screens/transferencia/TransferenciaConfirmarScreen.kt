@@ -1,5 +1,6 @@
 package com.example.car_assist_mobile.screens.transferencia
 
+import com.example.car_assist_mobile.ui.theme.RedDesign
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -45,6 +46,7 @@ import com.example.car_assist_mobile.ui.theme.Poppins
 @Composable
 fun TransferenciaConfirmarScreen(
     navController: NavController,
+    idUsuarioLogado: Int,
     viewModel: TransferenciaScreenViewModel
 ) {
     val uiState = viewModel.uiState
@@ -57,7 +59,11 @@ fun TransferenciaConfirmarScreen(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                CustomBottomBar(navController = navController, selectedItem = "garagem")
+                CustomBottomBar(
+                    navController = navController,
+                    selectedItem = "garagem",
+                    idUsuarioLogado = idUsuarioLogado
+                )
             }
         }
     ) { paddingValues ->

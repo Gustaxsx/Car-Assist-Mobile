@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -31,6 +32,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.car_assist_mobile.R
 import com.example.car_assist_mobile.components.CustomBottomBar
+import com.example.car_assist_mobile.data.SessionManager
 import com.example.car_assist_mobile.ui.theme.Poppins
 import com.example.car_assist_mobile.ui.theme.RedDesign
 
@@ -41,6 +43,9 @@ fun EditProfileScreen(
     viewModel: EditProfileScreenViewModel = viewModel()
 ) {
     val context = LocalContext.current
+    val sessionManager = remember { SessionManager(context) }
+
+    var mostrarDialogLogout by remember { mutableStateOf(false) }
 
     val galeriaLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -82,7 +87,24 @@ fun EditProfileScreen(
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
                     )
-                    Spacer(modifier = Modifier.width(69.dp))
+
+                    Surface(
+                        modifier = Modifier
+                            .size(45.dp)
+                            .clickable { mostrarDialogLogout = true },
+                        shape = CircleShape,
+                        color = Color(0xFFFFF0F0),
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                imageVector = Icons.Default.ExitToApp,
+                                contentDescription = "Sair da Conta",
+                                modifier = Modifier.size(20.dp),
+                                tint = RedDesign
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.width(24.dp))
                 }
                 Spacer(modifier = Modifier.height(15.dp))
             }
@@ -311,12 +333,55 @@ fun EditProfileScreen(
                             Text("Confirmar", fontFamily = Poppins, fontWeight = FontWeight.Bold, color = Color.White)
                         }
                     },
-                    // >>> BOTÃO DE CANCELAR ATUALIZADO AQUI <<<
                     dismissButton = {
                         OutlinedButton(
                             onClick = { viewModel.mostrarDialogSenha = false },
                             shape = RoundedCornerShape(10.dp),
-                            border = BorderStroke(1.dp, Color(0xFFDCDCDC)) // Borda cinza suave
+                            border = BorderStroke(1.dp, Color(0xFFDCDCDC))
+                        ) {
+                            Text("Cancelar", fontFamily = Poppins, fontWeight = FontWeight.Bold, color = Color.Gray)
+                        }
+                    }
+                )
+            }
+
+            if (mostrarDialogLogout) {
+                AlertDialog(
+                    onDismissRequest = { mostrarDialogLogout = false },
+                    shape = RoundedCornerShape(20.dp),
+                    containerColor = Color.White,
+                    title = {
+                        Text("Sair da conta", fontFamily = Poppins, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+                    },
+                    text = {
+                        Text(
+                            text = "Tem certeza que deseja sair do aplicativo Car Assist? Você precisará fazer login novamente.",
+                            fontFamily = Poppins,
+                            fontSize = 14.sp,
+                            color = Color.Gray
+                        )
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                sessionManager.limparSessao()
+                                mostrarDialogLogout = false
+                                navController.navigate("login") {
+                                    popUpTo(0)
+                                    launchSingleTop = true
+                                }
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = RedDesign),
+                            shape = RoundedCornerShape(10.dp)
+                        ) {
+                            Text("Sair", fontFamily = Poppins, fontWeight = FontWeight.Bold, color = Color.White)
+                        }
+                    },
+                    dismissButton = {
+                        OutlinedButton(
+                            onClick = { mostrarDialogLogout = false },
+                            shape = RoundedCornerShape(10.dp),
+                            border = BorderStroke(1.dp, Color(0xFFDCDCDC))
                         ) {
                             Text("Cancelar", fontFamily = Poppins, fontWeight = FontWeight.Bold, color = Color.Gray)
                         }

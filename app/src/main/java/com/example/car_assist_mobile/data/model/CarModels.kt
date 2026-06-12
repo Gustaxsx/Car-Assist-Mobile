@@ -27,7 +27,9 @@ data class VeiculoResponse(
     val cor: String?,
     val score: String?,
     val ano: Int?,
-    val foto: String?
+    val quilometragem: String?,
+    val foto: String?,
+    val foto_veiculo: String?
 )
 
 data class ApiResponseSingleVeiculo(

@@ -1,15 +1,10 @@
 package com.example.car_assist_mobile.screens.service
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -32,15 +27,7 @@ fun ServicesScreen(
     navController: NavController,
     idUsuarioLogado: Int
 ) {
-
-    val services = listOf(
-        ServiceItem("Oficina", R.drawable.icone_oficina, "Oficina"),
-        ServiceItem("Lava-Rápido", R.drawable.icone_lavarapido, "LavaRapido"),
-        ServiceItem("Posto de Combustível", R.drawable.icone_posto_service, "Posto"),
-        ServiceItem("Guincho", R.drawable.icone_guincho, "Guincho")
-    )
-
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFFFDF7F7))) {
+    Box(modifier = Modifier.fillMaxSize().background(Color.White)) {
         Column(modifier = Modifier.fillMaxSize()) {
 
             Column(
@@ -78,17 +65,31 @@ fun ServicesScreen(
                 Spacer(modifier = Modifier.height(40.dp))
             }
 
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth().weight(1f),
-                contentPadding = PaddingValues(start = 24.dp, end = 24.dp, bottom = 120.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(horizontal = 40.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
-                items(services) { service ->
-                    ServiceCard(
-                        service = service,
-                        onClick = { navController.navigate(service.route) }
-                    )
-                }
+                Icon(
+                    painter = painterResource(id = R.drawable.engrenagem_icone),
+                    contentDescription = "Em construção",
+                    modifier = Modifier.size(100.dp),
+                    tint = Color.Unspecified
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Text(
+                    text = "Em construção...",
+                    fontFamily = Poppins,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
+                    textAlign = TextAlign.Center
+                )
             }
         }
 
@@ -100,43 +101,3 @@ fun ServicesScreen(
         )
     }
 }
-
-@Composable
-fun ServiceCard(service: ServiceItem, onClick: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(130.dp)
-            .clickable { onClick() },
-        shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        border = BorderStroke(1.dp, Color(0xFFEEEEEE))
-    ) {
-        Row(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = service.title,
-                fontFamily = Poppins,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-
-            Image(
-                painter = painterResource(id = service.imageRes),
-                contentDescription = service.title,
-                modifier = Modifier.size(90.dp)
-            )
-        }
-    }
-}
-
-data class ServiceItem(
-    val title: String,
-    val imageRes: Int,
-    val route: String
-)

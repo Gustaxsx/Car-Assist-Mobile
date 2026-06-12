@@ -3,6 +3,7 @@ package com.example.car_assist_mobile.data.network
 import com.example.car_assist_mobile.data.model.AceitarTransferenciaRequest
 import com.example.car_assist_mobile.data.model.ApiResponseVeiculos
 import com.example.car_assist_mobile.data.model.ApiResponse
+import com.example.car_assist_mobile.data.model.ApiResponseHistoricoDonos
 //import com.example.car_assist_mobile.data.model.ApiResponseLembrete
 //import com.example.car_assist_mobile.data.model.ApiResponseLembretes
 //import com.example.car_assist_mobile.data.model.ApiResponseSingleLembrete
@@ -58,9 +59,29 @@ interface ApiService {
         @Part("placa") placa: RequestBody,
         @Part("ano") ano: RequestBody,
         @Part("cor") cor: RequestBody,
+        @Part("quilometragem") quilometragem: RequestBody,
         @Part foto_veiculo: MultipartBody.Part? = null
     ): Response<ApiResponse>
 
+    @Multipart
+    @PUT("v1/car-assist/veiculo/{id}")
+    suspend fun atualizarVeiculo(
+        @Path("id") idVeiculo: Int,
+        @Part("id") idVeiculoBody: RequestBody,
+        @Part("modelo") modelo: RequestBody,
+        @Part("marca") marca: RequestBody,
+        @Part("placa") placa: RequestBody,
+        @Part("ano") ano: RequestBody,
+        @Part("cor") cor: RequestBody,
+        @Part("quilometragem") quilometragem: RequestBody,
+        @Part("foto_veiculo") fotoVeiculoAntiga: RequestBody?,
+        @Part foto_veiculo: MultipartBody.Part? = null
+    ): Response<ApiResponse>
+
+    @GET("v1/car-assist/usuario-veiculo/veiculo/{veiculo}")
+    suspend fun buscarHistoricoDonos(
+        @Path("veiculo") idVeiculo: Int
+    ): Response<ApiResponseHistoricoDonos>
     @GET("v1/car-assist/usuario-veiculo/{id}")
     suspend fun buscarVeiculosPorUsuario(
         @Path("id") idUsuario: Int

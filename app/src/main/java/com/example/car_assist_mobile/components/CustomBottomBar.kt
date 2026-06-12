@@ -62,7 +62,8 @@ fun CustomBottomBar(
                     onClick = {
                         if (selectedItem != "garagem") {
                             navController.navigate("garagem/$idUsuarioLogado") {
-                                popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                // 💡 CORREÇÃO: Limpa a pilha somente até a Garagem
+                                popUpTo("garagem/$idUsuarioLogado") { saveState = true }
                                 launchSingleTop = true
                                 restoreState = true
                             }
@@ -77,9 +78,9 @@ fun CustomBottomBar(
                     isSelected = selectedItem == "servicos",
                     onClick = {
                         if (selectedItem != "servicos") {
-                            // Ajustado para passar o ID
                             navController.navigate("service/$idUsuarioLogado") {
-                                popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                // 💡 CORREÇÃO: Limpa a pilha somente até a Garagem
+                                popUpTo("garagem/$idUsuarioLogado") { saveState = true }
                                 launchSingleTop = true
                                 restoreState = true
                             }
@@ -94,9 +95,9 @@ fun CustomBottomBar(
                     isSelected = selectedItem == "perfil",
                     onClick = {
                         if (selectedItem != "perfil") {
-                            // Ajustado para passar o ID
                             navController.navigate("profile/$idUsuarioLogado") {
-                                popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                // 💡 CORREÇÃO: Limpa a pilha somente até a Garagem
+                                popUpTo("garagem/$idUsuarioLogado") { saveState = true }
                                 launchSingleTop = true
                                 restoreState = true
                             }

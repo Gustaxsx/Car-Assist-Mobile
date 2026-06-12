@@ -25,6 +25,9 @@ class RegisterCarScreenViewModel : ViewModel() {
     var ano by mutableStateOf("")
     var cor by mutableStateOf("")
 
+    // 💡 NOVO: Variável de quilometragem
+    var quilometragem by mutableStateOf("")
+
     var fotoVeiculoUri by mutableStateOf<Uri?>(null)
         private set
 
@@ -58,7 +61,7 @@ class RegisterCarScreenViewModel : ViewModel() {
     }
 
     fun cadastrarVeiculo(idUsuario: Int, context: Context, onSuccess: () -> Unit) {
-        if (modelo.isBlank() || marca.isBlank() || placa.isBlank() || ano.isBlank() || cor.isBlank()) {
+        if (modelo.isBlank() || marca.isBlank() || placa.isBlank() || ano.isBlank() || cor.isBlank() || quilometragem.isBlank()) {
             errorMessage = "Preencha todos os campos obrigatórios."
             return
         }
@@ -74,6 +77,8 @@ class RegisterCarScreenViewModel : ViewModel() {
         val anoPart = ano.trim().toRequestBody(mediaType)
         val corPart = cor.trim().toRequestBody(mediaType)
 
+        val quilometragemPart = quilometragem.trim().toRequestBody(mediaType)
+
         val fotoMultipart = fotoVeiculoUri?.let { prepararArquivoFoto(context, it) }
 
         viewModelScope.launch {
@@ -85,6 +90,7 @@ class RegisterCarScreenViewModel : ViewModel() {
                     placa = placaPart,
                     ano = anoPart,
                     cor = corPart,
+                    quilometragem = quilometragemPart,
                     foto_veiculo = fotoMultipart
                 )
 

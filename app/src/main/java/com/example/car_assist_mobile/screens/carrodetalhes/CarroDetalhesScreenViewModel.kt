@@ -32,7 +32,7 @@ class DetailsCarViewModel : ViewModel() {
                         modelo = it.modelo
                         marca = it.marca ?: "Marca Desconhecida"
                         placa = it.placa ?: ""
-                        fotoUrl = it.foto
+                        fotoUrl = it.foto_veiculo
                     }
                 }
             } catch (e: Exception) {

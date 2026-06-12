@@ -7,8 +7,11 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState // 💡 IMPORTADO
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll // 💡 IMPORTADO
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -23,6 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,6 +47,8 @@ fun RegisterCarScreen(
 ) {
     val context = LocalContext.current
     var showSuccessDialog by remember { mutableStateOf(false) }
+
+    val scrollState = rememberScrollState()
 
     val galeriaLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -135,7 +141,8 @@ fun RegisterCarScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 32.dp),
+                .padding(horizontal = 32.dp)
+                .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -203,6 +210,13 @@ fun RegisterCarScreen(
             CarInput(label = "Marca", value = viewModel.marca, onValueChange = { viewModel.marca = it })
             CarInput(label = "Placa", value = viewModel.placa, onValueChange = { viewModel.placa = it.uppercase() })
 
+            CarInput(
+                label = "Quilometragem (km)",
+                value = viewModel.quilometragem,
+                onValueChange = { viewModel.quilometragem = it },
+                keyboardType = KeyboardType.Number
+            )
+
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 Box(modifier = Modifier.weight(1f)) {
                     CarInput(label = "Ano", value = viewModel.ano, onValueChange = { viewModel.ano = it }, isDropdown = true)
@@ -239,6 +253,8 @@ fun RegisterCarScreen(
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(40.dp))
         }
     }
 }
@@ -248,7 +264,8 @@ fun CarInput(
     label: String,
     value: String,
     onValueChange: (String) -> Unit,
-    isDropdown: Boolean = false
+    isDropdown: Boolean = false,
+    keyboardType: KeyboardType = KeyboardType.Text
 ) {
     Column(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)) {
         Text(
@@ -265,6 +282,7 @@ fun CarInput(
             modifier = Modifier.fillMaxWidth().height(52.dp),
             shape = RoundedCornerShape(14.dp),
             singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
             textStyle = TextStyle(fontFamily = Poppins, fontSize = 14.sp, color = Color.Black),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = MarromDesign,

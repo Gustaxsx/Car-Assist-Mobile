@@ -49,7 +49,8 @@ fun DetailsCarScreen(
             ) {
                 CustomBottomBar(
                     navController = navController,
-                    selectedItem = "garagem"
+                    selectedItem = "garagem",
+                    idUsuarioLogado = idUsuarioLogado
                 )
             }
         }
@@ -169,7 +170,9 @@ fun DetailsCarScreen(
                     DetailsActionRow(
                         text = "Histórico de Donos",
                         iconRes = R.drawable.icone_pessoas
-                    ) {}
+                    ) {
+                        navController.navigate("OwnerHistory/$idUsuarioLogado/$veiculoId")
+                    }
 
                     Spacer(modifier = Modifier.height(40.dp))
 

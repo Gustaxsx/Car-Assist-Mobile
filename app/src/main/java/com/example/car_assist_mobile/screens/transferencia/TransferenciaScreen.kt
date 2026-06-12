@@ -52,7 +52,11 @@ import com.example.car_assist_mobile.ui.theme.Poppins
 val RedDesign = Color(0xFFA61616)
 
 @Composable
-fun TransferenciaScreen(navController: NavController, viewModel: TransferenciaScreenViewModel) {
+fun TransferenciaScreen(
+    navController: NavController,
+    idUsuarioLogado: Int, // 💡 ADICIONADO
+    viewModel: TransferenciaScreenViewModel
+) {
     val uiState = viewModel.uiState
     val scrollState = rememberScrollState()
 
@@ -93,7 +97,11 @@ fun TransferenciaScreen(navController: NavController, viewModel: TransferenciaSc
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
-                    CustomBottomBar(navController = navController, selectedItem = "garagem")
+                    CustomBottomBar(
+                        navController = navController,
+                        selectedItem = "garagem",
+                        idUsuarioLogado = idUsuarioLogado // 💡 ADICIONADO E REPASSADO!
+                    )
                 }
             }
         },

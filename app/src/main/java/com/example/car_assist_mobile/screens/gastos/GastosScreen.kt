@@ -22,12 +22,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.car_assist_mobile.components.CustomBottomBar
 import com.example.car_assist_mobile.ui.theme.Poppins
-
-// >>> IMPORT DA SUA COR CENTRALIZADA AQUI <<<
 import com.example.car_assist_mobile.ui.theme.RedDesign
 
 @Composable
-fun GastosScreen(navController: NavController) {
+fun GastosScreen(
+    navController: NavController,
+    idUsuarioLogado: Int // 💡 ADICIONADO: Agora a tela recebe o ID do usuário logado
+) {
     var isSemanalSelected by remember { mutableStateOf(true) }
 
     Scaffold(
@@ -36,7 +37,11 @@ fun GastosScreen(navController: NavController) {
                 modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                CustomBottomBar(navController = navController, selectedItem = "garagem")
+                CustomBottomBar(
+                    navController = navController,
+                    selectedItem = "garagem",
+                    idUsuarioLogado = idUsuarioLogado // 💡 ADICIONADO: Repassando o ID para a barra inferior
+                )
             }
         },
         containerColor = Color.White
@@ -120,14 +125,14 @@ fun GastosScreen(navController: NavController) {
                     ) {
                         Text(
                             text = "Total",
-                            color = RedDesign, // Usando a cor do app
+                            color = RedDesign,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             fontFamily = Poppins
                         )
                         Text(
                             text = "R$ 1380,00",
-                            color = RedDesign, // Usando a cor do app
+                            color = RedDesign,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             fontFamily = Poppins
@@ -138,14 +143,13 @@ fun GastosScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(30.dp))
 
-            // >>> BOTÃO PRINCIPAL ATUALIZADO <<<
             Button(
                 onClick = {},
                 modifier = Modifier
-                    .fillMaxWidth() // Padronizado com as outras telas
-                    .height(55.dp), // Altura padronizada
-                colors = ButtonDefaults.buttonColors(containerColor = RedDesign), // Cor do app
-                shape = RoundedCornerShape(24.dp) // Borda mais arredondada
+                    .fillMaxWidth()
+                    .height(55.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = RedDesign),
+                shape = RoundedCornerShape(24.dp)
             ) {
                 Text(
                     text = "Inserir Novo Valor",
@@ -166,13 +170,11 @@ fun TabButtonDesign(text: String, isSelected: Boolean, modifier: Modifier, onCli
             .height(45.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
-        // Fundo vermelho se selecionado, cinza bem clarinho se não
         color = if (isSelected) RedDesign else Color(0xFFF5F5F5)
     ) {
         Box(contentAlignment = Alignment.Center) {
             Text(
                 text = text,
-                // Texto branco se selecionado, cinza escuro se não
                 color = if (isSelected) Color.White else Color.Gray,
                 fontWeight = FontWeight.Bold,
                 fontFamily = Poppins,
