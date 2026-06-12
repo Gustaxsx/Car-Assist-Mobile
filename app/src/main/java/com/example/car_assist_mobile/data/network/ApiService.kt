@@ -17,6 +17,8 @@ import com.example.car_assist_mobile.data.model.ProfileDataResponse
 import com.example.car_assist_mobile.data.model.ProfileGetResponse
 import com.example.car_assist_mobile.data.model.RegisterRequest
 import com.example.car_assist_mobile.data.model.TipoManutencaoResponse
+import com.example.car_assist_mobile.data.model.TokenTransferenciaRequest
+import com.example.car_assist_mobile.data.model.TransferenciaResponseWrapper
 import com.example.car_assist_mobile.data.model.UpdateUserRequest
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -38,6 +40,12 @@ interface ApiService {
     suspend fun login(
         @Body request: LoginRequest
     ): Response<LoginResponse>
+
+    @DELETE("v1/car-assist/usuario-veiculo/{idUsuario}/{idVeiculo}")
+    suspend fun removerAcessoVeiculo(
+        @Path("idUsuario") idUsuario: Int,
+        @Path("idVeiculo") idVeiculo: Int
+    ): Response<ApiResponse>
 
     @GET("v1/car-assist/veiculo/{id}")
     suspend fun buscarVeiculoPorId(
@@ -156,4 +164,9 @@ interface ApiService {
         @Body request: AceitarTransferenciaRequest
     ): Response<ApiResponse>
 
+    @Headers("Content-Type: application/json")
+    @POST("v1/car-assist/transferencia/gerar")
+    suspend fun gerarTokenTransferencia(
+        @Body request: TokenTransferenciaRequest
+    ): Response<TransferenciaResponseWrapper>
 }

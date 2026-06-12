@@ -1,10 +1,13 @@
 package com.example.car_assist_mobile.screens.transferencia
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.car_assist_mobile.data.model.TokenTransferenciaRequest
+import com.example.car_assist_mobile.data.network.RetrofitClient
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -13,15 +16,13 @@ import kotlinx.coroutines.launch
 data class TransferenciaUiState(
     val emailDestinatario: String = "",
     val senhaConfirmacao: String = "",
-    val nivelPermissao: String = "Transferir propriedade definitiva",
-    val nomeVeiculo: String = "Civic SI",
-    val placaVeiculo: String = "EXE3006",
+    val nivelPermissao: String = "Proprietário",
+    val nomeVeiculo: String = "Carregando...",
+    val placaVeiculo: String = "",
+    val idVeiculo: Int = 0,
     val codigoGerado: String = "",
     val isLoading: Boolean = false,
-    val errorMessage: String? = null,
-    val nomeNovoDono: String = "Destinatário de Teste",
-    val cpfNovoDono: String = "000.000.000-00",
-    val emailNovoDono: String = ""
+    val errorMessage: String? = null
 )
 
 sealed interface TransferenciaUiEvent {
@@ -37,10 +38,7 @@ class TransferenciaScreenViewModel : ViewModel() {
     val eventFlow: SharedFlow<TransferenciaUiEvent> = _eventFlow.asSharedFlow()
 
     fun onEmailChanged(novoEmail: String) {
-        uiState = uiState.copy(
-            emailDestinatario = novoEmail,
-            emailNovoDono = novoEmail
-        )
+        uiState = uiState.copy(emailDestinatario = novoEmail)
     }
 
     fun onSenhaChanged(novaSenha: String) {
@@ -51,37 +49,48 @@ class TransferenciaScreenViewModel : ViewModel() {
         uiState = uiState.copy(nivelPermissao = novaPermissao)
     }
 
-    fun carregarDadosVeiculo(idVeiculo: String) {
+    fun carregarDadosVeiculo(id: Int, nome: String, placa: String) {
         uiState = uiState.copy(
-            nomeVeiculo = "Civic SI",
-            placaVeiculo = "EXE3006"
+            idVeiculo = id,
+            nomeVeiculo = nome,
+            placaVeiculo = placa
         )
     }
 
-    fun gerarCodigoTransferencia() {
-        if (uiState.emailDestinatario.isBlank() || uiState.senhaConfirmacao.isBlank()) {
-            viewModelScope.launch {
-                _eventFlow.emit(TransferenciaUiEvent.Erro("Preencha todos os campos obrigatórios."))
-            }
-            return
-        }
+    fun gerarCodigoTransferencia(idUsuarioLogado: Int) {
+        uiState = uiState.copy(isLoading = true, errorMessage = null)
 
         viewModelScope.launch {
-            uiState = uiState.copy(isLoading = true, errorMessage = null)
             try {
-                val codigoFake = (10000000..99999999).random().toString()
+                // Mapeamento para o formato do banco
+                val papelMapeado = when (uiState.nivelPermissao) {
+                    "Leitura" -> "Visualizador"
+                    "Editável" -> "Editor"
+                    else -> "Proprietário"
+                }
 
-                uiState = uiState.copy(
-                    codigoGerado = codigoFake,
-                    isLoading = false
+                val request = TokenTransferenciaRequest(
+                    fk_id_veiculo = uiState.idVeiculo,
+                    fk_id_usuario_origem = idUsuarioLogado,
+                    papel_concedido = papelMapeado
                 )
-                _eventFlow.emit(TransferenciaUiEvent.Sucesso)
+
+                val response = RetrofitClient.apiService.gerarTokenTransferencia(request)
+
+                if (response.isSuccessful && response.body()?.status == true) {
+                    // 💡 PEGA O CÓDIGO DA RESPOSTA REAL DO BACKEND
+                    val tokenDoBackend = response.body()?.data?.codigo_verificacao ?: "ERRO"
+
+                    uiState = uiState.copy(
+                        codigoGerado = tokenDoBackend,
+                        isLoading = false
+                    )
+                    _eventFlow.emit(TransferenciaUiEvent.Sucesso)
+                } else {
+                    _eventFlow.emit(TransferenciaUiEvent.Erro("Erro ao processar: Código ${response.code()}"))
+                }
             } catch (e: Exception) {
-                uiState = uiState.copy(
-                    isLoading = false,
-                    errorMessage = e.localizedMessage ?: "Erro ao gerar código"
-                )
-                _eventFlow.emit(TransferenciaUiEvent.Erro(uiState.errorMessage!!))
+                _eventFlow.emit(TransferenciaUiEvent.Erro("Falha na conexão: ${e.message}"))
             }
         }
     }

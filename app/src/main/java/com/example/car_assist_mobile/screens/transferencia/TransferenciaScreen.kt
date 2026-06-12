@@ -54,13 +54,54 @@ val RedDesign = Color(0xFFA61616)
 @Composable
 fun TransferenciaScreen(
     navController: NavController,
-    idUsuarioLogado: Int, // 💡 ADICIONADO
+    idUsuarioLogado: Int,
     viewModel: TransferenciaScreenViewModel
 ) {
     val uiState = viewModel.uiState
     val scrollState = rememberScrollState()
 
     Scaffold(
+        containerColor = Color.White,
+        // 💡 CABEÇALHO FIXO: Preso no topo como nas outras telas
+        topBar = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 24.dp, bottom = 8.dp)
+                    .padding(horizontal = 30.dp)
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    Surface(
+                        modifier = Modifier.size(52.dp),
+                        shape = CircleShape,
+                        color = Color.Transparent,
+                        border = BorderStroke(1.dp, Color(0xFFEFEFEF))
+                    ) {
+                        IconButton(onClick = { navController.popBackStack() }) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = null,
+                                tint = Color.Black,
+                                modifier = Modifier.size(22.dp)
+                            )
+                        }
+                    }
+
+                    Text(
+                        text = "TRANSFERÊNCIA",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = Poppins,
+                        color = Color.Black
+                    )
+                }
+            }
+        },
         bottomBar = {
             Column(
                 modifier = Modifier
@@ -100,120 +141,91 @@ fun TransferenciaScreen(
                     CustomBottomBar(
                         navController = navController,
                         selectedItem = "garagem",
-                        idUsuarioLogado = idUsuarioLogado // 💡 ADICIONADO E REPASSADO!
+                        idUsuarioLogado = idUsuarioLogado
                     )
                 }
             }
-        },
-        containerColor = Color.White
+        }
     ) { innerPadding ->
-        Column(
+        // 💡 CONTEÚDO COM SCROLL: Respeita o padding do cabeçalho e da barra inferior
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(
-                    top = innerPadding.calculateTopPadding(),
-                    bottom = innerPadding.calculateBottomPadding()
-                )
-                .padding(horizontal = 30.dp)
-                .verticalScroll(state = scrollState, reverseScrolling = false),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(innerPadding)
         ) {
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.CenterStart
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 30.dp)
+                    .verticalScroll(state = scrollState, reverseScrolling = false),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Surface(
-                    modifier = Modifier.size(52.dp),
-                    shape = CircleShape,
-                    color = Color.Transparent,
-                    border = BorderStroke(1.dp, Color(0xFFEFEFEF))
-                ) {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = null,
-                            tint = Color.Black,
-                            modifier = Modifier.size(22.dp)
-                        )
-                    }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                TransferenciaStepper(passoAtual = 1)
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                Text(
+                    text = "Confirme seu e-mail e senha de acesso para autorizar a geração do código de transferência ou compartilhamento.",
+                    fontFamily = Poppins,
+                    fontSize = 14.sp,
+                    color = Color.Gray,
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                TransferField(
+                    label = "Seu E-mail",
+                    value = uiState.emailDestinatario,
+                    onValueChange = { viewModel.onEmailChanged(it) },
+                    isPassword = false
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                TransferField(
+                    label = "Sua Senha",
+                    value = uiState.senhaConfirmacao,
+                    onValueChange = { viewModel.onSenhaChanged(it) },
+                    isPassword = true
+                )
+
+                Spacer(modifier = Modifier.height(28.dp))
+
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "Nível de Permissão",
+                        fontFamily = Poppins,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    PermissaoOption(
+                        texto = "Somente leitura",
+                        selecionado = uiState.nivelPermissao == "Leitura",
+                        onClick = { viewModel.onPermissaoChanged("Leitura") }
+                    )
+                    PermissaoOption(
+                        texto = "Acesso editável",
+                        selecionado = uiState.nivelPermissao == "Editável",
+                        onClick = { viewModel.onPermissaoChanged("Editável") }
+                    )
+                    PermissaoOption(
+                        texto = "Transferir propriedade definitiva",
+                        selecionado = uiState.nivelPermissao == "Proprietário",
+                        onClick = { viewModel.onPermissaoChanged("Proprietário") }
+                    )
                 }
-                Text(
-                    text = "TRANSFERÊNCIA",
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = Poppins,
-                    color = Color.Black
-                )
+
+                // 💡 Mantivemos um respiro no final para garantir que o formulário suba bem com o teclado
+                Spacer(modifier = Modifier.height(40.dp))
             }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            TransferenciaStepper(passoAtual = 1)
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            Text(
-                text = "Informe os dados do destinatário para a transferência do veículo.",
-                fontFamily = Poppins,
-                fontSize = 14.sp,
-                color = Color.Gray,
-                textAlign = TextAlign.Start,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            TransferField(
-                label = "E-mail do Destinatário",
-                value = uiState.emailDestinatario,
-                onValueChange = { viewModel.onEmailChanged(it) },
-                isPassword = false
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            TransferField(
-                label = "Sua Senha de Confirmação",
-                value = uiState.senhaConfirmacao,
-                onValueChange = { viewModel.onSenhaChanged(it) },
-                isPassword = true
-            )
-
-            Spacer(modifier = Modifier.height(28.dp))
-
-            Column(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    text = "Nível de Permissão",
-                    fontFamily = Poppins,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-
-                PermissaoOption(
-                    texto = "Somente leitura",
-                    selecionado = uiState.nivelPermissao == "Somente leitura",
-                    onClick = { viewModel.onPermissaoChanged("Somente leitura") }
-                )
-                PermissaoOption(
-                    texto = "Acesso editável",
-                    selecionado = uiState.nivelPermissao == "Acesso editável",
-                    onClick = { viewModel.onPermissaoChanged("Acesso editável") }
-                )
-                PermissaoOption(
-                    texto = "Transferir propriedade definitiva",
-                    selecionado = uiState.nivelPermissao == "Transferir propriedade definitiva",
-                    onClick = { viewModel.onPermissaoChanged("Transferir propriedade definitiva") }
-                )
-            }
-
-            Spacer(modifier = Modifier.height(120.dp))
         }
     }
 }

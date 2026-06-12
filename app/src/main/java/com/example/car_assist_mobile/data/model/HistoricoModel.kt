@@ -13,8 +13,16 @@ data class HistoricoDataWrapper(
 
 data class HistoricoDono(
     val id_usuario: Int,
-    val nome: String?,
-    val email: String?,
+    val fk_id_usuario: Int?,
+    val papel_usuario: String?,
+    val data_vinculo: String?,
+    val data_desvinculo: String?,
+    val is_ativo: Int?
+)
+
+data class DonoDetalhado(
+    val id_usuario: Int,
+    val nome: String,
     val foto_usuario: String?,
     val papel_usuario: String?,
     val data_vinculo: String?,
