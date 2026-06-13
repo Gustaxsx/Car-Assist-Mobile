@@ -62,7 +62,6 @@ fun TransferenciaScreen(
 
     Scaffold(
         containerColor = Color.White,
-        // 💡 CABEÇALHO FIXO: Preso no topo como nas outras telas
         topBar = {
             Column(
                 modifier = Modifier
@@ -80,7 +79,13 @@ fun TransferenciaScreen(
                         color = Color.Transparent,
                         border = BorderStroke(1.dp, Color(0xFFEFEFEF))
                     ) {
-                        IconButton(onClick = { navController.popBackStack() }) {
+                        IconButton(onClick = {
+                            navController.navigate("garagem/$idUsuarioLogado") {
+                                popUpTo("garagem/$idUsuarioLogado") {
+                                    inclusive = true
+                                }
+                            }
+                        }) {
                             Icon(
                                 imageVector = Icons.Default.ArrowBack,
                                 contentDescription = null,
@@ -147,7 +152,6 @@ fun TransferenciaScreen(
             }
         }
     ) { innerPadding ->
-        // 💡 CONTEÚDO COM SCROLL: Respeita o padding do cabeçalho e da barra inferior
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -223,7 +227,6 @@ fun TransferenciaScreen(
                     )
                 }
 
-                // 💡 Mantivemos um respiro no final para garantir que o formulário suba bem com o teclado
                 Spacer(modifier = Modifier.height(40.dp))
             }
         }

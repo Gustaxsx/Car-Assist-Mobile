@@ -42,10 +42,9 @@ val RedDesignCodigo = Color(0xFFA61616)
 fun TransferenciaCodigoScreen(
     navController: NavController,
     idUsuarioLogado: Int,
-    viewModel: TransferenciaScreenViewModel // 💡 ALTERADO: Agora recebe o ViewModel diretamente
+    viewModel: TransferenciaScreenViewModel
 ) {
     val scrollState = rememberScrollState()
-    // 💡 LÊ EM TEMPO REAL: Evita o cache antigo do Navigation
     val codigoTransferencia = viewModel.uiState.codigoGerado
 
     Scaffold(
@@ -67,7 +66,13 @@ fun TransferenciaCodigoScreen(
                         color = Color.Transparent,
                         border = BorderStroke(1.dp, Color(0xFFEFEFEF))
                     ) {
-                        IconButton(onClick = { navController.popBackStack() }) {
+                        IconButton(onClick = {
+                            viewModel.resetState()
+                            navController.navigate("garagem/$idUsuarioLogado") {
+                                popUpTo("garagem/$idUsuarioLogado") { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        }) {
                             Icon(
                                 imageVector = Icons.Default.ArrowBack,
                                 contentDescription = null,
@@ -169,7 +174,7 @@ fun TransferenciaCodigoScreen(
 
                 Button(
                     onClick = {
-                        viewModel.resetState() // Limpa os campos para uma próxima vez
+                        viewModel.resetState()
                         navController.navigate("garagem/$idUsuarioLogado") {
                             popUpTo("garagem/$idUsuarioLogado") { inclusive = true }
                             launchSingleTop = true

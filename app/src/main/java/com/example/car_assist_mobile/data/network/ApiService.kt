@@ -1,5 +1,6 @@
 package com.example.car_assist_mobile.data.network
 
+import com.google.gson.JsonObject
 import com.example.car_assist_mobile.data.model.AceitarTransferenciaRequest
 import com.example.car_assist_mobile.data.model.ApiResponseVeiculos
 import com.example.car_assist_mobile.data.model.ApiResponse
@@ -165,8 +166,8 @@ interface ApiService {
     ): Response<ApiResponse>
 
     @Headers("Content-Type: application/json")
-    @POST("v1/car-assist/transferencia/gerar")
+    @POST("/v1/car-assist/transferencia/gerar")
     suspend fun gerarTokenTransferencia(
         @Body request: TokenTransferenciaRequest
-    ): Response<TransferenciaResponseWrapper>
+    ): Response<JsonObject>
 }

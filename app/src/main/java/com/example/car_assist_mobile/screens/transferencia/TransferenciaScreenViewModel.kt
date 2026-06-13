@@ -58,11 +58,17 @@ class TransferenciaScreenViewModel : ViewModel() {
     }
 
     fun gerarCodigoTransferencia(idUsuarioLogado: Int) {
+        if (uiState.emailDestinatario.isBlank() || uiState.senhaConfirmacao.isBlank()) {
+            viewModelScope.launch {
+                _eventFlow.emit(TransferenciaUiEvent.Erro("Preencha seu e-mail e senha para confirmar."))
+            }
+            return
+        }
+
         uiState = uiState.copy(isLoading = true, errorMessage = null)
 
         viewModelScope.launch {
             try {
-                // Mapeamento para o formato do banco
                 val papelMapeado = when (uiState.nivelPermissao) {
                     "Leitura" -> "Visualizador"
                     "Editável" -> "Editor"
@@ -77,20 +83,38 @@ class TransferenciaScreenViewModel : ViewModel() {
 
                 val response = RetrofitClient.apiService.gerarTokenTransferencia(request)
 
-                if (response.isSuccessful && response.body()?.status == true) {
-                    // 💡 PEGA O CÓDIGO DA RESPOSTA REAL DO BACKEND
-                    val tokenDoBackend = response.body()?.data?.codigo_verificacao ?: "ERRO"
+                if (response.isSuccessful && response.body() != null) {
+                    val jsonResponse = response.body()!!
+
+                    val tokenDoBackend = try {
+                        when {
+                            jsonResponse.has("codigo_verificacao") -> jsonResponse.get("codigo_verificacao").asString
+                            jsonResponse.has("data") && jsonResponse.getAsJsonObject("data").has("codigo_verificacao") ->
+                                jsonResponse.getAsJsonObject("data").get("codigo_verificacao").asString
+                            jsonResponse.has("codigo") -> jsonResponse.get("codigo").asString
+                            else -> "CODIGO_GERADO_MAS_NAO_ENCONTRADO_NO_JSON"
+                        }
+                    } catch (e: Exception) {
+                        "ERRO_LEITURA"
+                    }
 
                     uiState = uiState.copy(
                         codigoGerado = tokenDoBackend,
                         isLoading = false
                     )
                     _eventFlow.emit(TransferenciaUiEvent.Sucesso)
+
                 } else {
-                    _eventFlow.emit(TransferenciaUiEvent.Erro("Erro ao processar: Código ${response.code()}"))
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("TRANSFER_ERROR", "Erro ${response.code()}: $errorBody")
+                    uiState = uiState.copy(isLoading = false)
+                    _eventFlow.emit(TransferenciaUiEvent.Erro("Erro no servidor: Dados recusados."))
                 }
+
             } catch (e: Exception) {
-                _eventFlow.emit(TransferenciaUiEvent.Erro("Falha na conexão: ${e.message}"))
+                Log.e("TRANSFER_ERROR", "Exceção: ${e.message}")
+                uiState = uiState.copy(isLoading = false)
+                _eventFlow.emit(TransferenciaUiEvent.Erro("Falha de conexão com a API."))
             }
         }
     }
