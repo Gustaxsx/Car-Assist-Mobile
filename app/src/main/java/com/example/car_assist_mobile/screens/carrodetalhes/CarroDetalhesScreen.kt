@@ -25,16 +25,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.car_assist_mobile.R
 import com.example.car_assist_mobile.components.CustomBottomBar
-import com.example.car_assist_mobile.screens.transferencia.TransferenciaScreenViewModel
 import com.example.car_assist_mobile.ui.theme.Poppins
+// 💡 Removido o import do TransferenciaScreenViewModel daqui pois não precisamos mais dele nesta tela!
 
 @Composable
 fun DetailsCarScreen(
     navController: NavController,
     idUsuarioLogado: Int,
     veiculoId: Int,
-    viewModel: DetailsCarViewModel = viewModel(),
-    transferenciaViewModel: TransferenciaScreenViewModel = viewModel()
+    viewModel: DetailsCarViewModel = viewModel(), // 💡 CORRIGIDO: O nome exato da classe do seu ViewModel
 ) {
     LaunchedEffect(veiculoId) {
         viewModel.carregarDadosDoVeiculo(veiculoId)
@@ -180,11 +179,11 @@ fun DetailsCarScreen(
                         text = "Transferir Veículo",
                         iconRes = R.drawable.icone_transfer
                     ) {
-                        transferenciaViewModel.uiState = transferenciaViewModel.uiState.copy(
-                            nomeVeiculo = viewModel.modelo.replace("_", " "),
-                            placaVeiculo = viewModel.placa
-                        )
-                        navController.navigate("transferencia")
+                        // 💡 CORRIGIDO: Prepara os dados de forma segura e navega passando os parâmetros na URL
+                        val nomeSeguro = viewModel.modelo.replace("/", "-").ifBlank { "Veiculo" }
+                        val placaSegura = viewModel.placa.ifBlank { "Sem_Placa" }
+
+                        navController.navigate("transferencia/$veiculoId/$nomeSeguro/$placaSegura")
                     }
                 }
             }

@@ -65,7 +65,6 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding)
                     ) {
 
-                        // 💡 ROTA DE TRANSFERÊNCIA COM PARÂMETROS
                         composable(
                             route = "transferencia/{veiculoId}/{nomeVeiculo}/{placaVeiculo}",
                             arguments = listOf(
@@ -105,7 +104,6 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        // ... (Demais rotas existentes permanecem iguais) ...
                         composable(route = "login") { LoginScreen(navController) }
                         composable(route = "register") { RegisterScreen(navController) }
 
@@ -158,8 +156,13 @@ class MainActivity : ComponentActivity() {
                         ) { backStackEntry ->
                             val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: 0
                             val veiculoId = backStackEntry.arguments?.getInt("veiculoId") ?: 0
-                            DetailsCarScreen(navController, idUsuario, veiculoId,
-                                TransferenciaScreenViewModel)
+
+                            // 💡 AQUI ESTAVA O ERRO! Removi o 4º parâmetro que estava quebrando a compilação.
+                            DetailsCarScreen(
+                                navController = navController,
+                                idUsuarioLogado = idUsuario,
+                                veiculoId = veiculoId
+                            )
                         }
 
                         composable(
