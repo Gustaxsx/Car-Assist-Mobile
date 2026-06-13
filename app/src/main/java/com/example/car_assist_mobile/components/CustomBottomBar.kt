@@ -28,8 +28,9 @@ val UnselectedGray = Color(0xFF757575)
 fun CustomBottomBar(
     navController: NavController,
     modifier: Modifier = Modifier,
-    selectedItem: String = "garagem",
-    idUsuarioLogado: Int = 0
+    idUsuarioLogado: Int,
+    selectedItem: String = "garagem"
+
 ) {
     val barWidth = 320.dp
 

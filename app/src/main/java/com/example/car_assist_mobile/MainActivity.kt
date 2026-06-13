@@ -24,19 +24,19 @@ import com.example.car_assist_mobile.screens.adicionarmanutencao.AddManutencaoSc
 import com.example.car_assist_mobile.screens.cadastro.RegisterScreen
 import com.example.car_assist_mobile.screens.cadastrodecarro.RegisterCarScreen
 import com.example.car_assist_mobile.screens.carrodetalhes.DetailsCarScreen
-import com.example.car_assist_mobile.screens.chatbot.ChatBotScreen
+//import com.example.car_assist_mobile.screens.chatbot.ChatBotScreen
 import com.example.car_assist_mobile.screens.editarcarro.EditCarScreen
 import com.example.car_assist_mobile.screens.garagem.GaragemScreen
 import com.example.car_assist_mobile.screens.gastos.AddGastoScreen
 import com.example.car_assist_mobile.screens.gastos.GastosScreen
-import com.example.car_assist_mobile.screens.guincho.GuinchoScreen
+//import com.example.car_assist_mobile.screens.guincho.GuinchoScreen
 import com.example.car_assist_mobile.screens.historico.HistoricoDonoScreen
-import com.example.car_assist_mobile.screens.lavarapido.LavaRapidoScreen
+//import com.example.car_assist_mobile.screens.lavarapido.LavaRapidoScreen
 import com.example.car_assist_mobile.screens.login.LoginScreen
 import com.example.car_assist_mobile.screens.manutencao.ManutencaoScreen
-import com.example.car_assist_mobile.screens.oficina.OficinaScreen
+//import com.example.car_assist_mobile.screens.oficina.OficinaScreen
 import com.example.car_assist_mobile.screens.perfil.EditProfileScreen
-import com.example.car_assist_mobile.screens.posto.PostoScreen
+//import com.example.car_assist_mobile.screens.posto.PostoScreen
 import com.example.car_assist_mobile.screens.service.ServicesScreen
 import com.example.car_assist_mobile.screens.transferencia.TransferenciaScreen
 import com.example.car_assist_mobile.screens.transferencia.TransferenciaConfirmarScreen
@@ -177,7 +177,7 @@ class MainActivity : ComponentActivity() {
                             HistoricoDonoScreen(navController, veiculoId, idUsuario)
                         }
 
-                        composable(route = "ChatBot") { ChatBotScreen(navController) }
+//                        composable(route = "ChatBot") { ChatBotScreen(navController) }
 
                         composable(
                             route = "Gastos/{idUsuario}/{veiculoId}",
@@ -235,10 +235,10 @@ class MainActivity : ComponentActivity() {
                             EditCarScreen(navController, veiculoId, idUsuarioLogadoGlobal)
                         }
 
-                        composable(route = "Posto") { PostoScreen(navController) }
-                        composable(route = "Oficina") { OficinaScreen(navController) }
-                        composable(route = "LavaRapido") { LavaRapidoScreen(navController) }
-                        composable(route = "Guincho") { GuinchoScreen(navController) }
+//                        composable(route = "Posto") { PostoScreen(navController) }
+//                        composable(route = "Oficina") { OficinaScreen(navController) }
+//                        composable(route = "LavaRapido") { LavaRapidoScreen(navController) }
+//                        composable(route = "Guincho") { GuinchoScreen(navController) }
 
                         composable(
                             route = "AcquireCar/{idUsuario}",
