@@ -27,6 +27,7 @@ import com.example.car_assist_mobile.screens.carrodetalhes.DetailsCarScreen
 import com.example.car_assist_mobile.screens.chatbot.ChatBotScreen
 import com.example.car_assist_mobile.screens.editarcarro.EditCarScreen
 import com.example.car_assist_mobile.screens.garagem.GaragemScreen
+import com.example.car_assist_mobile.screens.gastos.AddGastoScreen
 import com.example.car_assist_mobile.screens.gastos.GastosScreen
 import com.example.car_assist_mobile.screens.guincho.GuinchoScreen
 import com.example.car_assist_mobile.screens.historico.HistoricoDonoScreen
@@ -157,7 +158,6 @@ class MainActivity : ComponentActivity() {
                             val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: 0
                             val veiculoId = backStackEntry.arguments?.getInt("veiculoId") ?: 0
 
-                            // 💡 AQUI ESTAVA O ERRO! Removi o 4º parâmetro que estava quebrando a compilação.
                             DetailsCarScreen(
                                 navController = navController,
                                 idUsuarioLogado = idUsuario,
@@ -178,7 +178,30 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(route = "ChatBot") { ChatBotScreen(navController) }
-                        composable(route = "Gastos") { GastosScreen(navController, idUsuarioLogadoGlobal) }
+
+                        composable(
+                            route = "Gastos/{idUsuario}/{veiculoId}",
+                            arguments = listOf(
+                                navArgument("idUsuario") { type = NavType.IntType },
+                                navArgument("veiculoId") { type = NavType.IntType }
+                            )
+                        ) { backStackEntry ->
+                            val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: 0
+                            val veiculoId = backStackEntry.arguments?.getInt("veiculoId") ?: 0
+                            GastosScreen(
+                                navController = navController,
+                                idUsuarioLogado = idUsuario,
+                                idVeiculo = veiculoId
+                            )
+                        }
+
+                        composable(
+                            route = "AddGasto/{veiculoId}",
+                            arguments = listOf(navArgument("veiculoId") { type = NavType.IntType })
+                        ) { backStackEntry ->
+                            val veiculoId = backStackEntry.arguments?.getInt("veiculoId") ?: 0
+                            AddGastoScreen(navController = navController, idVeiculo = veiculoId)
+                        }
 
                         composable(
                             route = "Manutencao/{idUsuario}/{veiculoId}",

@@ -163,7 +163,7 @@ fun DetailsCarScreen(
                         text = "Gastos",
                         iconRes = R.drawable.icone_gasto
                     ) {
-                        navController.navigate("Gastos")
+                        navController.navigate("Gastos/$idUsuarioLogado/$veiculoId")
                     }
 
                     DetailsActionRow(

@@ -9,6 +9,8 @@ import com.example.car_assist_mobile.data.model.ApiResponseHistoricoDonos
 //import com.example.car_assist_mobile.data.model.ApiResponseLembretes
 //import com.example.car_assist_mobile.data.model.ApiResponseSingleLembrete
 import com.example.car_assist_mobile.data.model.ApiResponseSingleVeiculo
+import com.example.car_assist_mobile.data.model.GastoRequest
+import com.example.car_assist_mobile.data.model.GastosResponseWrapper
 //import com.example.car_assist_mobile.data.model.LembreteRequest
 import com.example.car_assist_mobile.data.model.LoginRequest
 import com.example.car_assist_mobile.data.model.LoginResponse
@@ -170,4 +172,16 @@ interface ApiService {
     suspend fun gerarTokenTransferencia(
         @Body request: TokenTransferenciaRequest
     ): Response<JsonObject>
+
+    @GET("v1/car-assist/gasto/veiculo/{idVeiculo}")
+    suspend fun buscarGastosPorVeiculo(
+        @Path("idVeiculo") idVeiculo: Int
+    ): Response<GastosResponseWrapper>
+
+    @Headers("Content-Type: application/json")
+    @POST("v1/car-assist/gasto")
+    suspend fun cadastrarGasto(
+        @Body request: GastoRequest
+    ): Response<com.google.gson.JsonObject>
+
 }

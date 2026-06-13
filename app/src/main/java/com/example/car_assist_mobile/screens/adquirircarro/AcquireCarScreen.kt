@@ -62,7 +62,6 @@ fun AcquireCarScreen(
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
-    // Observador de Estado (Lida com o sucesso ou erro da API)
     LaunchedEffect(uiState) {
         when (uiState) {
             is AcquireCarState.Success -> {

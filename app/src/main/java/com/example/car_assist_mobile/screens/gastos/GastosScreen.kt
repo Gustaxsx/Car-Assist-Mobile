@@ -19,28 +19,42 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.car_assist_mobile.components.CustomBottomBar
 import com.example.car_assist_mobile.ui.theme.Poppins
 import com.example.car_assist_mobile.ui.theme.RedDesign
+import java.text.NumberFormat
+import java.util.Locale
 
 @Composable
 fun GastosScreen(
     navController: NavController,
-    idUsuarioLogado: Int // 💡 ADICIONADO: Agora a tela recebe o ID do usuário logado
+    idUsuarioLogado: Int,
+    idVeiculo: Int, // 💡 ADICIONADO: ID para buscar os dados corretos
+    viewModel: GastosViewModel = viewModel()
 ) {
     var isSemanalSelected by remember { mutableStateOf(true) }
+
+    // Dispara a busca na API ao abrir a tela
+    LaunchedEffect(idVeiculo) {
+        viewModel.carregarGastosDoVeiculo(idVeiculo)
+    }
+
+    val formatadorMoeda = NumberFormat.getCurrencyInstance(Locale("pt", "BR"))
 
     Scaffold(
         bottomBar = {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 24.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
                 CustomBottomBar(
                     navController = navController,
                     selectedItem = "garagem",
-                    idUsuarioLogado = idUsuarioLogado // 💡 ADICIONADO: Repassando o ID para a barra inferior
+                    idUsuarioLogado = idUsuarioLogado
                 )
             }
         },
@@ -55,6 +69,7 @@ fun GastosScreen(
         ) {
             Spacer(modifier = Modifier.height(10.dp))
 
+            // CABEÇALHO
             Box(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.CenterStart
@@ -80,6 +95,7 @@ fun GastosScreen(
 
             Spacer(modifier = Modifier.height(30.dp))
 
+            // ABAS
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -90,6 +106,7 @@ fun GastosScreen(
 
             Spacer(modifier = Modifier.height(30.dp))
 
+            // TABELA DE GASTOS DINÂMICA
             Surface(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
@@ -99,44 +116,54 @@ fun GastosScreen(
                 Column(
                     modifier = Modifier.padding(vertical = 8.dp, horizontal = 20.dp)
                 ) {
-                    GastoItemDesign("Combustível", "R$ 230,00") {}
-                    HorizontalDivider(color = Color(0xFFF0F0F0))
-
-                    GastoItemDesign("Limpeza", "R$ 230,00") {}
-                    HorizontalDivider(color = Color(0xFFF0F0F0))
-
-                    GastoItemDesign("Pedágio", "R$ 230,00") {}
-                    HorizontalDivider(color = Color(0xFFF0F0F0))
-
-                    GastoItemDesign("Estacionamento", "R$ 230,00") {}
-                    HorizontalDivider(color = Color(0xFFF0F0F0))
-
-                    GastoItemDesign("Manutenção", "R$ 230,00") {}
-                    HorizontalDivider(color = Color(0xFFF0F0F0))
-
-                    GastoItemDesign("Multas", "R$ 230,00") {}
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                    if (viewModel.isLoading) {
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally).padding(20.dp), color = RedDesign)
+                    } else if (viewModel.errorMessage != null) {
                         Text(
-                            text = "Total",
-                            color = RedDesign,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = Poppins
+                            text = viewModel.errorMessage!!,
+                            color = Color.Gray,
+                            modifier = Modifier.padding(20.dp),
+                            textAlign = TextAlign.Center
                         )
-                        Text(
-                            text = "R$ 1380,00",
-                            color = RedDesign,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = Poppins
-                        )
+                    } else {
+                        // RENDERIZA A LISTA DO BACKEND
+                        viewModel.gastosAgrupados.entries.forEachIndexed { index, entrada ->
+                            GastoItemDesign(
+                                label = entrada.key,
+                                value = formatadorMoeda.format(entrada.value)
+                            ) {}
+
+                            // Adiciona o divisor se não for o último item
+                            if (index < viewModel.gastosAgrupados.size - 1) {
+                                HorizontalDivider(color = Color(0xFFF0F0F0))
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        // TOTAL
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 12.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Total",
+                                color = RedDesign,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = Poppins
+                            )
+                            Text(
+                                text = formatadorMoeda.format(viewModel.totalGasto),
+                                color = RedDesign,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = Poppins
+                            )
+                        }
                     }
                 }
             }
@@ -144,7 +171,7 @@ fun GastosScreen(
             Spacer(modifier = Modifier.height(30.dp))
 
             Button(
-                onClick = {},
+                onClick = { navController.navigate("AddGasto/$idVeiculo") }, // 💡 CORRIGIDO: idVeiculo com 'V' maiúsculo
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp),

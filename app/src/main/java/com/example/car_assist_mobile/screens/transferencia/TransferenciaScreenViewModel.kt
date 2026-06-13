@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.car_assist_mobile.data.model.LoginRequest
 import com.example.car_assist_mobile.data.model.TokenTransferenciaRequest
 import com.example.car_assist_mobile.data.network.RetrofitClient
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -56,7 +57,6 @@ class TransferenciaScreenViewModel : ViewModel() {
             placaVeiculo = placa
         )
     }
-
     fun gerarCodigoTransferencia(idUsuarioLogado: Int) {
         if (uiState.emailDestinatario.isBlank() || uiState.senhaConfirmacao.isBlank()) {
             viewModelScope.launch {
@@ -69,6 +69,27 @@ class TransferenciaScreenViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
+                val authRequest = LoginRequest(
+                    email = uiState.emailDestinatario.trim(),
+                    password = uiState.senhaConfirmacao.trim()
+                )
+
+                val authResponse = RetrofitClient.apiService.login(authRequest)
+
+                if (!authResponse.isSuccessful || authResponse.body()?.status != true) {
+                    uiState = uiState.copy(isLoading = false)
+                    _eventFlow.emit(TransferenciaUiEvent.Erro("E-mail ou senha incorretos."))
+                    return@launch
+                }
+
+                val idConfirmado = authResponse.body()?.data?.usuario?.id
+
+                if (idConfirmado != idUsuarioLogado) {
+                    uiState = uiState.copy(isLoading = false)
+                    _eventFlow.emit(TransferenciaUiEvent.Erro("Estes dados não pertencem ao usuário logado no momento. Use seus próprios dados."))
+                    return@launch
+                }
+
                 val papelMapeado = when (uiState.nivelPermissao) {
                     "Leitura" -> "Visualizador"
                     "Editável" -> "Editor"
