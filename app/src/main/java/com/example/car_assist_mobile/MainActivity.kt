@@ -56,7 +56,6 @@ class MainActivity : ComponentActivity() {
 
                 val context = LocalContext.current
                 val sessionManager = remember { SessionManager(context) }
-                val idUsuarioLogadoGlobal = sessionManager.getUserId()
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
@@ -78,29 +77,35 @@ class MainActivity : ComponentActivity() {
                             val nome = backStackEntry.arguments?.getString("nomeVeiculo") ?: ""
                             val placa = backStackEntry.arguments?.getString("placaVeiculo") ?: ""
 
+                            val idUsuarioLogadoAtual = sessionManager.getUserId()
+
                             LaunchedEffect(veiculoId) {
                                 transferenciaViewModel.carregarDadosVeiculo(veiculoId, nome, placa)
                             }
 
                             TransferenciaScreen(
                                 navController = navController,
-                                idUsuarioLogado = idUsuarioLogadoGlobal,
+                                idUsuarioLogado = idUsuarioLogadoAtual,
                                 viewModel = transferenciaViewModel
                             )
                         }
 
                         composable(route = "transferencia_confirmar") {
+                            val idUsuarioLogadoAtual = sessionManager.getUserId()
+
                             TransferenciaConfirmarScreen(
                                 navController = navController,
-                                idUsuarioLogado = idUsuarioLogadoGlobal,
+                                idUsuarioLogado = idUsuarioLogadoAtual,
                                 viewModel = transferenciaViewModel
                             )
                         }
 
                         composable(route = "transferencia_codigo") {
+                            val idUsuarioLogadoAtual = sessionManager.getUserId()
+
                             TransferenciaCodigoScreen(
                                 navController = navController,
-                                idUsuarioLogado = idUsuarioLogadoGlobal,
+                                idUsuarioLogado = idUsuarioLogadoAtual,
                                 viewModel = transferenciaViewModel
                             )
                         }
@@ -232,7 +237,10 @@ class MainActivity : ComponentActivity() {
                             arguments = listOf(navArgument("veiculoId") { type = NavType.IntType })
                         ) { backStackEntry ->
                             val veiculoId = backStackEntry.arguments?.getInt("veiculoId") ?: 0
-                            EditCarScreen(navController, veiculoId, idUsuarioLogadoGlobal)
+
+                            val idUsuarioLogadoAtual = sessionManager.getUserId()
+
+                            EditCarScreen(navController, veiculoId, idUsuarioLogadoAtual)
                         }
 
 //                        composable(route = "Posto") { PostoScreen(navController) }
