@@ -1,5 +1,6 @@
 package com.example.car_assist_mobile.screens.carrodetalhes
 
+import android.widget.Toast // 💡 Importado para exibir o aviso
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -21,22 +22,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.compose.ui.platform.LocalContext // 💡 Importado para obter o contexto do Android
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.car_assist_mobile.R
 import com.example.car_assist_mobile.components.CustomBottomBar
 import com.example.car_assist_mobile.ui.theme.Poppins
-// 💡 Removido o import do TransferenciaScreenViewModel daqui pois não precisamos mais dele nesta tela!
 
 @Composable
 fun DetailsCarScreen(
     navController: NavController,
     idUsuarioLogado: Int,
     veiculoId: Int,
-    viewModel: DetailsCarViewModel = viewModel(), // 💡 CORRIGIDO: O nome exato da classe do seu ViewModel
+    viewModel: DetailsCarViewModel = viewModel(),
 ) {
-    LaunchedEffect(veiculoId) {
-        viewModel.carregarDadosDoVeiculo(veiculoId)
+    val context = LocalContext.current // 💡 Contexto necessário para o Toast
+
+    LaunchedEffect(veiculoId, idUsuarioLogado) {
+        viewModel.carregarDadosDoVeiculo(veiculoId, idUsuarioLogado)
     }
 
     Scaffold(
@@ -145,6 +148,7 @@ fun DetailsCarScreen(
                     verticalArrangement = Arrangement.spacedBy(20.dp),
                     modifier = Modifier.fillMaxWidth(0.60f)
                 ) {
+                    // Botões livres para todos os acessos
                     DetailsActionRow(
                         text = "Editar Dados",
                         iconRes = R.drawable.icone_pincel
@@ -166,24 +170,40 @@ fun DetailsCarScreen(
                         navController.navigate("Gastos/$idUsuarioLogado/$veiculoId")
                     }
 
+                    // 💡 O botão de Histórico agora fica visível, mas valida o clique internamente
                     DetailsActionRow(
                         text = "Histórico de Donos",
                         iconRes = R.drawable.icone_pessoas
                     ) {
-                        navController.navigate("OwnerHistory/$idUsuarioLogado/$veiculoId")
+                        if (viewModel.papelUsuario == "Proprietário") {
+                            navController.navigate("OwnerHistory/$idUsuarioLogado/$veiculoId")
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "Acesso Negado: Apenas o Proprietário pode ver o histórico de donos.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     }
 
                     Spacer(modifier = Modifier.height(40.dp))
 
+                    // 💡 O botão de Transferência também fica visível e valida o clique internamente
                     DetailsActionRow(
                         text = "Transferir Veículo",
                         iconRes = R.drawable.icone_transfer
                     ) {
-                        // 💡 CORRIGIDO: Prepara os dados de forma segura e navega passando os parâmetros na URL
-                        val nomeSeguro = viewModel.modelo.replace("/", "-").ifBlank { "Veiculo" }
-                        val placaSegura = viewModel.placa.ifBlank { "Sem_Placa" }
-
-                        navController.navigate("transferencia/$veiculoId/$nomeSeguro/$placaSegura")
+                        if (viewModel.papelUsuario == "Proprietário") {
+                            val nomeSeguro = viewModel.modelo.replace("/", "-").ifBlank { "Veiculo" }
+                            val placaSegura = viewModel.placa.ifBlank { "Sem_Placa" }
+                            navController.navigate("transferencia/$veiculoId/$nomeSeguro/$placaSegura")
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "Acesso Negado: Apenas o Proprietário pode transferir este veículo.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     }
                 }
             }

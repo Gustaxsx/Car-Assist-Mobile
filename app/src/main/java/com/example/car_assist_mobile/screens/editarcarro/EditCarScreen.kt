@@ -42,8 +42,10 @@ fun EditCarScreen(
     val context = LocalContext.current
     val scrollState = rememberScrollState()
 
-    LaunchedEffect(veiculoId) {
-        viewModel.carregarDadosDoVeiculo(veiculoId)
+    val podeEditar = viewModel.papelUsuario != "Visualizador"
+
+    LaunchedEffect(veiculoId, idUsuarioLogado) {
+        viewModel.carregarDadosDoVeiculo(veiculoId, idUsuarioLogado)
     }
 
     Scaffold(
@@ -86,7 +88,7 @@ fun EditCarScreen(
                     }
                 }
                 Text(
-                    text = "EDITAR DADOS",
+                    text = if (podeEditar) "EDITAR DADOS" else "DADOS DO VEÍCULO",
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     fontSize = 18.sp,
@@ -171,17 +173,18 @@ fun EditCarScreen(
 
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                    EditInfoItem(label = "Marca", value = viewModel.marca, onValueChange = { viewModel.marca = it }, modifier = Modifier.weight(1f))
-                    EditInfoItem(label = "Placa", value = viewModel.placa, onValueChange = { viewModel.placa = it }, modifier = Modifier.weight(1f))
+                    EditInfoItem(label = "Marca", value = viewModel.marca, enabled = podeEditar, onValueChange = { viewModel.marca = it }, modifier = Modifier.weight(1f))
+                    EditInfoItem(label = "Placa", value = viewModel.placa, enabled = podeEditar, onValueChange = { viewModel.placa = it }, modifier = Modifier.weight(1f))
                 }
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                    EditInfoItem(label = "Ano", value = viewModel.ano, onValueChange = { viewModel.ano = it }, modifier = Modifier.weight(1f))
-                    EditInfoItem(label = "Cor", value = viewModel.cor, onValueChange = { viewModel.cor = it }, modifier = Modifier.weight(1f))
+                    EditInfoItem(label = "Ano", value = viewModel.ano, enabled = podeEditar, onValueChange = { viewModel.ano = it }, modifier = Modifier.weight(1f))
+                    EditInfoItem(label = "Cor", value = viewModel.cor, enabled = podeEditar, onValueChange = { viewModel.cor = it }, modifier = Modifier.weight(1f))
                 }
                 Row(modifier = Modifier.fillMaxWidth()) {
                     EditInfoItem(
                         label = "Quilometragem",
                         value = viewModel.quilometragem,
+                        enabled = podeEditar,
                         onValueChange = { viewModel.quilometragem = it },
                         modifier = Modifier.weight(1f),
                         keyboardType = KeyboardType.Number
@@ -194,19 +197,26 @@ fun EditCarScreen(
             Button(
                 onClick = {
                     viewModel.atualizarVeiculo(veiculoId, context) {
-                        Toast.makeText(context, "Veículo atualizado com sucesso!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Veículo updated com sucesso!", Toast.LENGTH_SHORT).show()
                         navController.popBackStack()
                     }
                 },
                 modifier = Modifier.align(Alignment.CenterHorizontally).width(150.dp).height(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF910D0D)),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (podeEditar) Color(0xFF910D0D) else Color(0xFFCCCCCC)
+                ),
                 shape = RoundedCornerShape(12.dp),
-                enabled = !viewModel.isLoading
+                enabled = podeEditar && !viewModel.isLoading
             ) {
                 if (viewModel.isLoading) {
                     CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp))
                 } else {
-                    Text("SALVAR", color = Color.White, fontWeight = FontWeight.Bold, fontFamily = Poppins)
+                    Text(
+                        text = if (podeEditar) "SALVAR" else "BLOQUEADO",
+                        color = if (podeEditar) Color.White else Color.DarkGray,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = Poppins
+                    )
                 }
             }
 
@@ -221,13 +231,14 @@ fun EditInfoItem(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     keyboardType: KeyboardType = KeyboardType.Text
 ) {
     Surface(
         modifier = modifier.height(85.dp),
         shape = RoundedCornerShape(16.dp),
         border = BorderStroke(1.dp, Color(0xFFEFEFEF)),
-        color = Color.White
+        color = if (enabled) Color.White else Color(0xFFF2F2F2)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -239,12 +250,13 @@ fun EditInfoItem(
             BasicTextField(
                 value = value,
                 onValueChange = onValueChange,
+                enabled = enabled,
                 keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
                 textStyle = TextStyle(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
-                    color = Color.Black,
+                    color = if (enabled) Color.Black else Color.Gray,
                     fontFamily = Poppins
                 ),
                 modifier = Modifier.fillMaxWidth()

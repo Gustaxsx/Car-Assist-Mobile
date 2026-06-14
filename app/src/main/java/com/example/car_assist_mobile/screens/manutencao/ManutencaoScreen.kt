@@ -1,5 +1,6 @@
 package com.example.car_assist_mobile.screens.manutencao
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,6 +18,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -34,8 +36,11 @@ fun ManutencaoScreen(
     idVeiculoAtual: Int,
     viewModel: ManutencaoScreenViewModel = viewModel()
 ) {
-    LaunchedEffect(idVeiculoAtual) {
-        viewModel.carregarManutencoes(idVeiculoAtual)
+    val context = LocalContext.current
+    val podeCriar = viewModel.papelUsuario != "Visualizador"
+
+    LaunchedEffect(idVeiculoAtual, idUsuarioLogado) {
+        viewModel.carregarDados(idVeiculoAtual, idUsuarioLogado)
     }
 
     Scaffold(
@@ -79,7 +84,6 @@ fun ManutencaoScreen(
                     )
                 }
             } else if (viewModel.listaManutencoes.isEmpty()) {
-                // >>> ESTADO VAZIO ATUALIZADO AQUI <<<
                 Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
                     Text(
                         text = "Este veículo não possui nenhuma\nmanutenção cadastrada ainda.",
@@ -109,7 +113,6 @@ fun ManutencaoScreen(
                                     set("edit_obs", item.observacoes)
                                     set("edit_tipo_id", item.tipo_manutencao?.id)
                                     set("edit_tipo_nome", item.tipo_manutencao?.nome)
-
                                     val listaUrls = item.evidencia ?: emptyList()
                                     set("edit_evidencias", ArrayList(listaUrls))
                                 }
@@ -122,26 +125,27 @@ fun ManutencaoScreen(
 
             Button(
                 onClick = {
-                    navController.currentBackStackEntry?.savedStateHandle?.apply {
-                        remove<Int>("edit_id")
-                        remove<String>("edit_data")
-                        remove<String>("edit_custo")
-                        remove<String>("edit_km")
-                        remove<String>("edit_oficina")
-                        remove<String>("edit_pecas")
-                        remove<String>("edit_obs")
-                        remove<Int>("edit_tipo_id")
-                        remove<String>("edit_tipo_nome")
-                        remove<ArrayList<String>>("edit_evidencias")
+                    if (podeCriar) {
+                        navController.currentBackStackEntry?.savedStateHandle?.apply {
+                            remove<Int>("edit_id")
+                            remove<String>("edit_data")
+                            remove<String>("edit_custo")
+                            remove<String>("edit_km")
+                            remove<String>("edit_oficina")
+                            remove<String>("edit_pecas")
+                            remove<String>("edit_obs")
+                            remove<Int>("edit_tipo_id")
+                            remove<String>("edit_tipo_nome")
+                            remove<ArrayList<String>>("edit_evidencias")
+                        }
+                        navController.navigate("AddManutencao/$idUsuarioLogado/$idVeiculoAtual")
+                    } else {
+                        Toast.makeText(context, "Acesso Negado: Apenas Proprietários e Editores podem criar manutenções.", Toast.LENGTH_LONG).show()
                     }
-                    navController.navigate("AddManutencao/$idUsuarioLogado/$idVeiculoAtual")
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp)
-                    .height(55.dp),
+                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp).height(55.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = RedDesign,
+                    containerColor = if (podeCriar) RedDesign else Color.LightGray,
                     contentColor = Color.White
                 ),
                 shape = RoundedCornerShape(24.dp)

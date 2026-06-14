@@ -160,8 +160,9 @@ fun GaragemScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
+                            // 💡 Aqui chamamos a variável que calcula a média dinamicamente
                             Text(
-                                if (viewModel.listaVeiculos.isEmpty()) "--" else "91.6",
+                                text = viewModel.scoreMedioGaragem,
                                 fontFamily = Poppins,
                                 fontSize = 40.sp,
                                 fontWeight = FontWeight.Bold,

@@ -32,26 +32,31 @@ class EditCarViewModel : ViewModel() {
 
     var isLoading by mutableStateOf(false)
     var errorMessage by mutableStateOf("")
+    var papelUsuario by mutableStateOf("")
 
-    fun carregarDadosDoVeiculo(veiculoId: Int) {
-        if (veiculoId == 0) return
+    fun carregarDadosDoVeiculo(veiculoId: Int, idUsuarioLogado: Int) {
+        if (veiculoId == 0 || idUsuarioLogado == 0) return
 
         isLoading = true
         viewModelScope.launch {
             try {
-                val response = RetrofitClient.apiService.buscarVeiculoPorId(veiculoId)
+                val response = RetrofitClient.apiService.buscarVeiculosPorUsuario(idUsuarioLogado)
 
                 if (response.isSuccessful && response.body() != null) {
-                    val veiculo = response.body()!!.data?.veiculo?.firstOrNull()
+                    val listaRelacoes = response.body()!!.data?.usuario_veiculo ?: emptyList()
+                    val relacao = listaRelacoes.find { it.veiculo.id == veiculoId }
 
-                    veiculo?.let {
-                        modelo = it.modelo
-                        marca = it.marca ?: ""
-                        placa = it.placa
-                        ano = it.ano?.toString() ?: ""
-                        cor = it.cor ?: ""
-                        quilometragem = it.quilometragem ?: ""
-                        fotoUrl = it.foto_veiculo
+                    relacao?.let {
+                        papelUsuario = it.papel_usuario ?: ""
+
+                        val veiculo = it.veiculo
+                        modelo = veiculo.modelo
+                        marca = veiculo.marca ?: ""
+                        placa = veiculo.placa
+                        ano = veiculo.ano?.toString() ?: ""
+                        cor = veiculo.cor ?: ""
+                        quilometragem = veiculo.quilometragem ?: ""
+                        fotoUrl = veiculo.foto ?: veiculo.foto_veiculo
                     }
                 }
             } catch (e: Exception) {

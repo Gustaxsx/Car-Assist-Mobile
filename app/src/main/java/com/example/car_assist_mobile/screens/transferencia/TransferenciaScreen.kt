@@ -79,12 +79,9 @@ fun TransferenciaScreen(
                         color = Color.Transparent,
                         border = BorderStroke(1.dp, Color(0xFFEFEFEF))
                     ) {
+                        // 💡 CORREÇÃO AQUI: Alterado para popBackStack()
                         IconButton(onClick = {
-                            navController.navigate("garagem/$idUsuarioLogado") {
-                                popUpTo("garagem/$idUsuarioLogado") {
-                                    inclusive = true
-                                }
-                            }
+                            navController.popBackStack()
                         }) {
                             Icon(
                                 imageVector = Icons.Default.ArrowBack,

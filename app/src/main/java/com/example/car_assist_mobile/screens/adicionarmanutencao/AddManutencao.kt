@@ -51,6 +51,12 @@ fun AddManutencaoScreen(
 ) {
     val context = LocalContext.current
 
+    LaunchedEffect(idUsuarioLogado, idVeiculoAtual) {
+        viewModel.carregarPapelUsuario(idUsuarioLogado, idVeiculoAtual)
+    }
+
+    val podeEditar = viewModel.papelUsuario != "Visualizador"
+
     val savedState = navController.previousBackStackEntry?.savedStateHandle
     val editId = savedState?.get<Int>("edit_id")
     val isEditMode = editId != null
@@ -145,7 +151,7 @@ fun AddManutencaoScreen(
                         Icon(Icons.Default.ArrowBack, null, tint = Color.Gray, modifier = Modifier.size(20.dp))
                     }
                     Text(
-                        text = "MANUTENÇÕES",
+                        text = if (podeEditar) "MANUTENÇÕES" else "DETALHES (LEITURA)",
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
                         fontSize = 18.sp,
@@ -159,6 +165,7 @@ fun AddManutencaoScreen(
                 TipoManutencaoDropdown(
                     tiposList = viewModel.tiposManutencao,
                     selectedText = selectedTipoText,
+                    enabled = podeEditar,
                     onTipoSelected = { tipoItem ->
                         fkIdTipoManutencao = tipoItem.id
                         selectedTipoText = tipoItem.nome
@@ -168,28 +175,30 @@ fun AddManutencaoScreen(
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     DataPickerInput(
                         valueUI = dataUI,
+                        enabled = podeEditar,
                         onDateSelected = { uiDate, apiDate ->
                             dataUI = uiDate
                             dataAPI = apiDate
                         },
                         modifier = Modifier.weight(1f)
                     )
-                    ManutencaoInput("Valor", value = valor, onValueChange = { valor = it }, placeholder = "Ex: 150.00", modifier = Modifier.weight(1f))
+                    ManutencaoInput("Valor", value = valor, onValueChange = { valor = it }, enabled = podeEditar, placeholder = "Ex: 150.00", modifier = Modifier.weight(1f))
                 }
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    ManutencaoInput("KM", value = km, onValueChange = { km = it }, placeholder = "Ex: 5000", modifier = Modifier.weight(1f))
-                    ManutencaoInput("Oficina", value = oficina, onValueChange = { oficina = it }, placeholder = "Nome da Oficina", modifier = Modifier.weight(1f))
+                    ManutencaoInput("KM", value = km, onValueChange = { km = it }, enabled = podeEditar, placeholder = "Ex: 5000", modifier = Modifier.weight(1f))
+                    ManutencaoInput("Oficina", value = oficina, onValueChange = { oficina = it }, enabled = podeEditar, placeholder = "Nome da Oficina", modifier = Modifier.weight(1f))
                 }
 
-                ManutencaoInput("Peças", value = pecas, onValueChange = { pecas = it }, placeholder = "Ex: Pastilha de freio, Óleo")
+                ManutencaoInput("Peças", value = pecas, onValueChange = { pecas = it }, enabled = podeEditar, placeholder = "Ex: Pastilha de freio, Óleo")
 
                 EvidenciaImagePicker(
                     selectedImagesUris = selectedImagesUris,
+                    enabled = podeEditar,
                     onImagesChanged = { selectedImagesUris = it }
                 )
 
-                ManutencaoInput("Observações", value = observacoes, onValueChange = { observacoes = it }, placeholder = "Escreva detalhes adicionais...")
+                ManutencaoInput("Observações", value = observacoes, onValueChange = { observacoes = it }, enabled = podeEditar, placeholder = "Escreva detalhes adicionais...")
             }
 
             Spacer(modifier = Modifier.weight(1f))
@@ -199,7 +208,7 @@ fun AddManutencaoScreen(
 
                 if (viewModel.isLoading) {
                     CircularProgressIndicator(color = RedDesign)
-                } else {
+                } else if (podeEditar) {
                     if (isEditMode) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -284,6 +293,7 @@ fun ManutencaoInput(
     label: String,
     value: String,
     onValueChange: (String) -> Unit,
+    enabled: Boolean = true,
     placeholder: String = "",
     modifier: Modifier = Modifier
 ) {
@@ -297,16 +307,19 @@ fun ManutencaoInput(
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
+            enabled = enabled,
             placeholder = { Text(text = placeholder, color = Color.LightGray, fontSize = 13.sp) },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(8.dp),
             singleLine = true,
-            textStyle = TextStyle(fontSize = 13.sp, color = Color.Black),
+            textStyle = TextStyle(fontSize = 13.sp, color = if (enabled) Color.Black else Color.Gray),
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedBorderColor = Color(0xFFE8E8E8),
                 focusedBorderColor = RedDesign,
                 unfocusedContainerColor = Color.White,
-                focusedContainerColor = Color.White
+                focusedContainerColor = Color.White,
+                disabledContainerColor = Color(0xFFF9F9F9),
+                disabledBorderColor = Color(0xFFE8E8E8)
             )
         )
     }
@@ -317,6 +330,7 @@ fun ManutencaoInput(
 fun TipoManutencaoDropdown(
     tiposList: List<TipoManutencaoItem>,
     selectedText: String,
+    enabled: Boolean = true,
     onTipoSelected: (TipoManutencaoItem) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -330,25 +344,28 @@ fun TipoManutencaoDropdown(
         )
         ExposedDropdownMenuBox(
             expanded = expanded,
-            onExpandedChange = { expanded = !expanded }
+            onExpandedChange = { if (enabled) expanded = !expanded }
         ) {
             OutlinedTextField(
                 value = selectedText,
                 onValueChange = {},
                 readOnly = true,
+                enabled = enabled,
                 placeholder = { Text("Selecione o tipo...", color = Color.LightGray, fontSize = 13.sp) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .menuAnchor(),
                 shape = RoundedCornerShape(8.dp),
                 singleLine = true,
-                textStyle = TextStyle(fontSize = 13.sp, color = Color.Black),
+                textStyle = TextStyle(fontSize = 13.sp, color = if (enabled) Color.Black else Color.Gray),
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = Color(0xFFE8E8E8),
                     focusedBorderColor = RedDesign,
                     unfocusedContainerColor = Color.White,
-                    focusedContainerColor = Color.White
+                    focusedContainerColor = Color.White,
+                    disabledContainerColor = Color(0xFFF9F9F9),
+                    disabledBorderColor = Color(0xFFE8E8E8)
                 )
             )
             ExposedDropdownMenu(
@@ -372,6 +389,7 @@ fun TipoManutencaoDropdown(
 @Composable
 fun EvidenciaImagePicker(
     selectedImagesUris: List<Any>,
+    enabled: Boolean = true,
     onImagesChanged: (List<Any>) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -404,11 +422,15 @@ fun EvidenciaImagePicker(
                     Toast.makeText(context, "Você já selecionou 3 imagens.", Toast.LENGTH_SHORT).show()
                 }
             },
+            enabled = enabled,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
             shape = RoundedCornerShape(8.dp),
-            colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.White),
+            colors = ButtonDefaults.outlinedButtonColors(
+                containerColor = if (enabled) Color.White else Color(0xFFF9F9F9),
+                disabledContentColor = Color.LightGray
+            ),
             border = BorderStroke(1.dp, Color(0xFFE8E8E8))
         ) {
             Row(
@@ -469,25 +491,28 @@ fun EvidenciaImagePicker(
                             error = painterResource(id = R.drawable.icone_carro_moderno)
                         )
 
-                        Surface(
-                            modifier = Modifier
-                                .size(22.dp)
-                                .align(Alignment.TopEnd)
-                                .clickable { onImagesChanged(selectedImagesUris - item) },
-                            shape = CircleShape,
-                            color = Color(0xFFD32F2F),
-                            shadowElevation = 2.dp
-                        ) {
-                            Box(
-                                contentAlignment = Alignment.Center,
-                                modifier = Modifier.fillMaxSize()
+                        // Oculta o botão de deletar se não tiver permissão para editar
+                        if (enabled) {
+                            Surface(
+                                modifier = Modifier
+                                    .size(22.dp)
+                                    .align(Alignment.TopEnd)
+                                    .clickable { onImagesChanged(selectedImagesUris - item) },
+                                shape = CircleShape,
+                                color = Color(0xFFD32F2F),
+                                shadowElevation = 2.dp
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.Close,
-                                    contentDescription = "Excluir Imagem",
-                                    tint = Color.White,
-                                    modifier = Modifier.size(12.dp)
-                                )
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier.fillMaxSize()
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Close,
+                                        contentDescription = "Excluir Imagem",
+                                        tint = Color.White,
+                                        modifier = Modifier.size(12.dp)
+                                    )
+                                }
                             }
                         }
                     }
@@ -501,6 +526,7 @@ fun EvidenciaImagePicker(
 @Composable
 fun DataPickerInput(
     valueUI: String,
+    enabled: Boolean = true,
     onDateSelected: (String, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -550,10 +576,11 @@ fun DataPickerInput(
                 value = valueUI,
                 onValueChange = {},
                 readOnly = true,
+                enabled = enabled,
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
                 singleLine = true,
-                textStyle = TextStyle(fontSize = 13.sp, color = Color.Black),
+                textStyle = TextStyle(fontSize = 13.sp, color = if (enabled) Color.Black else Color.Gray),
                 placeholder = {
                     Text(
                         text = "DD/MM/AAAA",
@@ -566,13 +593,15 @@ fun DataPickerInput(
                     unfocusedBorderColor = Color(0xFFE8E8E8),
                     focusedBorderColor = RedDesign,
                     unfocusedContainerColor = Color.White,
-                    focusedContainerColor = Color.White
+                    focusedContainerColor = Color.White,
+                    disabledContainerColor = Color(0xFFF9F9F9),
+                    disabledBorderColor = Color(0xFFE8E8E8)
                 )
             )
             Box(
                 modifier = Modifier
                     .matchParentSize()
-                    .clickable { showDialog = true }
+                    .clickable(enabled = enabled) { showDialog = true }
                     .background(Color.Transparent)
             )
         }

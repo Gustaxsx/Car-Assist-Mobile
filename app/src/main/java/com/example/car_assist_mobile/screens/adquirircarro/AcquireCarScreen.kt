@@ -24,10 +24,10 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField // 💡 Trocado para Outlined
+import androidx.compose.material3.OutlinedTextFieldDefaults // 💡 Trocado para OutlinedDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -39,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle // 💡 Importado para estilizar o texto
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -140,31 +141,44 @@ fun AcquireCarScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Digite o código gerado pelo\nantigo dono para confirmar a\ntransferencia",
+                    text = "Digite o código gerado pelo\nproprietário para confirmar a\ntransferência",
                     textAlign = TextAlign.Center,
                     fontSize = 16.sp,
                     color = Color.Black,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    modifier = Modifier.padding(bottom = 24.dp)
                 )
 
-                TextField(
+                OutlinedTextField(
                     value = codigoTransferencia,
                     onValueChange = { codigoTransferencia = it },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(65.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color(0xFFE0E0E0),
-                        unfocusedContainerColor = Color(0xFFE0E0E0),
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
+                    placeholder = {
+                        Text(
+                            text = "Ex: AB12CD",
+                            color = Color.LightGray,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
+                    },
+                    textStyle = TextStyle(
+                        fontSize = 20.sp,
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        letterSpacing = 4.sp
+                    ),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                        focusedBorderColor = AppPrimaryColor,
+                        unfocusedBorderColor = Color(0xFFE8E8E8),
                         cursorColor = AppPrimaryColor
                     ),
                     singleLine = true
                 )
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(40.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -177,13 +191,13 @@ fun AcquireCarScreen(
                             .weight(1f)
                             .height(55.dp),
                         shape = RoundedCornerShape(12.dp),
-                        border = BorderStroke(1.dp, Color.Gray),
+                        border = BorderStroke(1.dp, Color(0xFFE8E8E8)),
                         colors = ButtonDefaults.outlinedButtonColors(
-                            contentColor = Color.Gray // Texto cinza
+                            contentColor = Color.Gray
                         ),
                         enabled = uiState !is AcquireCarState.Loading
                     ) {
-                        Text(text = "Cancelar", fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                        Text(text = "Cancelar", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                     }
 
                     Spacer(modifier = Modifier.width(16.dp))
@@ -203,7 +217,7 @@ fun AcquireCarScreen(
                         enabled = uiState !is AcquireCarState.Loading
                     ) {
                         if (uiState is AcquireCarState.Loading) {
-                            CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
+                            CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp), strokeWidth = 3.dp)
                         } else {
                             Text(text = "Confirmar", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                         }
