@@ -10,6 +10,7 @@ import com.example.car_assist_mobile.data.SessionManager
 import com.example.car_assist_mobile.data.model.VeiculoResponse
 import com.example.car_assist_mobile.data.network.RetrofitClient
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class GaragemScreenViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -22,6 +23,27 @@ class GaragemScreenViewModel(application: Application) : AndroidViewModel(applic
     var nomeUsuario by mutableStateOf("Olá!")
     var emailUsuario by mutableStateOf("")
     var urlFotoUsuario by mutableStateOf("")
+
+    val scoreMedioGaragem: String
+        get() {
+            if (listaVeiculos.isEmpty()) return "--"
+
+            var totalScore = 0f
+            var count = 0
+
+            for (veiculo in listaVeiculos) {
+                val scoreConvertido = veiculo.score?.toFloatOrNull()
+                if (scoreConvertido != null) {
+                    totalScore += scoreConvertido
+                    count++
+                }
+            }
+
+            if (count == 0) return "--"
+
+            val media = totalScore / count
+            return String.format(Locale.US, "%.1f", media)
+        }
 
     fun carregarDadosDoUsuario(idUsuarioLogado: Int) {
         val nomeSalvo = sessionManager.getUserName()

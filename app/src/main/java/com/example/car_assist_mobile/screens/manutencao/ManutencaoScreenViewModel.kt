@@ -24,23 +24,31 @@ class ManutencaoScreenViewModel : ViewModel() {
     var listaManutencoes by mutableStateOf<List<ManutencaoItemResponse>>(emptyList())
         private set
 
-    fun carregarManutencoes(veiculoId: Int) {
+    var papelUsuario by mutableStateOf("")
+        private set
+
+    fun carregarDados(veiculoId: Int, idUsuarioLogado: Int) {
         viewModelScope.launch {
             isLoading = true
             errorMessage = null
 
             try {
-                val response = RetrofitClient.apiService.buscarManutencoesPorVeiculo(veiculoId)
+                // 1. Busca o papel do usuário logado neste veículo
+                val responsePapel = RetrofitClient.apiService.buscarVeiculosPorUsuario(idUsuarioLogado)
+                if (responsePapel.isSuccessful) {
+                    val relacao = responsePapel.body()?.data?.usuario_veiculo?.find { it.veiculo.id == veiculoId }
+                    papelUsuario = relacao?.papel_usuario ?: ""
+                }
 
+                // 2. Busca o histórico de manutenções
+                val response = RetrofitClient.apiService.buscarManutencoesPorVeiculo(veiculoId)
                 if (response.isSuccessful) {
                     if (response.body()?.status == true) {
                         listaManutencoes = response.body()?.data?.manutencao ?: emptyList()
                     } else {
-                        // Se a API retornar 200 mas status = false (Lista vazia)
                         listaManutencoes = emptyList()
                     }
                 } else if (response.code() == 404) {
-                    // Se a API retornar 404 (Não encontrado) indicando que não há manutenções
                     listaManutencoes = emptyList()
                 } else {
                     errorMessage = "Erro ao carregar o histórico de manutenções."

@@ -17,23 +17,39 @@ class DetailsCarViewModel : ViewModel() {
     var fotoUrl by mutableStateOf<String?>(null)
     var isLoading by mutableStateOf(false)
 
-    fun carregarDadosDoVeiculo(veiculoId: Int) {
-        if (veiculoId == 0) return
+    // Armazena o papel correto mapeado da lista ("Proprietário", "Editor", "Visualizador")
+    var papelUsuario by mutableStateOf("")
+
+    fun carregarDadosDoVeiculo(veiculoId: Int, idUsuarioLogado: Int) {
+        if (veiculoId == 0 || idUsuarioLogado == 0) return
 
         isLoading = true
         viewModelScope.launch {
             try {
-                val response = RetrofitClient.apiService.buscarVeiculoPorId(veiculoId)
+                // Faz a chamada na rota que retorna o array "usuario_veiculo" mapeado no seu DataUsuarioVeiculo
+                val response = RetrofitClient.apiService.buscarVeiculosPorUsuario(idUsuarioLogado)
 
                 if (response.isSuccessful && response.body() != null) {
-                    val veiculo = response.body()!!.data?.veiculo?.firstOrNull()
+                    val listaRelacoes = response.body()!!.data?.usuario_veiculo ?: emptyList()
 
-                    veiculo?.let {
-                        modelo = it.modelo
-                        marca = it.marca ?: "Marca Desconhecida"
-                        placa = it.placa ?: ""
-                        fotoUrl = it.foto_veiculo
+                    // Filtra o item correto da lista comparando com o veiculoId que a tela recebeu
+                    val relacaoDoVeiculo = listaRelacoes.find { it.veiculo.id == veiculoId }
+
+                    if (relacaoDoVeiculo != null) {
+                        papelUsuario = relacaoDoVeiculo.papel_usuario ?: ""
+
+                        val car = relacaoDoVeiculo.veiculo
+                        modelo = car.modelo
+                        marca = car.marca ?: "Marca Desconhecida"
+                        placa = car.placa ?: ""
+                        fotoUrl = car.foto ?: car.foto_veiculo
+                    } else {
+                        modelo = "Veículo não encontrado"
+                        marca = ""
                     }
+                } else {
+                    modelo = "Erro na API"
+                    marca = ""
                 }
             } catch (e: Exception) {
                 Log.e("DETAILS_ERROR", "Erro ao carregar os dados do veículo: ${e.message}")

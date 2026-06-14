@@ -36,10 +36,27 @@ class AddManutencaoScreenViewModel(application: Application) : AndroidViewModel(
     var tiposManutencao by mutableStateOf<List<TipoManutencaoItem>>(emptyList())
         private set
 
+    var papelUsuario by mutableStateOf("")
+        private set
+
     private val context = application.applicationContext
 
     init {
         carregarTiposManutencao()
+    }
+
+    fun carregarPapelUsuario(idUsuarioLogado: Int, veiculoId: Int) {
+        viewModelScope.launch {
+            try {
+                val response = RetrofitClient.apiService.buscarVeiculosPorUsuario(idUsuarioLogado)
+                if (response.isSuccessful) {
+                    val relacao = response.body()?.data?.usuario_veiculo?.find { it.veiculo.id == veiculoId }
+                    papelUsuario = relacao?.papel_usuario ?: ""
+                }
+            } catch (e: Exception) {
+                // Silencioso, mantém o valor vazio
+            }
+        }
     }
 
     fun carregarTiposManutencao() {
@@ -126,7 +143,6 @@ class AddManutencaoScreenViewModel(application: Application) : AndroidViewModel(
 
                 withContext(Dispatchers.IO) {
                     imagensUris.forEachIndexed { index, item ->
-
                         val itemProcessado = if (item is Map<*, *> && item.containsKey("url")) {
                             item["url"].toString()
                         } else {
@@ -197,14 +213,11 @@ class AddManutencaoScreenViewModel(application: Application) : AndroidViewModel(
             } else {
                 urlString
             }
-
             val connection = URL(finalUrl).openConnection()
             connection.connectTimeout = 15000
             connection.readTimeout = 15000
-
             val bytes = connection.getInputStream().readBytes()
             val requestFile = bytes.toRequestBody("image/jpeg".toMediaTypeOrNull(), 0, bytes.size)
-
             val fileName = "evidencia_mantida_$index.jpg"
             MultipartBody.Part.createFormData(partName, fileName, requestFile)
         } catch (e: Exception) {
